@@ -1,0 +1,81 @@
+\message{ !name(appstract.tex)}\documentclass[sigconf,authordraft]{acmart}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+\usepackage{paralist}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xparse}
+\usepackage[super]{nth}
+\usepackage{caption}
+\usepackage{listing}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{subcaption}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\setlength {\marginparwidth }{2cm}
+
+\definecolor{commentgray}{gray}{0.6}
+
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+\message{ !name(appstract.tex) !offset(24) }
+\section{Introduction}
+Web applications are often perceived by end users as online systems exposing a limited set of views, concepts, and related actions.
+% As humans, we see a web application as composed of a relatively limited amount of views exposing a limited amount of potential actions. 
+From a user perspective, navigating through an online shop, like Amazon, mainly offers to search and list products, while clicking on a given product brings us to its details view. 
+From a machine perspective, like a bot, navigating the same web application, will be perceived as crawling thousands of unique pages, exposing unrelated content and proposing unique actions.
+
+This inability for a machine to understand the navigation model of a web application, like a user intuitively does, makes it very hard to automate interactions with web applications.
+Typically, research topics benefiting from more intuitive navigation include:
+\begin{inparaenum}[\it (a)]
+    \item \emph{web data mining} to automatically extract, de-noise, and structure data from web pages,
+    \item \emph{web testing} to generate, maintain, repair, and augment tests on web applications, and
+    \item \emph{web analytics} to report on how users interact with the web application.
+\end{inparaenum}
+
+While there is a considerable amount of existing literature, notably in the fields of data mining~\cite{Zhai2005WebAlignment, ArasuExtractingPages, Crescenzi2001RoadRunner:Sites, Sarawagi1996InformationExtraction, ChaudhariTemplatePages, MiaoExtractingClustering}, most of existing works are highly specific and do not provide adequate insights to build an application-wide understanding of a navigation model.
+
+In particular, state-of-the-art approaches focus on either extracting data within a page (so-called, \emph{intra-page} extraction) or across two pages (\emph{inter-page} extractions). 
+
+For example, Miao~\textit{et~al.}~\cite{MiaoExtractingClustering} clusters full tag paths (i.e. /html/body/div[2]/div[1]/span) to detect repeating occurrences of a template within a page.
+This allows their approach to extract what is usually called \emph{records} in a web page (\emph{e.g.}, a single product card in a product list).
+This is an example of what we categorize as \emph{intra-page abstraction}.
+
+\emph{Inter-page abstraction} solutions usually try to detect templates of a webpage or to learn a wrapper by studying two different instances of the same template.
+That is what is done by the algorithms like EXALG~\cite{ArasuExtractingPages} and RoadRunner~\cite{Crescenzi2001RoadRunner:Sites}. These approaches do not offer any solution to also take into account the intra-page variability.
+
+In this paper, we thus propose an unsupervised approach to infer the navigation model of a whole web application that we call an \textit{appstraction}.
+The \textit{appstraction} of a web application aims at delivering actionable insights: it allows a machine to understand application states (\emph{e.g.}, product pages, blog page) as well as elements within states (\emph{e.g.}, product title, price), hence guiding the information extraction process, as well as identifying navigation actions.
+The \textit{appstraction} process aims to abstract away the natural variability of web pages into a canonical model composed of as a compact tree of \emph{template pages} and \emph{template elements}.
+Our unsupervised approach assumes that even web applications with billions of pages will build on a limited set of template pages, thus making it possible to infer these generative templates from a dataset of visited pages.
+To achieve this, our approach---named \textsc{Appstract}---builds on three stages:
+\begin{inparaenum}
+    \item \textit{web page clustering} to group instances of related web pages,
+    \item \textit{intra-page abstraction} to extract repeating patterns within each cluster of pages, and
+    \item \textit{inter-page abstraction} to capture repeating patterns across clusters.
+\end{inparaenum}
+
+We empirically demonstrate that our appstraction succeeds to generate application-wide locators that can be used to support semantic guidance across multiple pages of any web application.
+
+The remainder of this paper is therefore organized as follows.
+Section~\ref{sec:related} introduces the required background and related works in this area.
+Section~\ref{sec:appstract} presents the design and implementation of \textsc{Appstract}, while Section~\ref{sec:evaluation} reports on an evaluation of the perceived accuracy of \textsc{Appstract}.
+Finally, Section~\ref{sec:conclusion} concludes.
+
+
+\message{ !name(appstract.tex) !offset(632) }
+
+\end{document}
+\endinput
+

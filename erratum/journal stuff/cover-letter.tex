@@ -1,0 +1,64 @@
+\documentclass{letter}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{mathrsfs}
+\usepackage{xspace}
+\newcommand\casper{{\sc Casper}\xspace}
+
+\usepackage[]{xcolor}
+\usepackage[]{pdfcomment}
+\newcommand{\TODO}[1]{\textcolor{red}{todo: #1}\pdfcomment[color=yellow,open=false]{#1}}\newcommand\todo\TODO
+
+%\signature{}
+
+% default is today's date
+%\date{Lille, March 24$^{th}$, 2016}
+
+%% macros for writing response
+% author: Vincenzo Musco
+\newcounter{major}
+\newcommand{\startmajorchanges}{{\Large\textbf{Major changes}}}
+\newcommand{\majorchange}[1]{\refstepcounter{major}\item[M\arabic{major}]{#1}}
+\newcounter{reviewercpt}
+\newcounter{responsecpt}
+\newcommand{\responsetonextreviewer}{\setcounter{responsecpt}{0}\refstepcounter{reviewercpt}{\Large\textbf{Response to reviewer \#\arabic{reviewercpt}}}}
+\newcommand{\response}[2]{\refstepcounter{responsecpt}\item[R\arabic{reviewercpt}.\arabic{responsecpt}] "\textit{#1}"
+    \\\textbf{Response: } #2}
+
+\begin{document}
+
+\begin{letter}{}
+\opening{Dear P.Avgeriou and D. Shepherd,\\Editors-in-Chief, Journal of Systems and Software}
+
+We would like to submit the attached manuscript, \emph{``ERRATUM: \em Leveraging~Flexible~Tree~Matching to~Repair~Broken~Locators in~Web~Automation~Scripts''}, for consideration for possible publication in \emph{``Journal of Systems and Software''}.
+This manuscript (or closely related research) has not been published or accepted for publication. It is not under consideration at another journal.
+
+\textsc{Abstract}:
+Web applications are constantly evolving to integrate new features or fix reported bugs.
+Such continuous evolutions may alter the content and/or the rendering of web application.
+Underneath, all these web applications relies on the \emph{Document Object Model} (DOM) to render content from web browsers.
+To interact with web applications, \emph{element locators} are identifiers used to navigate across the DOM when automating tasks (\emph{e.g.}. web test scripts, crawlers, or robotic process automation).
+Unfortunately, element locators tend to become fragile when the underlying web pages evolve over time.
+% 
+\emph{Robust locators} have been introduced to overcome this issue, but they fail to repair broken locators on complex and dynamic web applications.
+For this reason, several contributions explored the idea of automatically repairing broken locators on a page. 
+However, these works attempt to repair a given broken locator by scanning all elements in the new DOM to find the most similar one, which fails to scale when the complexity of web pages grows.
+
+This article adopts a different perspective on this problem by introducing a new locator repair solution that leverages tree matching algorithms to relocate broken locators.
+This solution, named \erratum{}, implements a holistic approach to reduce the element search space, which greatly eases the locator repair task and drastically improves repair accuracy.
+% 
+We compare the robustness of \erratum{} on a large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
+Our empirical results demonstrate that \erratum{} outperforms the accuracy of WATER, a state-of-the-art solution, by 67\%.
+
+Should you require any further information, please contact us.
+
+Yours sincerely,
+
+Sacha Brisset\\
+Mantu / Univ. Lille\\
+\\
+On behalf of Pr~Lionel Seinturier and Pr~Romain Rouvoy.
+\end{letter}
+\end{document}

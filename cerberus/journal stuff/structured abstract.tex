@@ -1,0 +1,47 @@
+% Created 2021-02-22 Mon 16:56
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\title{ERRATUM: Leveraging Flexible Tree Matching to Repair Broken Locators in Web Automation Scripts}
+\begin{document}
+
+\maketitle
+
+\section{Context}
+Web pages are constantly evolving to integrate new features and fix reported bugs.
+Scripts that interact with web applications (\emph{e.g.} web test scripts, crawlers, or robotic process automation) rely on the underlying model of these web pages -- the Document Object Model (DOM) -- which means they are often particularly fragile.
+More precisely, the major cause of breakages observed in automation scripts are \emph{element locators}, which are identifiers commonly used by automation scripts to navigate across the DOM.
+When the DOM evolves, these identifiers tend to break, thus causing the related scripts to no longer locate the intended target elements.
+
+For this reason, several contributions explored the idea of automatically repairing broken locators on a page.
+These works attempt to repair a given broken locator by scanning all elements in the new DOM to find the most similar one.
+This approach fails to scale when the complexity of web pages grows, leading to incorrect element repairs.
+\section{Objective}
+Our contribution aims at improving the robustness of scripts that interact with web applications.
+
+In particular, we adopt a different perspective on the locator problem by introducing a new locator repair solution that leverages tree matching algorithms to relocate broken locators.
+
+Finally, we propose a new way to interact with web pages enabled by ERRATUM.
+
+\section{Method}
+Our solution, named ERRATUM, implements a holistic approach to reduce the element search space, which greatly eases the locator repair task and drastically improves repair accuracy.
+
+To evaluate ERRATUM, we build the first large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
+
+\section{Results}
+Our empirical results demonstrate that ERRATUM outperforms the accuracy of WATER, a state-of-the-art solution, by 67\%
+\end{document}
+
+    

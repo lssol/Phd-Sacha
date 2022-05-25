@@ -1,0 +1,27 @@
+Web applications are constantly evolving to integrate new features and fix reported bugs
+, but even imperceptible changes can sometimes entail significant modifications of the underlying structure of the web page.
+Such continuous evolution of web applications make it extremely challenging to build scripts automating the interactions with the elements of a web page in a robust way (e.g., web test scripts, crawlers, or robotic process automation).
+More precisely, the major cause of breakage in automation scripts are element locators, which are the identifiers used by automation scripts to navigate across the page.
+When the page evolves, these identifiers tend to break, thus causing the related scripts to no longer locate the correct elements with which they need to interact.
+
+For this reason, several contributions explored the idea of automatically generating or repairing locators on a page. 
+Unfortunately, these approaches fail to scale when the complexity of web pages grows, often leading scripts to inaccurately relocate elements.
+Our solution, named ERRATUM, adopts a holistic approach to reduce the element search space, which greatly eases the locator repair task and drastically improves repair accuracy.
+The holistic approach is implemented using a carefully chosen tree matching algorithm applied to the locator repair problem.
+
+We compare the robustness of ERRATUM on a large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
+Our empirical results demonstrate that ERRATUM outperforms the accuracy of WATER, a state-of-the-art solution, by 67%.
+
+
+// 200 words version
+Web applications are constantly evolving to integrate new features and fix reported bugs.
+Such continuous evolution of web applications make it extremely challenging to build scripts automating the interactions with the elements of a web page in a robust way (e.g., web test scripts, crawlers, or robotic process automation).
+The major cause of breakage in automation scripts are element locators used to navigate across the page.
+When the page evolves, these identifiers tend to break, thus causing the related scripts to no longer locate the correct elements with which they need to interact.
+
+For this reason, several contributions explored the idea of automatically generating or repairing locators on a page. 
+Unfortunately, these approaches fail to scale when the complexity of web pages grows, often leading scripts to inaccurately relocate elements.
+Our solution, named ERRATUM, adopts a holistic approach applying tree matching to reduce the element search space, which greatly eases the locator repair task and drastically improves repair accuracy.
+
+We compare the robustness of ERRATUM on a large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
+Our empirical results demonstrate that ERRATUM outperforms the accuracy of WATER, a state-of-the-art solution, by 67%.
