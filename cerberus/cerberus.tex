@@ -1,162 +1,6 @@
-\documentclass[10pt,conference]{IEEEtran}
+\chapter{Integrating Erratum to Cerberus}
 
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsthm}
-\usepackage{paralist}
-\usepackage{algorithm2e}
-\usepackage{caption, subcaption}
-
- \AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
-
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage{hyperref}
-% \usepackage{subfig}
-\usepackage{listings}
-\lstset{escapeinside={/*!}{!*/}}
-\usepackage{xparse}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{multirow}
-
-\usepackage{tikz}
-\usepackage{graphicx}
-\usetikzlibrary{arrows}
-\usetikzlibrary{shapes}
-% \newcommand{\mymk}[1]{%
-%   \tikz[baseline=(char.base)]\node[anchor=south west, draw,rectangle, rounded corners, inner sep=1pt, minimum size=5mm,
-%     text height=2mm](char){\ensuremath{#1}} ;}
-\newcommand{\mymk}[1]{%
-  \tikz[baseline=(char.base)]\node[anchor=south west, draw, circle, inner sep=1pt, minimum size=4mm, text height=2mm](char){\ensuremath{#1}};}
-
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,fill=yellow!50,inner sep=1pt] (char) {#1};}}
-
-\usepackage{color}
-\definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
-\definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
-\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
-\usepackage{upquote}
-\usepackage{balance}
-\usepackage{listings}
-\lstdefinelanguage{JavaScript}{
-  morekeywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-  morecomment=[s]{/*}{*/},
-  morecomment=[l]//,
-  morestring=[b]",
-  morestring=[b]'
-}
-
-\lstdefinelanguage{HTML5}{
-        language=html,
-        sensitive=true, 
-        alsoletter={<>=-},
-        otherkeywords={
-        % HTML tags
-        <html>, <head>, <title>, </title>, <meta, />, </head>, <body>, <form, <input, <button, </button>, 
-        <canvas, \/canvas>, <script>, </script>, </form>, </body>, </html>, <!, html>, <style>, </style>, ><
-        },  
-        ndkeywords={
-        % General
-        =,
-        % HTML attributes
-        charset=, id=, width=, height=, method=, action=, type=, name=, value=, data-cerberus=,
-        % CSS properties
-        border:, transform:, -moz-transform:, transition-duration:, transition-property:, transition-timing-function:
-        },  
-        morecomment=[s]{<!--}{-->},
-        tag=[s]
-}
-
-\lstset{%
-    % Basic design
-    % backgroundcolor=\color{editorGray},
-    basicstyle={\small\ttfamily},   
-    % frame=l,
-    % Line numbers
-    % xleftmargin={0.75cm},
-    % numbers=left,
-    % stepnumber=1,
-    % firstnumber=1,
-    % numberfirstline=true,
-    % Code design   
-    keywordstyle=\color{blue}\bfseries,
-    commentstyle=\color{darkgray}\ttfamily,
-    ndkeywordstyle=\color{editorGreen}\bfseries,
-    stringstyle=\color{editorOcher},
-    % Code
-    language=HTML5,
-    alsolanguage=JavaScript,
-    alsodigit={.:;},
-    tabsize=1,
-    showtabs=false,
-    showspaces=false,
-    showstringspaces=false,
-    extendedchars=true,
-    breaklines=true,        
-    % Support for German umlauts
-    literate=%
-    {Ö}{{\"O}}1
-    {Ä}{{\"A}}1
-    {Ü}{{\"U}}1
-    {ß}{{\ss}}1
-    {ü}{{\"u}}1
-    {ä}{{\"a}}1
-    {ö}{{\"o}}1
-}
-\begin{document}
-
-\theoremstyle{definition}
-\newtheorem{defn}{Definition}[section]
-
-\theoremstyle{definition}
-\newtheorem{rqn}{RQ}[section]
-
-\theoremstyle{definition}
-\newtheorem{note}{Note}[section]
-
-\theoremstyle{remark}
-\newtheorem{ex}{Example}[section]
-
-\newcommand{\erratum}[0]{\textsc{Erratum}\xspace}
-\newcommand{\cerberus}[0]{\textsc{Cerberus}\xspace}
-\newcommand{\laredoute}[0]{\textit{La\,Redoute}\xspace}
-\newcommand{\erratumlong}[0]{\emph{rEpaiRing bRoken locATors Using tree Matching}}
-% \title{Locator Repair using Tree Matching}
-% \title{Repairing Broken~Web~Locators in~the~Wild: An~Experience~Report}
-\title{Deploying Robust~Web~Locators in~the~Wild: An~Experience~Report}
-% \author{Submission \#356 (10+1~pages)}
-\author{
-    \IEEEauthorblockN{\bf \emph{Sacha}~\textsc{Brisset}}
-    \IEEEauthorblockA{Mantu / Inria}
-    \and
-    \IEEEauthorblockN{\bf \emph{Antoine}~\textsc{Craske}\\\emph{Benoit}~\textsc{Dumont}}
-    \IEEEauthorblockA{La\,Redoute}
-    % \and
-    % \IEEEauthorblockN{\emph{Benoit}~\textsc{Dumont}}
-    % \IEEEauthorblockA{La Redoute}
-    \and
-    \IEEEauthorblockN{\bf \emph{Romain}~\textsc{Rouvoy}\\\emph{Lionel}~\textsc{Seinturier}}
-    \IEEEauthorblockA{Univ.\,Lille / Inria / IUF}
-    % \and
-    % \IEEEauthorblockN{\emph{Lionel}~\textsc{Seinturier}}
-    % \IEEEauthorblockA{Univ. Lille / Inria}
-    \and
-    \IEEEauthorblockN{\bf \emph{Renaud}~\textsc{Pawlak}}
-    \IEEEauthorblockA{Cinchéo}
-}
-
-% \settopmatter{printacmref=false}
-% \renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
-% \pagestyle{plain} % removes running headers
-\maketitle
-
-\begin{abstract}
+\section{Abstract}
 Web applications are constantly evolving to integrate new features and fix reported bugs.
 However, even an imperceptible change can sometimes entail significant modifications of the \emph{Document Object Model} (DOM), which is the underlying model used by browsers to render elements of a web application.
 In this context, the continuous evolution of web applications makes it extremely challenging to automate test scenarios of a web application in a robust way.
@@ -167,7 +11,6 @@ So far, established test automation frameworks adopted by the industry, like \ce
 Such web locators require to be manually crafted and are often fragile with regards to DOM changes, hence often requiring testers to fix the broken test scenarios in priority. 
 While several solutions to this problem have been proposed in the scientific literature, to our knowledge, no locator repair or locator generator has been integrated in open-source test-automation software before.
 This paper thus reports on the seamless integration of a more robust web locator in \cerberus{} by leveraging a new locator repair solution, named \erratum{}. While \erratum was originally designed to repair broken locators, this paper demonstrates how it can be extended to deliver an elegant robust locator solution that succeeds to reduce the maintenance cost of automated tests.
-\end{abstract}
 
 \section{Introduction}
 The implementation of automated tests on web applications (apps) requires software engineers to locate specific elements in the DOM (\emph{Document Object Model}) of a web page.
@@ -388,7 +231,7 @@ The idea is to randomly walk through several possible configurations (set of mat
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.8\linewidth]{explanations/sftm}
+    \includegraphics[width=0.8\linewidth]{cerberus/explanations/sftm}
     \caption{Key steps followed by our \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm.}
     \label{fig:steps_sftm}
 \end{figure*}
@@ -415,7 +258,7 @@ Nonetheless, there are mainly two drawbacks to such basic queries:
 
 \begin{figure*}[]
     \centering
-    \includegraphics[width=.85\linewidth]{explanations/cerberus}
+    \includegraphics[width=.85\linewidth]{cerberus/explanations/cerberus}
     \caption{A screenshot of the \cerberus web interface to define a test case.}
     \label{fig:cerberus}
 \end{figure*}
@@ -464,7 +307,7 @@ To use the application, one simply needs to:
 
 \begin{figure*}[]
     \centering
-    \includegraphics[width=\linewidth]{explanations/demo_matching}
+    \includegraphics[width=\linewidth]{cerberus/explanations/demo_matching}
     \caption{The demo application developed to test \erratum on real use-cases before starting integration. In this example, the description of a book is hovered on the left-side webpage, which automatically highlights the matched element on the right-side webpage.}
     \label{fig:demo_app}
 \end{figure*}
@@ -513,7 +356,7 @@ Figure~\ref{fig:erratum_as_locator} depicts how we extended \erratum to implemen
 
 \begin{figure*}[htbp]
     \centering
-    \includegraphics[width=.7\linewidth]{explanations/erratum_as_locator}
+    \includegraphics[width=.7\linewidth]{cerberus/explanations/erratum_as_locator}
     \caption{Describing how \erratum is integrated as a robust locator in \cerberus. Both locator types originally locate an element $e \in D$. The figure illustrates the ways \cerberus evaluates XPath or \erratum locators on a new DOM $D'$.}
     \label{fig:erratum_as_locator}
 \end{figure*}
@@ -615,7 +458,3 @@ Whenever a locator fails to locate a web element in a test suite, it directly im
 
 In this paper, we described how we extended and successfully integrated the locator repair solution \erratum into \cerberus, a widely used open source test-automation solution.
 In particular, we reported on the development of a robust locator based on \erratum that eases the pain of web testers, by saving time and reducing the cost of test campaigns.
-
-\bibliographystyle{acm}
-\bibliography{references}
-\end{document}
