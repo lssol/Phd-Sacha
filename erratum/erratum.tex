@@ -1,149 +1,5 @@
-% \documentclass[sigconf,authordraft]{acmart}
-\documentclass[preprint, 12pt]{elsarticle}
-
-%% Language and font encodings
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsthm}
-\usepackage{paralist}
-\usepackage{algorithm2e}
-\usepackage{caption, subcaption}
-
- \AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
-
-\usepackage{amsmath, amssymb}
-\usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage{hyperref}
-% \usepackage{subfig}
-\usepackage{listings}
-\usepackage{xparse}
-\usepackage[super]{nth}
-\usepackage{float}
-\usepackage{multirow}
-
-\usepackage{tikz}
-\usepackage{graphicx}
-\usetikzlibrary{arrows}
-\usetikzlibrary{shapes}
-% \newcommand{\mymk}[1]{%
-%   \tikz[baseline=(char.base)]\node[anchor=south west, draw,rectangle, rounded corners, inner sep=1pt, minimum size=5mm,
-%     text height=2mm](char){\ensuremath{#1}} ;}
-\newcommand{\mymk}[1]{%
-  \tikz[baseline=(char.base)]\node[anchor=south west, draw, circle, inner sep=1pt, minimum size=4mm, text height=2mm](char){\ensuremath{#1}};}
-
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,fill=yellow!50,inner sep=1pt] (char) {#1};}}
-
-\usepackage{color}
-\definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
-\definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
-\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
-\usepackage{upquote}
-\usepackage{balance}
-\usepackage{listings}
-\lstdefinelanguage{JavaScript}{
-  morekeywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-  morecomment=[s]{/*}{*/},
-  morecomment=[l]//,
-  morestring=[b]",
-  morestring=[b]
-}
-
-\lstdefinelanguage{HTML5}{
-        language=html,
-        sensitive=true, 
-        alsoletter={<>=-},
-        otherkeywords={
-        % HTML tags
-        <html>, <head>, <title>, </title>, <meta, />, </head>, <body>, <form, <input,
-        <canvas, \/canvas>, <script>, </script>, </form>, </body>, </html>, <!, html>, <style>, </style>, ><
-        },  
-        ndkeywords={
-        % General
-        =,
-        % HTML attributes
-        charset=, id=, width=, height=, method=, action=, type=, name=, value=, 
-        % CSS properties
-        border:, transform:, -moz-transform:, transition-duration:, transition-property:, transition-timing-function:
-        },  
-        morecomment=[s]{<!--}{-->},
-        tag=[s]
-}
-
-\lstset{%
-    % Basic design
-    % backgroundcolor=\color{editorGray},
-    basicstyle={\small\ttfamily},   
-    % frame=l,
-    % Line numbers
-    % xleftmargin={0.75cm},
-    % numbers=left,
-    % stepnumber=1,
-    % firstnumber=1,
-    % numberfirstline=true,
-    % Code design   
-    keywordstyle=\color{blue}\bfseries,
-    commentstyle=\color{darkgray}\ttfamily,
-    ndkeywordstyle=\color{editorGreen}\bfseries,
-    stringstyle=\color{editorOcher},
-    escapeinside={/*!}{!*/},
-    % Code
-    language=HTML5,
-    alsolanguage=JavaScript,
-    alsodigit={.:;},
-    tabsize=1,
-    showtabs=false,
-    showspaces=false,
-    showstringspaces=false,
-    extendedchars=true,
-    breaklines=true,        
-    literate=%
-    {Ö}{{\"O}}1
-    {Ä}{{\"A}}1
-    {Ü}{{\"U}}1
-    {ß}{{\ss}}1
-    {ü}{{\"u}}1
-    {ä}{{\"a}}1
-    {ö}{{\"o}}1
-}
-\journal{Information and Software Technology}
-\begin{document}
-
-\theoremstyle{definition}
-\newtheorem{defn}{Definition}[section]
-
-\theoremstyle{definition}
-\newtheorem{rqn}{RQ}[section]
-
-\theoremstyle{definition}
-\newtheorem{note}{Note}[section]
-
-\theoremstyle{remark}
-\newtheorem{ex}{Example}[section]
-
-\newcommand{\erratum}[0]{\textsc{Erratum}\xspace}
-\newcommand{\erratumlong}[0]{\emph{rEpaiRing bRoken locATors Using tree Matching}}
-% \title{Locator Repair using Tree Matching}
-\title{\erratum: \em Leveraging~Flexible~Tree~Matching to~Repair~Broken~Locators in~Web~Automation~Scripts}
-% \author{Submission \#356 (10+1~pages)}
-\author{
-    \emph{Sacha}~\textsc{Brisset}, 
-    \emph{Romain}~\textsc{Rouvoy}, 
-    \emph{Lionel}~\textsc{Seinturier}, 
-    \emph{Renaud}~\textsc{Pawlak}
-}
-
-% \settopmatter{printacmref=false}
-% \renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
-% \pagestyle{plain} % removes running headers
-
-
-
-\begin{abstract}
+\chapter{Erratum}
+\section{abstract}
 % Web applications are constantly evolving to integrate new features or fix reported bugs.
 % Such continuous evolutions may alter the content and/or the rendering of web application.
 % Underneath, all these web applications relies on the \emph{Document Object Model} (DOM) to render content from web browsers.
@@ -172,22 +28,6 @@ This solution, named \erratum{}, implements a holistic approach to reduce the el
 We compare the robustness of \erratum{} on a large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
 Our empirical results demonstrate that \erratum{} outperforms the accuracy of WATER, a state-of-the-art solution, by 67\%.
 % , with no performance penalty.
-\end{abstract}
-
-
-% keywords can be removed
-\begin{keyword}
-Element~locator 
-\sep Locator~repair 
-\sep Robotic~process~automation 
-\sep Tree~matching 
-\sep Web~crawling 
-\sep Web~testing
-\sep Locator Repair
-\sep DOM-based Locators
-\end{keyword}
-
-\maketitle
 
 \section{Introduction}
 The implementation of automated tasks on web applications (apps), like crawling or testing, often requires software engineers to locate specific elements in the DOM (\emph{Document Object Model}) of a web page.
@@ -375,7 +215,7 @@ capture more interaction details.
 
 \begin{figure*}
     \centering
-    \includegraphics[width=1\linewidth]{locator-repair}
+    \includegraphics[width=1\linewidth]{erratum/locator-repair}
     \caption{Illustration of the locator problem statement in automated tests combining the \emph{robust~locator}~(in~blue) and the \emph{locator~repair}~(in~green)~problems.}
     \label{fig:locator_repair}
 \end{figure*} 
@@ -483,7 +323,7 @@ By using tree matching (cf. right-bottom of Figure~\ref{fig:holistic}), matching
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=.8\linewidth]{holistic}
+    \includegraphics[width=.8\linewidth]{erratum/holistic}
     \caption{State-of-the-art Vs. tree matching locator repair.}
     \label{fig:holistic}
 \end{figure}
@@ -654,7 +494,7 @@ The idea is to randomly walk through several possible configurations (set of mat
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{explanations/sftm}
+    \includegraphics[width=\linewidth]{erratum/explanations/sftm}
     \caption{Key steps followed by our \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm.}
     \label{fig:steps_sftm}
 \end{figure*}
@@ -797,7 +637,7 @@ Figure~\ref{fig:distribution} depicts the distribution of DOM sizes in this synt
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=.8\linewidth]{distribution}
+  \includegraphics[width=.8\linewidth]{erratum/distribution}
   \caption{Distribution of DOM sizes (in number of nodes) in the \textsc{Mutation} dataset.}
   \label{fig:distribution}
 \end{figure}
@@ -830,7 +670,7 @@ Since both datasets are based on the same set of URLs (taken from Alexa), the di
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=.8\linewidth]{distribution_wayback}
+  \includegraphics[width=.8\linewidth]{erratum/distribution_wayback}
   \caption{Distribution of DOM sizes (in number of nodes) in the \textsc{Wayback} dataset.}
   \label{fig:distribution_wayback}
 \end{figure}
@@ -871,7 +711,7 @@ Thus, to label the disagreements between \erratum{} and WATER, we developed a we
 
 \begin{figure*}
   \begin{center}
-  \includegraphics[width=1.1\linewidth]{disagreement}
+  \includegraphics[width=1.1\linewidth]{erratum/disagreement}
   \caption{Labeling a given element matched by \erratum{} on two versions of the \textsf{Linkedin} homepage. The screenshot comes from the visual matching application we created to manually label disagreements between \erratum{} \& WATER.}
   \label{fig:disagreement}
   \end{center}
@@ -909,7 +749,7 @@ For each version pair $(D, D')$, the reported accuracy ratio corresponds to the 
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.7\linewidth]{boxplotWaterVsSFTM}
+  \includegraphics[width=.7\linewidth]{erratum/boxplotWaterVsSFTM}
   \caption{Accuracy distribution of \erratum{} and WATER on the \textsc{Mutation} dataset.}
   \label{fig:mutation_boxplot}
 \end{figure}
@@ -966,7 +806,7 @@ For this reason, we believe that the mutation of attributes might have more impa
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.8\linewidth]{mutationTypeAnalysis}
+  \includegraphics[width=.8\linewidth]{erratum/mutationTypeAnalysis}
   \caption{Error percentage according to the mutation type.}
   \label{fig:mutationTypeAnalysis}
 \end{figure}
@@ -997,7 +837,7 @@ compensating the increase in possible combinations.
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.8\linewidth]{mutation-numberNodes-mistake}
+  \includegraphics[width=.8\linewidth]{erratum/mutation-numberNodes-mistake}
   \caption{Errors rate evolution according to DOM size.}
   \label{fig:nbNodesAccuracy}
 \end{figure}
@@ -1008,7 +848,7 @@ As expected, both solutions lose accuracy when the mutation ratio increases, but
 
 \begin{figure*}[]
   \centering
-  \includegraphics[width=1\linewidth]{errorPerMutationRatio}
+  \includegraphics[width=1\linewidth]{erratum/errorPerMutationRatio}
   \caption{Errors rate evolution according to the mutation ratio.}
   \label{fig:erroRatioMutation}
 \end{figure*}
@@ -1057,7 +897,7 @@ For the few cases where the participants proposed a matching element, we observe
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.75\linewidth]{nomatch-analysis}
+  \includegraphics[width=.75\linewidth]{erratum/nomatch-analysis}
   \caption{Analysis of matches labeled as \textsf{no-match} by \erratum{}.}
   \label{fig:nomatch-analysis}
 \end{figure}
@@ -1136,7 +976,7 @@ Figure~\ref{fig:sizeDiffRatioDistribution} reports on the distribution of ratios
 
 \begin{figure}
   \centering
-  \includegraphics[width=.8\linewidth]{sizeDiffRatioDistribution}
+  \includegraphics[width=.8\linewidth]{erratum/sizeDiffRatioDistribution}
   \caption{Cumulative Distribution of ratios between two versions of web pages.
     The orange dotted lines show the threshold used in this experiment}
   \label{fig:sizeDiffRatioDistribution}
@@ -1148,7 +988,7 @@ Figure~\ref{fig:mutationAmountAnalysis} further analyzes the above dataset by re
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.8\linewidth]{mutationAmountAnalysis}
+  \includegraphics[width=.8\linewidth]{erratum/mutationAmountAnalysis}
   \caption{Mutation ratio between two \textsc{Wayback} snapshots depending on gap duration.}
   \label{fig:mutationAmountAnalysis}
 \end{figure}
@@ -1178,7 +1018,7 @@ This result can be explained by the following observations:
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.65\linewidth]{mutationTypeRatios}
+  \includegraphics[width=.65\linewidth]{erratum/mutationTypeRatios}
   \caption{Distribution of mutation labels in the \textsc{Wayback} dataset.}
   \label{fig:mutationTypeRatios}
 \end{figure}
@@ -1196,7 +1036,7 @@ However, when the number of locators to repair grows, the computation time of WA
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.8\linewidth]{computationTime}
+  \includegraphics[width=.8\linewidth]{erratum/computationTime}
   \caption{Repair time evolution according to DOM size.}
   \label{fig:computation}
 \end{figure}
@@ -1206,7 +1046,7 @@ Figure~\ref{fig:comparisonLinearCoefficients} plots these coefficients for \erra
 
 \begin{figure}[]
   \centering
-  \includegraphics[width=.75\linewidth]{linearRegression}
+  \includegraphics[width=.75\linewidth]{erratum/linearRegression}
   \caption{Performances of \erratum and WATER.}
   \label{fig:comparisonLinearCoefficients}
 \end{figure}
@@ -1310,9 +1150,3 @@ Our in-depth evaluation highlights that \erratum{} outperforms WATER, both in ac
 Finally, we worked with the development team of a widely used open source test framework called Cerberus~\footnote{https://cerberus-testing.com/} to integrate~\footnote{https://github.com/cerberustesting/cerberus-source/commit/0a70d4cc0d70a797901652fd2b97d501bb7fa511} the Erratum approach into the test creation part of the software.
 % Finally, we demonstrate that \erratum{} is weakly impacted by the mutation rate and DOM size of web pages, which makes it a serious candidate for being deployed in web developments.
 
-% \clearpage
-% \balance
-% \bibliographystyle{ACM-Reference-Format}
-\bibliographystyle{wileyj}
-\bibliography{references}
-\end{document}

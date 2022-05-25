@@ -8,9 +8,8 @@
  \usepackage{algorithm2e}
  \usepackage{setspace}
  \usepackage{amsmath}
- \usepackage{graphicx}
  \usepackage[colorinlistoftodos]{todonotes}
- \usepackage{subfig}
+%  \usepackage{subfig}
  \usepackage{listings}
  \usepackage{xparse}
  \usepackage[super]{nth} 
@@ -19,9 +18,17 @@
 \usepackage{verbatim, appendix}
 \usepackage{ulem}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{url}
-
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{upquote}
+\usepackage{balance}
+\usepackage{color}
+\usepackage{tikz}
+\usepackage{graphicx}
 \usepackage[top=1.0in, bottom=1.0in, left=1.5in, right=1.0in]{geometry} %set page margins
  \DeclareMathOperator*{\argmin}{argmin}
  \DeclareMathOperator*{\argmax}{argmax}
@@ -43,23 +50,95 @@
  % \theoremstyle{definition}
  \newtheorem{note}{Note}[section]
 
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\newcommand{\mymk}[1]{%
+  \tikz[baseline=(char.base)]\node[anchor=south west, draw, circle, inner sep=0pt, minimum size=4mm, text height=2mm](char){\ensuremath{#1}};}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,fill=yellow!49,inner sep=1pt] (char) {#1};}}
+
+\definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
+\definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
+\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
+
+\lstdefinelanguage{JavaScript}{
+  morekeywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  morecomment=[s]{/*}{*/},
+  morecomment=[l]//,
+  morestring=[b]",
+  morestring=[b]
+}
+
+\lstdefinelanguage{HTML5}{
+        language=html,
+        sensitive=true, 
+        alsoletter={<>=-},
+        otherkeywords={
+        % HTML tags
+        <html>, <head>, <title>, </title>, <meta, />, </head>, <body>, <form, <input,
+        <canvas, \/canvas>, <script>, </script>, </form>, </body>, </html>, <!, html>, <style>, </style>, ><
+        },  
+        ndkeywords={
+        % General
+        =,
+        % HTML attributes
+        charset=, id=, width=, height=, method=, action=, type=, name=, value=, 
+        % CSS properties
+        border:, transform:, -moz-transform:, transition-duration:, transition-property:, transition-timing-function:
+        },  
+        morecomment=[s]{<!--}{-->},
+        tag=[s]
+}
+
+\lstset{%
+    % Basic design
+    % backgroundcolor=\color{editorGray},
+    basicstyle={\small\ttfamily},   
+    % frame=l,
+    % Line numbers
+    % xleftmargin={0.75cm},
+    % numbers=left,
+    % stepnumber=1,
+    % firstnumber=1,
+    % numberfirstline=true,
+    % Code design   
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{darkgray}\ttfamily,
+    ndkeywordstyle=\color{editorGreen}\bfseries,
+    stringstyle=\color{editorOcher},
+    escapeinside={/*!}{!*/},
+    % Code
+    language=HTML5,
+    alsolanguage=JavaScript,
+    alsodigit={.:;},
+    tabsize=1,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    extendedchars=true,
+    breaklines=true,        
+    literate=%
+    {Ö}{{\"O}}1
+    {Ä}{{\"A}}1
+    {Ü}{{\"U}}1
+    {ß}{{\ss}}1
+    {ü}{{\"u}}1
+    {ä}{{\"a}}1
+    {ö}{{\"o}}1
+}
+
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
-
 \onehalfspacing
 
 \begin{document}
+\newcommand{\erratum}[0]{\textsc{Erratum}\xspace}
+\newcommand{\erratumlong}[0]{\emph{rEpaiRing bRoken locATors Using tree Matching}}
+
 \normalem
-
-%these are added at the end
-%libary Release Form
-%Examining Committee Sig pages
-
-
-%Title Page
-%\input{quotepage} %  Optional quote page. It goes BEFORE the title page.
 
 \pagenumbering{gobble}
 \input{title}
@@ -99,8 +178,10 @@
 %%%%%%%%%%% MAIN CONTENT %%%%%%%%%%%%
 
 \include{introduction}
-\cite{2015-EuroGP-LearningTextPatternsSeparateAndConquerGP.pdf}
 \include{tree-matching/SFTM}
+\include{erratum/erratum}
+\include{cerberus/cerberus}
+\include{appstract/appstract}
 \include{conclusion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
