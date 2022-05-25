@@ -1,6 +1,4 @@
-\documentclass[preprint, 12pt]{elsarticle}
-
-\begin{abstract}
+\section{abstract}
 % With the emergence of modern web applications, the \emph{Document Object Model} (DOM) of web pages has reached a new level of complexity that prevents the use of state-of-the-art approaches to compare them pairwise.
 % Indeed, the existing approaches, like \emph{Tree-Edit Distance} (TED) or \emph{Flexible Tree Matching} (FTM) fail to scale beyond hundred of nodes, which is far below the average complexity of existing web apps.
 Tree matching techniques have been investigated in many fields, including web data mining and extraction, as a key component to analyze the content of web pages.
@@ -19,13 +17,6 @@ By gaining on these two dimensions, SFTM therefore offers an affordable solution
 % A recent work by Kumar et al introduced a novel flexible tree-matching algorithm to relax this ancestry restriction of TED, but the proposed algorithm is impractical to run on trees that have more than a few hundreds of nodes.
 % Based on Kumar et al's work, we introduce a novel flexible-tree-matching algorithm that performs in $O(n\ log(n))$ time, thus solving both limitations of TED. In order to do so, we approach tree matching as an optimisation problem and leverage node labels and local topology similarity to avoid combinatorial explosion.
 % Finally, we empirically evaluate our algorithm on webpage DOM trees, on both synthetic and real-life examples. Results show that our algorithm qualitatively compares to TED while drastically reducing time complexity.
-\end{abstract}
-
-\begin{keyword}
-Web \sep Tree~matching \sep Information~Extraction
-\end{keyword}
-
-\maketitle
 
 \section{Introduction} 
 % Modern web applications are widely used to assist users in their daily tasks.
@@ -58,7 +49,7 @@ However, such restrictions do not hold for web pages and Figure~\ref{fig:ted_mis
 
 \begin{figure}
     \centering
-	\includegraphics[width=.65\linewidth]{explanation/rted_mistake}
+	\includegraphics[width=.65\linewidth]{tree-matching/explanation/rted_mistake}
     \caption{Example of matching biased by the TED (as computed by APTED).}
     \label{fig:ted_mistake}
 \end{figure}
@@ -184,7 +175,7 @@ So, intuitively, $G$ represents all possible matchings between nodes of $T^*$ an
 
 \begin{figure}
     \centering 
-    \includegraphics[width=.5\textwidth]{explanation/g_ftm}
+    \includegraphics[width=.5\textwidth]{tree-matching/explanation/g_ftm}
     \caption{Building a bipartite graph $G$ representing the set of all possible matchings (left) and then compute the optimal full matching (right).}
     \label{fig:g_SFTM}%
 \end{figure}
@@ -202,7 +193,7 @@ The upper part of Figure~\ref{fig:steps} describes the main steps involved in co
 
 \begin{figure*}
     \centering
-	\includegraphics[width=\linewidth]{explanation/ftm-sftm-steps}
+	\includegraphics[width=\linewidth]{tree-matching/explanation/ftm-sftm-steps}
     \caption{Steps to compute a full matching between two trees $T$ and $T'$. Upper part covers FTM, while lower part is SFTM.}
     \label{fig:steps}
 \end{figure*}
@@ -411,7 +402,7 @@ In Section~\ref{tokenSelection}, we further describe how we sort HTML nodes into
 
 \begin{figure*}
     \centering
-    \includegraphics[width=\linewidth]{inverted_index}
+    \includegraphics[width=\linewidth]{tree-matching/explanation/inverted_index}
     \caption{Creating the bipartite graph $G$ from two example DOMs $T,T'$. (1a,b)~are the input DOMs, (2a,b)~the extracted tokens, (3)~the inverted index $TM$, (4)~the neighbours dictionaries, and (5)~the resulting bipartite graph $G$. For simplicity, the figure shows a matching where $IDF(tk)=1$, $P=0$ and no-match nodes are not displayed.}\label{fig:inverted_index}
 \end{figure*}
 
@@ -500,7 +491,7 @@ In Algorithm~\ref{suggestMatching},
  $remainingEdges \gets sortedEdges(g)$ \\
  $toKeep \gets randomInt(0, |M_i|)$ \\
  \For{j = 0 ... toKeep}{
-    edge \gets remainingEdges.first \\
+    edge $\gets$ remainingEdges.first \\
  	$M_{i+1}$.add(edge)\\
     remainingEdges.removeAll(connectedEdges(edge))
  }
@@ -621,7 +612,7 @@ Figure~\ref{fig:distribution} reports on the size distribution, in number of nod
 
 \begin{figure}
     \centering
-    \includegraphics[width=.6\linewidth]{graphs/distribution_size}
+    \includegraphics[width=.6\linewidth]{tree-matching/graphs/distribution_size}
     \caption{Distribution of DOM sizes (in terms of nodes) in the dataset.}
     \label{fig:distribution}
 \end{figure}
@@ -687,7 +678,7 @@ Similarly, TED compares the labels of most pairs of nodes and generate an associ
 
 \begin{figure}
   \centering
-  \includegraphics[width=.65\linewidth]{graphs/f1score}
+  \includegraphics[width=.65\linewidth]{tree-matching/graphs/f1score}
   \caption{Precision, Recall, and F1 Score of SFTM, APTED, and \textsc{XyDiff}.}
   \label{fig:f1score}
 \end{figure}
@@ -701,7 +692,7 @@ Interestingly, APTED computation time varies greatly, which is due to the multip
 
 \begin{figure}%{\textwidth}
     \centering
-    \includegraphics[width=.85\linewidth]{graphs/computationTime}
+    \includegraphics[width=.85\linewidth]{tree-matching/graphs/computationTime}
     \caption{Computation times when matching trees of different sizes.}
     \label{fig:computation_time}
 \end{figure}%
@@ -733,7 +724,7 @@ One can observe that SFTM produces $7.7$ good matches per millisecond on average
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\linewidth]{graphs/efficiency}
+    \includegraphics[width=.8\linewidth]{tree-matching/graphs/efficiency}
     \caption{Matching efficiency of SFTM, APTED, and \textsc{XyDiff}.}
     \label{fig:efficiency}
 \end{figure}
@@ -746,7 +737,7 @@ To study the sensitivity of $f$, we choose to use the power function $f(N) = N^\
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\linewidth]{graphs/sensitivity}
+    \includegraphics[width=.8\linewidth]{tree-matching/graphs/sensitivity}
     \caption{Performance of SFTM given $f(N) = N^\alpha$ according to $\alpha$.}
     \label{fig:parameter}
 \end{figure}
@@ -790,11 +781,6 @@ In future work, we will further investigate how to improve the quality of the tr
 Finally, whether our work might be applicable to other trees than web DOMs remains to be demonstrated.
 Indeed, SFTM strongly relies on the fact that node labels in DOMs are highly differentiating (many specific attributes on each element), which is not the case for all kinds of trees.
 
-% \clearpage
-\bibliographystyle{abbrv}
-\bibliography{references, mendeley}
-
-\end{document}
 %%e.g: Given an element $E$ to locate,  $P$ is an ancestor of $E$, if $P$ has differentiating attributes (like an \textit{id}) we can locate $E$ relatively to $P$ and identify $P$ using its differentiating attributes. 
 
 %\subsubsection{Stateful identification architecture}

@@ -1,22 +1,28 @@
-
 \documentclass[12pt,oneside,openany]{book}
 
 %% Language and font encodings
  %\usepackage[english]{babel}
  \usepackage[utf8x]{inputenc}
  \usepackage[T1]{fontenc}
- % \usepackage{amsthm}
  \usepackage{paralist}
  \usepackage{algorithm2e}
-\usepackage{setspace}
+ \usepackage{setspace}
  \usepackage{amsmath}
  \usepackage{graphicx}
  \usepackage[colorinlistoftodos]{todonotes}
- % \usepackage{hyperref}
  \usepackage{subfig}
  \usepackage{listings}
  \usepackage{xparse}
  \usepackage[super]{nth} 
+ \usepackage{setspace}
+\usepackage{amsthm, amssymb}
+\usepackage{verbatim, appendix}
+\usepackage{ulem}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{url}
+
+\usepackage[top=1.0in, bottom=1.0in, left=1.5in, right=1.0in]{geometry} %set page margins
  \DeclareMathOperator*{\argmin}{argmin}
  \DeclareMathOperator*{\argmax}{argmax}
  \DeclareMathOperator*{\minimize}{minimize}
@@ -36,41 +42,11 @@
  
  % \theoremstyle{definition}
  \newtheorem{note}{Note}[section]
- \journal{Information Systems}
-\begin{document}
-
-
-\title{SFTM: Fast~Matching of Web~Pages using Similarity-based~Flexible~Tree~Matching}
-\author{
-    \emph{Sacha}~\textsc{Brisset},
-    \emph{Romain}~\textsc{Rouvoy},
-    \emph{Lionel}~\textsc{Seinturier},
-    \emph{Renaud}~\textsc{Pawlak}
-}
-\usepackage{amsmath, amsthm, amssymb}
-\usepackage{verbatim, appendix}
-\usepackage{ulem}
-%feel free to add here
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{enumitem}
-
-%including online sources: from wikipidia (cite sources)
-\usepackage{url}
-
-%Algorithms package
-%http://tex.stackexchange.com/questions/163768/write-pseudo-code-in-latex
-\usepackage{amsmath}
-\usepackage{algorithm}
-
-%%LANDSCAPE http://www.latex-community.org/forum/viewtopic.php?f=45&p=59291
-
 
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
-\usepackage[top=1.0in, bottom=1.0in, left=1.5in, right=1.0in]{geometry} %set page margins
 
 \onehalfspacing
 
@@ -123,7 +99,8 @@
 %%%%%%%%%%% MAIN CONTENT %%%%%%%%%%%%
 
 \include{introduction}
-\include{tree-matching/system}
+\cite{2015-EuroGP-LearningTextPatternsSeparateAndConquerGP.pdf}
+\include{tree-matching/SFTM}
 \include{conclusion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
