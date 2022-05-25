@@ -412,22 +412,22 @@ In order to limit the complexity of our algorithm, we remove every token $tk \in
 This is equivalent to putting a threshold on $IDF$ to only keep tokens $\{tk \in TM |IDF(tk) > log(\sqrt{N})\}$.
 Removing the most common tokens has a limited impact on matching quality, since these are exactly the tokens that provide the least information on the nodes they appear in.
 
-\begin{algorithm}
-\SetAlgoLined
-\KwIn{\\
-n': a node in $N$\\
-$TM$: token map, dictionary of nodes from $T$ per token
-}
-\KwResult{neighbors: a dictionary of scores per node in $T$}
-$neighbors \gets new\ Dictionary()$\\
-\ForEach{tk in tokens(n')} {
-    \ForEach{$n$ in $TM[tk]$} {
-        $neighbors[n] += IDF(tk)$\\
-    }
-}
-\Return neighbors
-\caption{For a given node $n'\in N'$, compute similarity score $s_0(n,n')$ with all $n\in N$, such that $s_0 > 0$}\label{scoreAlgo}
-\end{algorithm}
+% \begin{algorithm2e}
+% \SetAlgoLined
+% \KwIn{\\
+% n': a node in $N$\\
+% $TM$: token map, dictionary of nodes from $T$ per token
+% }
+% \KwResult{neighbors: a dictionary of scores per node in $T$}
+% $neighbors \gets new\ Dictionary()$\\
+% \ForEach{tk in tokens(n')} {
+%     \ForEach{$n$ in $TM[tk]$} {
+%         $neighbors[n] += IDF(tk)$\\
+%     }
+% }
+% \Return neighbors
+% \caption{For a given node $n'\in N'$, compute similarity score $s_0(n,n')$ with all $n\in N$, such that $s_0 > 0$}\label{scoreAlgo}
+% \end{algorithm2e}
 
 Once we have the token index $TM$ and the function $IDF$, we apply Algorithm~\ref{scoreAlgo} on each node $n' \in N'$.
 In Algorithm~\ref{scoreAlgo}, we first compute the tokens of node $n'$ and, for each token $tk$, we use $TM$ to retrieve the nodes $n \in N$ that contain the token $tk$.
@@ -483,27 +483,27 @@ In Algorithm~\ref{suggestMatching},
     \item $connectedEdges(edge)$, where $edge$ connects $u$ and $v$, returns the set $E$ of all edges connected to $u$ or $v$ (note that $edge \in E$).
 \end{compactenum}
 
-\begin{algorithm}
-\SetAlgoLined
-\KwData{$G$ : The bipartite graph}
-\KwIn{$M_i$: A full matching}
-\KwResult{$M_{i+1}$: the suggested full matching}
- $M_{i+1} \gets []$  \\
- $remainingEdges \gets sortedEdges(g)$ \\
- $toKeep \gets randomInt(0, |M_i|)$ \\
- \For{j = 0 ... toKeep}{
-    edge $\gets$ remainingEdges.first \\
- 	$M_{i+1}$.add(edge)\\
-    remainingEdges.removeAll(connectedEdges(edge))
- }
- \While{$remainingEdges$ is not empty} {
-    $edge \gets selectEdgeFrom(remainingEdges)$ \\
-    $M_{i+1}$.add(edge)\\
-    remainingEdges.removeAll(connectedEdges(edge))
- }
- \Return $M_{t+1}$
- \caption{Suggest a new matching}\label{suggestMatching}
-\end{algorithm}
+% \begin{algorithm2e}
+% \SetAlgoLined
+% \KwData{$G$ : The bipartite graph}
+% \KwIn{$M_i$: A full matching}
+% \KwResult{$M_{i+1}$: the suggested full matching}
+%  $M_{i+1} \gets []$  \\
+%  $remainingEdges \gets sortedEdges(g)$ \\
+%  $toKeep \gets randomInt(0, |M_i|)$ \\
+%  \For{j = 0 ... toKeep}{
+%     edge $\gets$ remainingEdges.first \\
+%  	$M_{i+1}$.add(edge)\\
+%     remainingEdges.removeAll(connectedEdges(edge))
+%  }
+%  \While{$remainingEdges$ is not empty} {
+%     $edge \gets selectEdgeFrom(remainingEdges)$ \\
+%     $M_{i+1}$.add(edge)\\
+%     remainingEdges.removeAll(connectedEdges(edge))
+%  }
+%  \Return $M_{t+1}$
+%  \caption{Suggest a new matching}\label{suggestMatching}
+% \end{algorithm2e}
 
 In practice, we first compute all the connected nodes and edges before storing them as dictionaries, so that the function $connectedEdges$ in Algorithm~\ref{suggestMatching} can be computed in $O(1)$ time.
 It is worth noting that, to allow fast removal, the list $remainingEdges$ is implemented as a double-linked list.

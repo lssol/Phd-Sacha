@@ -5,16 +5,18 @@
  \usepackage[utf8x]{inputenc}
  \usepackage[T1]{fontenc}
  \usepackage{paralist}
- \usepackage{algorithm2e}
  \usepackage{setspace}
  \usepackage{amsmath}
  \usepackage[colorinlistoftodos]{todonotes}
-%  \usepackage{subfig}
  \usepackage{listings}
  \usepackage{xparse}
  \usepackage[super]{nth} 
  \usepackage{setspace}
+ \usepackage{xspace}
 \usepackage{amsthm, amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% \usepackage[algo2e]{algorithm2e}
 \usepackage{verbatim, appendix}
 \usepackage{ulem}
 \usepackage{caption}
@@ -29,6 +31,7 @@
 \usepackage{color}
 \usepackage{tikz}
 \usepackage{graphicx}
+
 \usepackage[top=1.0in, bottom=1.0in, left=1.5in, right=1.0in]{geometry} %set page margins
  \DeclareMathOperator*{\argmin}{argmin}
  \DeclareMathOperator*{\argmax}{argmax}
@@ -61,6 +64,8 @@
 \definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
 \definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
 \definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
+\definecolor{commentgray}{gray}{0.6}
+\algrenewcommand{\algorithmiccomment}[1]{\textcolor{commentgray}{// #1}}
 
 \lstdefinelanguage{JavaScript}{
   morekeywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
@@ -134,11 +139,12 @@
 
 \onehalfspacing
 
-\begin{document}
 \newcommand{\erratum}[0]{\textsc{Erratum}\xspace}
 \newcommand{\erratumlong}[0]{\emph{rEpaiRing bRoken locATors Using tree Matching}}
 \newcommand{\cerberus}[0]{\textsc{Cerberus}\xspace}
 \newcommand{\laredoute}[0]{\textit{La\,Redoute}\xspace}
+
+\begin{document}
 
 \normalem
 

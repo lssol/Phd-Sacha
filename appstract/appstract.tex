@@ -1,58 +1,11 @@
-\documentclass[sigconf,authordraft]{acmart}
-
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsthm}
-\usepackage{paralist}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{xparse}
-\usepackage[super]{nth}
-\usepackage{caption}
-\usepackage{listing}
-\usepackage{xcolor}
-\usepackage{listings}
-\usepackage{subcaption}
-
-\theoremstyle{definition}
-\newtheorem{defn}{Definition}[section]
-\setlength {\marginparwidth }{2cm}
-
-\definecolor{commentgray}{gray}{0.6}
-
-%% end of the preamble, start of the body of the document source.
-\begin{document}
-
-%%
-%% The "title" command has an optional parameter,
-%% allowing the author to define a "short title" to be used in page headers.
-%\title{Appstract: Towards the ultimate locator for web Applications}
-% \title{Handling webpage variability to infer an application's model}
-% \title{Appstract: Inferring Canonical Locators Spanning~Across Pages of a Web~App}
-% \title{Appstract: Inferring Spanning Locators for Web~App Pages}
-\title{\textsc{Appstract}: Inferring Application-wide Locators for the Web}
-
-\renewcommand{\shortauthors}{Trovato and Tobin, et al.}
-\algrenewcommand{\algorithmiccomment}[1]{\textcolor{commentgray}{// #1}}
-
-\begin{abstract}
+\chapter{Appstract}
+\section{Abstract}
   A clear and well-documented \LaTeX\ document is presented as an
   article formatted for publication by ACM in a conference proceedings
   or journal publication. Based on the ``acmart'' document class, this
   article presents and explains many of the common variations, as well
   as many of the formatting elements an author may use in the
   preparation of the documentation of their work.
-\end{abstract}
-
-\keywords{datasets, neural networks, gaze detection, text tagging}
-
-\maketitle
 
 \section{Introduction}
 Web applications are often perceived by end-users as online systems exposing a limited set of views, concepts, and related actions.
@@ -107,13 +60,13 @@ In particular, we focus on two related page templates: the product details and p
 \begin{figure*}[ht]
   \centering
   \begin{subfigure}{.35\textwidth}
-    \includegraphics[width=\linewidth]{amazon_a.png}
+    \includegraphics[width=\linewidth]{appstract/amazon_a.png}
     \caption{Sample page from cluster $list$.}
     \label{fig:amazon_a}
   \end{subfigure}
   \hspace{.1\textwidth}
   \begin{subfigure}{.35\textwidth}
-    \includegraphics[width=\linewidth]{amazon_b.png}
+    \includegraphics[width=\linewidth]{appstract/amazon_b.png}
     \caption{Sample page from cluster $product$.}
     \label{fig:amazon_b}
   \end{subfigure}
@@ -257,7 +210,7 @@ Thus, our references to $\hat{p}_{list}$ or $\hat{e}_{product}$ should be unders
 
 \begin{figure*}[ht]
   \centering
-  \includegraphics[width=0.8\linewidth]{explanations/appstract_overview}
+  \includegraphics[width=0.8\linewidth]{appstract/explanations/appstract_overview}
   \caption{Overview of the two stages of the \emph{appstraction} process: \emph{learning} and \emph{prediction}. The identifier map of $p$ noted $T_p$ associates an identifier to each element of $p$. The identifiers are first randomly generated, then merged to existing maps during inter-page abstraction. The prediction phase produces an identifier map $T_{\hat{p}}$ in which each original element of $p$ is associated to an application-wide identifier.}
   \label{fig:appstract_overview}
 \end{figure*}
@@ -323,7 +276,7 @@ In the following sections, we describe both intra-page abstraction and inter-pag
 
 \begin{figure*}[ht]
   \centering
-  \includegraphics[width=0.8\linewidth]{explanations/intra}
+  \includegraphics[width=0.8\linewidth]{appstract/explanations/intra}
   \caption{Illustration of Intra-Page abstraction. DOM leaves at the end of repeating branches are tagged and then recursively merged.}
   \label{fig:intra}
 \end{figure*}
@@ -430,7 +383,7 @@ Figure~\ref{fig:node_tagging} shows an example result of the node-tagging algori
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\linewidth]{explanations/node-tagging}
+  \includegraphics[width=0.5\linewidth]{appstract/explanations/node-tagging}
   \caption{Output of the node-tagging algorithm. Each node is assigned a $tags$ map keeping track of the number of leaf-groups in its offspring.}
   \label{fig:node_tagging}
 \end{figure}
@@ -450,13 +403,13 @@ Figure~\ref{fig:intra-use-cases} illustrates this use case: $e_{a1}$ and $e_{a2}
   \centering
   \begin{subfigure}{0.4\textwidth}
     \centering
-    \includegraphics[width=.9\linewidth]{explanations/intra-recursivity}
+    \includegraphics[width=.9\linewidth]{appstract/explanations/intra-recursivity}
     \caption{Nested records}
     \label{fig:nested_records}
   \end{subfigure}
   \begin{subfigure}{0.4\textwidth}
     \centering 
-    \includegraphics[width=.9\linewidth]{explanations/intra-optional}
+    \includegraphics[width=.9\linewidth]{appstract/explanations/intra-optional}
     \caption{Optional elements}
     \label{fig:optional_elements}
   \end{subfigure}
@@ -613,14 +566,14 @@ Below each tree, we show the current stack of functions called.
 The functions we mention are all described earlier:
 \begin{figure}[]
   \centering
-  \includegraphics[width=0.7\linewidth]{explanations/functions_relations}
+  \includegraphics[width=0.7\linewidth]{appstract/explanations/functions_relations}
   \caption{Key functions involved in the \emph{abstractTree} algorithm. A directed arrow from function $f$ to $g$ indicates that $f$ calls $g$.}
   \label{fig:functions_relations}
 \end{figure}
 
 \begin{figure*}[]
   \centering
-  \includegraphics[width=0.8\linewidth]{explanations/steps_abstractTree}
+  \includegraphics[width=0.8\linewidth]{appstract/explanations/steps_abstractTree}
   \caption{An example application of the \emph{abstractTree} function. For each figure, the stack of the current step is shown below.}
   \label{fig:steps_abstractTree}
 \end{figure*}
@@ -771,10 +724,4 @@ This selection process assumes that all template pages have an equivalent amount
 
 \section{Conclusion}\label{sec:conclusion}
 
-
-
-\bibliographystyle{acm}
-\bibliography{references}
-\end{document}
-\endinput
 
