@@ -46,13 +46,13 @@ Without such an additional information, the algorithm unfortunately yields low-a
 
 Overall, when matching two web pages, even the most efficient TED implementation~\cite{pawlik2016tree} offers far from optimal accuracy (69\% of precision in average in our empirical evaluation) for computation times often reaching several seconds.
 The lack of accuracy may be due to the restrictions TED solutions impose on the produced matching: ancestors and siblings order must be preserved.
-However, such restrictions do not hold for web pages and Figure~\ref{fig:ted_mistake} illustrates how TED can report biased matchings, even on simple trees.
+However, such restrictions do not hold for web pages and Figure~\ref{sftm:fig:ted_mistake} illustrates how TED can report biased matchings, even on simple trees.
 
 \begin{figure}
     \centering
 	\includegraphics[width=.65\linewidth]{tree-matching/explanation/rted_mistake}
     \caption{Example of matching biased by the TED (as computed by APTED).}
-    \label{fig:ted_mistake}
+    \label{sftm:fig:ted_mistake}
 \end{figure}
 
 To address these restrictions when attempting to match two web documents, \cite{fokaefs2011empirical} extended TED with some additional move operations executed \emph{a~posteriori} to address the ancestry restriction and \cite{Kumar2011_FTM,Kumar2011_Bricolage} developed her own \emph{Flexible Tree Matching} (FTM) algorithm to address the ancestry restriction problem.
@@ -68,13 +68,13 @@ Unfortunately, while FTM provides a truly restriction-free matching, its high co
 
 % However, when reproducing this experiment with \textsc{XyDiff},\footnote{\url{https://github.com/fdintino/xydiff}} which is a set of tools for creating and applying deltas from XML documents, results are reported much faster, but the price of a poor accuracy of the resulting tree matchings.
 
-% Figure~\ref{fig:tree_matching_example} illustrates the tree-matching problem. 
+% Figure~\ref{sftm:fig:tree_matching_example} illustrates the tree-matching problem. 
 
 % \begin{figure}
 %     \centering
 % 	\includegraphics[width=.8\linewidth]{explanation/tree-matching-example}
 %     \caption{Example of a tree matching. Crossed circles are auxiliary \emph{no-match} nodes enabling insertions and removals between trees.}
-%     \label{fig:tree_matching_example}
+%     \label{sftm:fig:tree_matching_example}
 % \end{figure}
 
 % The qualitative restrictions or speed limitations of the state of the art therefore led to the development of alternative algorithms.
@@ -98,15 +98,15 @@ Overall, our algorithm SFTM allows to consistently match real-life web pages wit
 The code for both SFTM and its benchmark is available openly.\footnote{https://anonymous.4open.science/r/7ae57bd7-3b29-463a-88a4-d31c04ecfcd2/}
 
 The remainder of this chapter is organized as follows.
-Section~\ref{sec:related_work} and~\ref{sec:ftm} cover related work, with section~\ref{sec:ftm} focusing in details on the \emph{Flexible Tree Matching} (FTM) original algorithm.
-Section~\ref{sec:SFTM} presents \emph{Similarity-based Flexible Tree Matching} (SFTM), our extension of FTM that leverages the node labels and local topology similarity to guide the comparison.
-Section~\ref{sec:evaluation} thoroughly evaluates our solution against the state of the art on a realistic dataset of web documents.
-Section~\ref{sec:threats} discusses the threats to validity of our contribution.
-Section~\ref{sec:conclusion} concludes and overviews some perspectives for this work.
+Section~\ref{sftm:sec:related_work} and~\ref{sftm:sec:ftm} cover related work, with section~\ref{sftm:sec:ftm} focusing in details on the \emph{Flexible Tree Matching} (FTM) original algorithm.
+Section~\ref{sftm:sec:SFTM} presents \emph{Similarity-based Flexible Tree Matching} (SFTM), our extension of FTM that leverages the node labels and local topology similarity to guide the comparison.
+Section~\ref{sftm:sec:evaluation} thoroughly evaluates our solution against the state of the art on a realistic dataset of web documents.
+Section~\ref{sftm:sec:threats} discusses the threats to validity of our contribution.
+Section~\ref{sftm:sec:conclusion} concludes and overviews some perspectives for this work.
 
-\section{Related Work}\label{sec:related_work}
+\section{Related Work}\label{sftm:sec:related_work}
 % This section overviews the state of the art in the area of tree matching.
-\paragraph{\bf \emph{Tree Edit Distance} (TED)}\label{sec:ted}
+\paragraph{\bf \emph{Tree Edit Distance} (TED)}\label{sftm:sec:ted}
 Comparing two trees is a problem that has been at the center of a significant amount of research.
 In 1979, Tai~\cite{Tai1979} introduced the \emph{Tree Edit Distance} (TED) as a generalization of the standard \emph{edit distance} problem applied to strings.
 Given two ordered labeled trees $T$ and $T'$, the TED is defined as the minimal amount of node insertion, removal or relabel to transform $T$ into $T'$, while different cost coefficients can be assigned to each type of operation.
@@ -127,7 +127,7 @@ By definition TED already sets strong restrictions on produced matchings: siblin
 These restrictions are particularly problematic when matching two full web pages together~\cite{Kumar2011_Bricolage}.
 While above solutions improve computation times, they answer a restricted version of the TED problem leading to an even more restricted set of possible matchings.
 
-\paragraph{\bf XML\,diff}\label{sec:xmldiff}
+\paragraph{\bf XML\,diff}\label{sftm:sec:xmldiff}
 While TED-related approaches focus on computing a distance between trees, another part of the scientific literature focuses on inferring the set of edit operations between two XML documents.
 Most XML\,diff solutions use an intermediary matching step in order to compute the diff.
 Computing the set of diff from a given matching is quite straightforward, which means that most works on the subject actually focus on the matching part.
@@ -156,7 +156,7 @@ Our contributions therefore read as follows:
     \item we apply mutations on real-life web documents to provide a thorough evaluation of our implementation of SFTM, showing that it outperforms state-of-the-art approaches in terms of efficiency.
 \end{compactenum}
 
-\section{Flexible Tree Matching (FTM)}\label{sec:ftm}
+\section{Flexible Tree Matching (FTM)}\label{sftm:sec:ftm}
 The \emph{Similarity-based Flexible Tree Matching} (SFTM) we introduce in this chapter can be considered as an extension of the \textit{Flexible Tree Matching} (FTM) algorithm.
 This section therefore introduces the FTM algorithm, as originally proposed by Kumar~\emph{et~al.}~\cite{Kumar2011_Bricolage}.
 We first describe the notations used throughout the rest of the chapter, and then describe the main steps of the algorithm.
@@ -172,13 +172,13 @@ Given two trees $T$ and $T'$, the FTM algorithm relies on the complete bipartite
 The fact that $G$ is complete means that every nodes of $T^*$ shares exactly one edge with every nodes of $T'^*$.
 Formally, we thus have $E(G) = N^* \times N'^*$ where $E(G)$ are the edges of the graph $G$.
 An edge $e=(n, n') \in E(G)$ between $n\in N^*$ and $n'\in N'^*$ represents the matching of $n$ with $n'$. Each edge linking a tuple $(n, n')$ is called a \textit{match}.
-So, intuitively, $G$ represents all possible matchings between nodes of $T^*$ and $T'^*$ (cf. Figure~\ref{fig:g_SFTM}).
+So, intuitively, $G$ represents all possible matchings between nodes of $T^*$ and $T'^*$ (cf. Figure~\ref{sftm:fig:g_SFTM}).
 
 \begin{figure}
     \centering 
     \includegraphics[width=.5\textwidth]{tree-matching/explanation/g_ftm}
     \caption{Building a bipartite graph $G$ representing the set of all possible matchings (left) and then compute the optimal full matching (right).}
-    \label{fig:g_SFTM}%
+    \label{sftm:fig:g_SFTM}%
 \end{figure}
 
 Formally, we call \textit{matching} and note $M\subset E(G)$, a subset of edges selected from $G$.
@@ -190,16 +190,16 @@ The set of possible \textit{full} matchings is restricted to the set of matching
 Given an edge $e=(n, n')\in E(G)$ linking $n$ to $n'$, FTM defines the cost $c(e)$ to quantify how different $n$ and $n'$ are, considering both their labels and the topology of the tree.
 Starting from the bipartite graph $G$ describing all possible matchings, the idea behind FTM is to compute the costs $c(e)$ of each edge $e\in E(G)$ and to find the optimal matching with respect to these estimated costs---\emph{i.e.}, to select the set of edges $M\subset E(G)$, such that $M$ is \textit{full} and $c(M)$ is minimal (where $c(M) = \sum_{e\in M}c(e)$).
 
-The upper part of Figure~\ref{fig:steps} describes the main steps involved in computing the final full matching between $T$ and $T'$.
+The upper part of Figure~\ref{sftm:fig:steps} describes the main steps involved in computing the final full matching between $T$ and $T'$.
 
 \begin{figure*}
     \centering
 	\includegraphics[width=\linewidth]{tree-matching/explanation/ftm-sftm-steps}
     \caption{Steps to compute a full matching between two trees $T$ and $T'$. Upper part covers FTM, while lower part is SFTM.}
-    \label{fig:steps}
+    \label{sftm:fig:steps}
 \end{figure*}
 
-\subsection{Cost Estimation}\label{sec:FTM_cost}
+\subsection{Cost Estimation}\label{sftm:sec:FTM_cost}
 As FTM provides a wide flexibility regarding possible matchings, the design of the cost function $c$ is a key parameter in order to obtain a matching that takes into account both the labels and the topology of the trees.
 Typically, the cost $c(e)$ of an edge $e$ between two nodes $n$ and $n'$ is estimated by FTM as follows:
 %\text{if }n\text{ or }m\text{ is a no-match node}
@@ -217,10 +217,10 @@ By extension, we note $c(M) = \sum_{e \in M} c(e)$ the cost of a matching $M$.
 Given $e=(n, n')$, the ancestry and sibling costs, $c_a(e)$ and $c_s(e)$, model the changes in topology that matching $n$ with $n'$ entails.
 Unfortunately, we can only estimate the costs $c_a$ and $c_s$ if we have access to a full matching, as both costs require a knowledge on how other nodes in the tree were matched (\emph{e.g.}, $c_a$ involves counting the number of children of $n$ matched with nodes that are not children of $n'$).
 In order to circumvent the problem, FTM rather considers the approximate costs $\hat{c_a}, \hat{c_s}$ that can be estimated from bounds on the different components of the cost $c$.
-Practically, in order to generate one possible full matching, FTM iteratively selects edges in $G$ and, each time an edge is selected, the bounds of $c$ are tightened (we can approximate $c$ more precisely), which means that the costs $\hat{c_a}, \hat{c_s}$ keep being re-estimated along iterations (cf. upper part of Figure~\ref{fig:steps}).
+Practically, in order to generate one possible full matching, FTM iteratively selects edges in $G$ and, each time an edge is selected, the bounds of $c$ are tightened (we can approximate $c$ more precisely), which means that the costs $\hat{c_a}, \hat{c_s}$ keep being re-estimated along iterations (cf. upper part of Figure~\ref{sftm:fig:steps}).
 The need to re-estimate the approximated costs after each edge selection actually imposes some critical limitations on the scalability of the algorithm.
 
-\subsection{\textsc{Metropolis} Algorithm}\label{sec:metropolis_ftm}% \cite{Kumar2011_FTM}
+\subsection{\textsc{Metropolis} Algorithm}\label{sftm:sec:metropolis_ftm}% \cite{Kumar2011_FTM}
 Finding the optimal matching, given the graph $G$ and the cost function $c$ is a challenging problem, the authors even proved in~\cite{Kumar2011_FTM} that this problem is NP-hard.
 Consequently, the authors described how to use the \textsc{Metropolis} algorithm~\cite{metropolis1953equation} to approximate the optimal matching. 
 The \textsc{Metropolis} algorithm provides a way to explore a probability distribution by random walking through samples.
@@ -240,11 +240,11 @@ Kumar~\emph{et~al.} defines the objective function $f$ by:
 In order to suggest a matching $M_{t+1}$ from a previously accepted one $M_t$, FTM selects a random number of edges from $M_t$ to keep, sorts remaining edges by increasing costs and iterate through the ordered edges with a probability $\gamma$ to select it.
 Once an edge $e = (n,n')$ is selected, all edges connected to $n$ and $n'$ are removed from $G$, and approximate costs need to be re-estimated for all remaining edges, and then sorted so we can select another edge.
 The process is repeated until an alternative full matching is obtained.
-Therefore, despite using the \textsc{Metropolis} algorithm to reduce the time complexity of the problem, the overall algorithm remains prohibitively costly to compute (cf. Section~\ref{sec:evaluation}), notably due to the continuous re-estimation of the approximated costs at each step of the full matching generation.
+Therefore, despite using the \textsc{Metropolis} algorithm to reduce the time complexity of the problem, the overall algorithm remains prohibitively costly to compute (cf. Section~\ref{sftm:sec:evaluation}), notably due to the continuous re-estimation of the approximated costs at each step of the full matching generation.
 
-\subsection{Complexity Analysis}\label{sec:ftm_complexity}
+\subsection{Complexity Analysis}\label{sftm:sec:ftm_complexity}
 The original FTM article~\cite{Kumar2011_FTM} does not report on the complexity nor the computation time of the algorithm.
-We, therefore, provide an analysis of FTM's theoretical complexity in order to compare it to the one of SFTM (cf. Section~\ref{sec:complexity}).
+We, therefore, provide an analysis of FTM's theoretical complexity in order to compare it to the one of SFTM (cf. Section~\ref{sftm:sec:complexity}).
 
 When discussing complexity, to simplify the notations, we consider the matching of two trees with the same number of nodes and we note $N$ the number of nodes of both trees.
 
@@ -263,10 +263,10 @@ Thus, in the worst case, the amount of operations required by FTM for each itera
 
 Overall, the \textsc{Metropolis} step is the one with highest complexity, which means that the complexity of the FTM algorithm is in $O(N^4)$ where $N$ is the number of nodes to match.
 
-% \section{Similarity-based Flexible Tree~Matching}\label{sec:SFTM}
-\section{Similarity-based FTM (SFTM)}\label{sec:SFTM}
-Based on the above complexity analysis, \emph{Similarity-based Flexible Tree Matching} (SFTM) replaces the cost system of FTM by a similarity-based cost that can be computed once \textit{a~priori} (cf. Figure~\ref{fig:steps}).
-This approach drastically improves computation times and rather exposes a parameter that can be tuned to find the desired trade-off between computation time and matching accuracy (cf. Section~\ref{sec:evaluation}).
+% \section{Similarity-based Flexible Tree~Matching}\label{sftm:sec:SFTM}
+\section{Similarity-based FTM (SFTM)}\label{sftm:sec:SFTM}
+Based on the above complexity analysis, \emph{Similarity-based Flexible Tree Matching} (SFTM) replaces the cost system of FTM by a similarity-based cost that can be computed once \textit{a~priori} (cf. Figure~\ref{sftm:fig:steps}).
+This approach drastically improves computation times and rather exposes a parameter that can be tuned to find the desired trade-off between computation time and matching accuracy (cf. Section~\ref{sftm:sec:evaluation}).
 
 Given two trees $T=(N,\prec)$ and $T'=(N',\prec')$, SFTM relies on the specification of a \textit{similarity metric} between nodes $n \in N$ and $n' \in N'$.
 We compute this similarity metric for all pairs of nodes $(n,n')$ using \emph{i)} inverted indices for labels and \emph{ii)} label propagation and some penalization heuristics for the topology.
@@ -290,10 +290,10 @@ The similarity metric between nodes $N$ and $N'$ is computed in two main steps:
 \end{inparaenum}
 The computation of $s_0$ leverages inverted index techniques traditionally used to query text in a large document database.
 In our case, the documents we query against are $N$, while queries are extracted from $N'$.
-Figure~\ref{fig:steps} illustrates the different steps described in this section.
+Figure~\ref{sftm:fig:steps} illustrates the different steps described in this section.
 
 \subsubsection{Initial Similarity (step\,1)}
-To compute the initial similarity $s_0$ between $N$ and $N'$ (cf. \textit{step 1} in Figure~\ref{fig:steps}), we independently compare the labels of $N$ and $N'$ using the \emph{Term Frequency-Inverse Document Frequency} (TF-IDF).
+To compute the initial similarity $s_0$ between $N$ and $N'$ (cf. \textit{step 1} in Figure~\ref{sftm:fig:steps}), we independently compare the labels of $N$ and $N'$ using the \emph{Term Frequency-Inverse Document Frequency} (TF-IDF).
 The resulting initial node similarity $s_0$ does not take the topology of the trees into account.
 
 In order to take into account relabeling cost between nodes, some existing solutions (\emph{e.g.}, APTED) allow the user to input a pairwise comparison function $label(n), label(m) \mapsto similarity\ score$.
@@ -318,13 +318,13 @@ Applying TF-IDF to our similarity yields the following definition:
 Where $TK=tokens(n) \cap tokens(n')$.
 The function IDF is a measure of how rare a token is, $|TM[tk]|$ is the number of nodes containing the token $tk$ and $tokens$ refers to the user input tokenize function.
 Intuitively, we retrieve the tokens shared between nodes $n$ and $n'$ and, for each common token $tk$, we increase $s(n,n')$ by a high value if $tk$ is rare and a low value if $tk$ is common.
-In Section~\ref{sec:implementation}, we provide a detailed implementation of how to compute the initial similarity $s_0$.
+In Section~\ref{sftm:sec:implementation}, we provide a detailed implementation of how to compute the initial similarity $s_0$.
 
 Tokens that appear in many nodes have little impact on the final score---\emph{i.e.}, low IDF---yet have a very negative impact on the computation time.
 In our algorithm, we expose the sublinear threshold function $f: N \mapsto f(N) < N$ as a parameter of the algorithm.
 We use $f$ to filter out all the tokens appearing in more than $f(N)$ nodes.
 Therefore, $f$ provides a balance between computation time and matching quality: when $N-f(N)$ decreases, computation times and matching quality increase.
-In Section~\ref{sec:complexity}, we discuss how $f(N)$ influences the worst-case theoretical complexity.
+In Section~\ref{sftm:sec:complexity}, we discuss how $f(N)$ influences the worst-case theoretical complexity.
 % An exhaustive theoretical and empirical analysis of precisely how $f$ influences the computation times and matching quality will be the object of future studies.
 
 \subsubsection{Local Topology (step\,2)}
@@ -355,7 +355,7 @@ The resulting function $s_{P}$ then reflects both label similarity and local top
 Intuitively, at each iteration, we propagate information further up in the tree.
 This is why, the weight sequences $w$ and $v$ should be decreasing so that close kinship among nodes prevails.
 From our experiments, we advice the following values for the $P=3$ weights: $w_0 = 0.4, w_1 = 0.04, w_2 = 0.004$ and $w_0 = 0.8, w_1 = 0.08, w_2 = 0.008$.
-These values were used and unchanged for all results presented in the empirical evaluation~\ref{sec:evaluation}, leading to high accuracy on a large variety of web documents.
+These values were used and unchanged for all results presented in the empirical evaluation~\ref{sftm:sec:evaluation}, leading to high accuracy on a large variety of web documents.
 
 \subsubsection{Penalization (step\,3)}
 There are two main drawbacks to the way we propagate the scores in step\,2:
@@ -390,21 +390,21 @@ w_n,                    & \text{if }n\text{ or }n'\text{ is a no-match node}\\
 Importantly, unlike the bipartite graph built in the FTM algorithm, the resulting bipartite graph $G_{SFTM}$ is \emph{not complete} as only edges, such that $s_{p}(n,n') \neq 0$ are considered.
 This is one of the key differences allowing SFTM to drastically improve computation times.
 
-\subsection{Implementation Details}\label{sec:implementation}
+\subsection{Implementation Details}\label{sftm:sec:implementation}
 In the previous section, we introduced the SFTM algorithm and described how it compares to FTM.
 In this section, we describe more precisely how we implement the different steps of SFTM.  
 
 \subsubsection{Node Similarity (step 1, 2 and 3)}
 Let us consider two trees $T$ and $T'$.
 We first build the dictionary $TM$, an inverted index---\emph{i.e.}, each entry of $TM$ is a tuple $(token, nodes)$ where $token$ is a token (usually a string) and $nodes$ is a \textit{set} of all $n \in N$ that contains $token$.
-Figure~\ref{fig:inverted_index} (2a,b) depicts two examples of inverted index.
+Figure~\ref{sftm:fig:inverted_index} (2a,b) depicts two examples of inverted index.
 We note $TM{map}[key]$ the set of $nodes$ whose key in $TM$ is $key$.
 In Section~\ref{tokenSelection}, we further describe how we sort HTML nodes into tokens.
 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{tree-matching/explanation/inverted_index}
-    \caption{Creating the bipartite graph $G$ from two example DOMs $T,T'$. (1a,b)~are the input DOMs, (2a,b)~the extracted tokens, (3)~the inverted index $TM$, (4)~the neighbours dictionaries, and (5)~the resulting bipartite graph $G$. For simplicity, the figure shows a matching where $IDF(tk)=1$, $P=0$ and no-match nodes are not displayed.}\label{fig:inverted_index}
+    \caption{Creating the bipartite graph $G$ from two example DOMs $T,T'$. (1a,b)~are the input DOMs, (2a,b)~the extracted tokens, (3)~the inverted index $TM$, (4)~the neighbours dictionaries, and (5)~the resulting bipartite graph $G$. For simplicity, the figure shows a matching where $IDF(tk)=1$, $P=0$ and no-match nodes are not displayed.}\label{sftm:fig:inverted_index}
 \end{figure*}
 
 Given the inverted index $TM$, we define the function $IDF: tk \mapsto log(|N|/|TM[tk]|)$.
@@ -412,22 +412,24 @@ In order to limit the complexity of our algorithm, we remove every token $tk \in
 This is equivalent to putting a threshold on $IDF$ to only keep tokens $\{tk \in TM |IDF(tk) > log(\sqrt{N})\}$.
 Removing the most common tokens has a limited impact on matching quality, since these are exactly the tokens that provide the least information on the nodes they appear in.
 
-% \begin{algorithm2e}
-% \SetAlgoLined
-% \KwIn{\\
-% n': a node in $N$\\
-% $TM$: token map, dictionary of nodes from $T$ per token
-% }
-% \KwResult{neighbors: a dictionary of scores per node in $T$}
-% $neighbors \gets new\ Dictionary()$\\
-% \ForEach{tk in tokens(n')} {
-%     \ForEach{$n$ in $TM[tk]$} {
-%         $neighbors[n] += IDF(tk)$\\
-%     }
-% }
-% \Return neighbors
-% \caption{For a given node $n'\in N'$, compute similarity score $s_0(n,n')$ with all $n\in N$, such that $s_0 > 0$}\label{scoreAlgo}
-% \end{algorithm2e}
+\begin{algorithm}
+\caption{For a given node $n'\in N'$, compute similarity score $s_0(n,n')$ with all $n\in N$, such that $s_0 > 0$}
+\hspace*{\algorithmicindent} \textbf{Inputs}
+$n'$: a node in $N$, 
+$TM$: token map, dictionary of nodes from $T$ per token \\
+\hspace*{\algorithmicindent} \textbf{Output} 
+$neighbors$: a dictionary of scores per node in $T$
+\begin{algorithmic}
+\State $neighbors \gets new\ Dictionary()$
+\ForAll{tk in tokens(n')}
+    \ForAll{$n$ in $TM[tk]$}
+        \State $neighbors[n] += IDF(tk)$
+    \EndFor
+\EndFor \\
+\Return neighbors
+\end{algorithmic}
+\label{scoreAlgo}
+\end{algorithm}
 
 Once we have the token index $TM$ and the function $IDF$, we apply Algorithm~\ref{scoreAlgo} on each node $n' \in N'$.
 In Algorithm~\ref{scoreAlgo}, we first compute the tokens of node $n'$ and, for each token $tk$, we use $TM$ to retrieve the nodes $n \in N$ that contain the token $tk$.
@@ -483,34 +485,39 @@ In Algorithm~\ref{suggestMatching},
     \item $connectedEdges(edge)$, where $edge$ connects $u$ and $v$, returns the set $E$ of all edges connected to $u$ or $v$ (note that $edge \in E$).
 \end{compactenum}
 
-% \begin{algorithm2e}
-% \SetAlgoLined
-% \KwData{$G$ : The bipartite graph}
-% \KwIn{$M_i$: A full matching}
-% \KwResult{$M_{i+1}$: the suggested full matching}
-%  $M_{i+1} \gets []$  \\
-%  $remainingEdges \gets sortedEdges(g)$ \\
-%  $toKeep \gets randomInt(0, |M_i|)$ \\
-%  \For{j = 0 ... toKeep}{
-%     edge $\gets$ remainingEdges.first \\
-%  	$M_{i+1}$.add(edge)\\
-%     remainingEdges.removeAll(connectedEdges(edge))
-%  }
-%  \While{$remainingEdges$ is not empty} {
-%     $edge \gets selectEdgeFrom(remainingEdges)$ \\
-%     $M_{i+1}$.add(edge)\\
-%     remainingEdges.removeAll(connectedEdges(edge))
-%  }
-%  \Return $M_{t+1}$
-%  \caption{Suggest a new matching}\label{suggestMatching}
-% \end{algorithm2e}
+\begin{algorithm}
+\caption{Suggest a new matching}
+\hspace*{\algorithmicindent} \textbf{Inputs}
+$G$ : The bipartite graph, 
+$M_i$: A full matching \\
+\hspace*{\algorithmicindent} \textbf{Output} 
+$M_{i+1}$: the suggested full matching
+\begin{algorithmic}
+ \State $M_{i+1} \gets [ ]$ 
+ \State $remainingEdges \gets sortedEdges(g)$
+ \State $toKeep \gets randomInt(0, |M_i|)$
+ \For{j = 0 ... $toKeep$}
+    \State edge $\gets$ remainingEdges.first
+ 	\State $M_{i+1}$.add(edge)
+    \State remainingEdges.removeAll(connectedEdges(edge))
+ \EndFor
+ 
+ \While{$remainingEdges$ is not empty}
+    $edge \gets selectEdgeFrom(remainingEdges)$
+    $M_{i+1}$.add(edge)
+    remainingEdges.removeAll(connectedEdges(edge))
+ \EndWhile \\
+ \Return $M_{t+1}$
+\end{algorithmic}
+\label{suggestMatching}
+\end{algorithm}
 
 In practice, we first compute all the connected nodes and edges before storing them as dictionaries, so that the function $connectedEdges$ in Algorithm~\ref{suggestMatching} can be computed in $O(1)$ time.
 It is worth noting that, to allow fast removal, the list $remainingEdges$ is implemented as a double-linked list.
 The parameter $\gamma$ defines a trade-off between exploration (low $\gamma$) and exploitation (high $\gamma$).
 For the Metropolis related parameters, we used mostly the values advised in the original FTM article~\cite{Kumar2011_FTM}: $\gamma = 0.8, \beta = 2.5$ and a number of iterations of 10.
 
-\subsection{Complexity Analysis}\label{sec:complexity}
+\subsection{Complexity Analysis}\label{sftm:sec:complexity}
 We are interested in evaluating the time complexity of the algorithm with respect to the size of both trees $N$.
 In our analysis, we consider that $N_{tk}=max(|tokens(n)|, n \in nodes(T))$, the maximum number of tokens per node is a constant since it does not evolve with $N$.
 
@@ -531,9 +538,9 @@ Overall, sorting all edges requires the highest theoretical complexity: $O(N \cd
 If no threshold is set---\emph{i.e.}, $f(N) = N$---then the worst-case overall complexity of SFTM is $O(N^2 \cdot log(N))$, which keeps outperforming TED ($O(N^3)$) and FTM ($O(N^4)$).
 
 In this evaluation, we used $f(N) = \sqrt{N}$, which leads to a theoretical worst-case complexity in $O(N \cdot \sqrt{N} \cdot log(N))$.
-% The empirical evaluation conducted in Section~\ref{sec:evaluation} tends to suggest that the average-case complexity may be even lower in practice.
+% The empirical evaluation conducted in Section~\ref{sftm:sec:evaluation} tends to suggest that the average-case complexity may be even lower in practice.
 
-\section{Empirical Evaluation}\label{sec:evaluation}
+\section{Empirical Evaluation}\label{sftm:sec:evaluation}
 The objective of this evaluation is to assess that:
 \begin{compactenum}
 	\item the quality of the matchings reported by SFTM compares with the baselines we selected---APTED and \textsc{XyDiff}---and
@@ -609,13 +616,13 @@ Alexa provides a list of websites ordered by popularity, thus providing a repres
 For each original DOM $d$, we created $10$ mutants $d'_0\dots d'_9$ with a ratio of mutated nodes ranging from $0$ to $50\%$ of the total number of nodes on the page, $|nodes(d)|$.
 
 Overall, we obtained a dataset composed of $6,276$ document pairs $d,d'_n$ that could be correctly processed by the algorithms under study.
-Figure~\ref{fig:distribution} reports on the size distribution, in number of nodes, of original and mutated web documents included in this dataset.
+Figure~\ref{sftm:fig:distribution} reports on the size distribution, in number of nodes, of original and mutated web documents included in this dataset.
 
 \begin{figure}
     \centering
     \includegraphics[width=.6\linewidth]{tree-matching/graphs/distribution_size}
     \caption{Distribution of DOM sizes (in terms of nodes) in the dataset.}
-    \label{fig:distribution}
+    \label{sftm:fig:distribution}
 \end{figure}
 
 \subsection{Baseline algorithms}
@@ -624,7 +631,7 @@ Given no implementation of the original FTM algorithm is available, we implement
 We thus mainly compare SFTM to APTED and \textsc{XyDiff}.
 APTED is the reference implementation of TED that reports on the best performance so far.
 The implementation of APTED used for this evaluation is the one provided by the authors of~\cite{pawlik2016tree,pawlik2015efficient}.
-Since APTED yields the optimal solution to the TED problem, TED is theoretically superior in accuracy to all more restricted solutions (see Section~\ref{sec:related_work}).
+Since APTED yields the optimal solution to the TED problem, TED is theoretically superior in accuracy to all more restricted solutions (see Section~\ref{sftm:sec:related_work}).
 
 \textsc{XyDiff} is the most widely-known and used algorithm to efficiently match XML documents. Unlike APTED, XyDiff does not return an optimal result, it instead focuses on speed which makes it a complementary candidate to APTED as a baseline. 
 In order to use \textsc{XyDiff} on HTML pages we had to convert the HTML into XHTML, which mostly means closing unclosed tags (\emph{e.g.}, input tags).
@@ -637,7 +644,7 @@ This ground truth is hidden from the evaluated algorithms, but is used \emph{a~p
 % Our purpose in this section is not to conduct a thorough qualitative comparison of the algorithms, since it would require optimizing the parameters of both algorithms in an unbiased way.
 % Instead, we show that SFTM returns qualitatively comparable results, while drastically reducing computation time.
 
-\subsection{Experimental Results}\label{sec:performances}
+\subsection{Experimental Results}\label{sftm:sec:performances}
 All the results in this section have been obtained by running all three algorithms on the same server containing 252\,GB of RAM and an Intel(R)~Xeon(R) CPU E5-2660\,v3 @ 2.60\,GHz.
 
 \paragraph{Matching quality}
@@ -666,7 +673,7 @@ All possibilities are summarized in the following confusion matrix:
 
 Using the above confusion matrix, we can compute the \textit{precision}, \textit{recall}, metrics and the \textit{F1 score}, which are very commonly considered for binary classification problems.
 
-Figure~\ref{fig:f1score} reports on the precision, recall and F1 score of the 3 tree matching solutions we compared, namely SFTM, APTED, and \textsc{XyDiff}.
+Figure~\ref{sftm:fig:f1score} reports on the precision, recall and F1 score of the 3 tree matching solutions we compared, namely SFTM, APTED, and \textsc{XyDiff}.
 As expected, the accuracy of all solutions decreases when the mutation ratio increases.
 However, for all the reported metrics, SFTM clearly outperforms both \textsc{XyDiff} and APTED.
 For both APTED and \textsc{XyDiff}, we believe the lack of accuracy stems from the lack of flexibility when matching labels.
@@ -675,18 +682,18 @@ While this approach might be robust to small structural mutations, it is natural
 Similarly, TED compares the labels of most pairs of nodes and generate an associated cost of \texttt{1} when the labels are identical and \texttt{0} when they are different (no gradual costs if the labels are similar).
 % We modified the cost function on APTED to provide a more flexible label cost function.
 % The accuracy obtained was better (equivalent to SFTM) but the computation times were prohibitive (4 minutes to match youtube pages) which is understandable since this comparison function runs $O(n^3)$ times.
-% For this reason, we could only run the modified version of APTED on a few hundred small pages and the results presented in Figure~\ref{fig:f1score} reports on the non-modified version.
+% For this reason, we could only run the modified version of APTED on a few hundred small pages and the results presented in Figure~\ref{sftm:fig:f1score} reports on the non-modified version.
 
 \begin{figure}
   \centering
   \includegraphics[width=.65\linewidth]{tree-matching/graphs/f1score}
   \caption{Precision, Recall, and F1 Score of SFTM, APTED, and \textsc{XyDiff}.}
-  \label{fig:f1score}
+  \label{sftm:fig:f1score}
 \end{figure}
 
 \paragraph{Completion time}
 For each couple ($d$, $d'$) retrieved from the dataset, we measured the time taken by SFTM, APTED, and \textsc{XyDiff} to compute a full matching.
-Figure~\ref{fig:computation_time} reports on the average time to match DOM couples of increasing size (in terms of number of nodes) for all three solutions.
+Figure~\ref{sftm:fig:computation_time} reports on the average time to match DOM couples of increasing size (in terms of number of nodes) for all three solutions.
 \textsc{XyDiff} exhibits very fast computation speed and despite its numerous optimizations, APTED's computation times increases exponentially large web documents.
 SFTM is not as fast as \textsc{XyDiff}, but seems to show reasonable growth when the size of web documents increases.
 Interestingly, APTED computation time varies greatly, which is due to the multiple heuristics used by this implementation to optimize the computation in certain situations.
@@ -695,24 +702,24 @@ Interestingly, APTED computation time varies greatly, which is due to the multip
     \centering
     \includegraphics[width=.85\linewidth]{tree-matching/graphs/computationTime}
     \caption{Computation times when matching trees of different sizes.}
-    \label{fig:computation_time}
+    \label{sftm:fig:computation_time}
 \end{figure}%
 
 Overall, one can observe that SFTM offers an interesting trade-off between two classes of tree matching algorithms: the ones maximizing accuracy at the cost of time, like APTED, and those minimizing the completion time at the cost of reduced accuracy, like \textsc{XyDiff}.
 
-% Figure~\ref{fig:sftm_speed} delivers a closer look on the scalability of SFTM.
-% The empirical results seem to indicate an evolution in $O(n \cdot log(n))$: in  Figure~\ref{fig:sftm_speed}, we replaced the X axis from the number of nodes in the DOM $n$ to $n\ log(n)$ then computed a linear regression on the curve which resulted in a correlation coefficient $r^2 = 86\%$.
-% We believe the complexity depends on the distribution of nodes within the tokens and a more thorough theoretical analysis will be conducted in the future to understand the gap with the theoretical complexity (cf. Section~\ref{sec:complexity}). 
+% Figure~\ref{sftm:fig:sftm_speed} delivers a closer look on the scalability of SFTM.
+% The empirical results seem to indicate an evolution in $O(n \cdot log(n))$: in  Figure~\ref{sftm:fig:sftm_speed}, we replaced the X axis from the number of nodes in the DOM $n$ to $n\ log(n)$ then computed a linear regression on the curve which resulted in a correlation coefficient $r^2 = 86\%$.
+% We believe the complexity depends on the distribution of nodes within the tokens and a more thorough theoretical analysis will be conducted in the future to understand the gap with the theoretical complexity (cf. Section~\ref{sftm:sec:complexity}). 
 
     % \begin{figure}%{\textwidth}
     %     \centering
     %     \includegraphics[width=\linewidth]{time_SFTM}
     %     \caption{Average time to compute matching by  $n\ log(n)$ value for SFTM, with $n$ the number of nodes in the DOM}
-    %     \label{fig:sftm_speed}
+    %     \label{sftm:fig:sftm_speed}
     % \end{figure}
     
 % This observation raises the question of the impact of the sublinear threshold function $f$ on the performance of SFTM.
-% We therefore conducted a sensitivity analysis of this parameter to better understand potential trade-offs offered by the definition of this function, with regards to the complexity analysis we performed (cf. Section~\ref{sec:complexity}).
+% We therefore conducted a sensitivity analysis of this parameter to better understand potential trade-offs offered by the definition of this function, with regards to the complexity analysis we performed (cf. Section~\ref{sftm:sec:complexity}).
 
 \paragraph{Matching efficiency}
 The matching efficiency measures how fast a given solution can produce accurate results.
@@ -720,37 +727,37 @@ The efficiency is a way to combine both accuracy and speed metrics into one that
 In our case, we already showed that SFTM outperforms APTED in both accuracy and computation time.
 This efficiency measure is thus particularly interesting to compare SFTM to \textsc{XyDiff}, as SFTM outperforms \textsc{XyDiff} in terms of accuracy, but remains slower when it comes to speed.
 To compute this matching efficiency, we consider the same metric as~\cite{oliveira2018efficient}---\emph{i.e.}, the number of good matches produced per millisecond.
-Figure~\ref{fig:efficiency} reports on the matching efficiency of all three matching solutions.
+Figure~\ref{sftm:fig:efficiency} reports on the matching efficiency of all three matching solutions.
 One can observe that SFTM produces $7.7$ good matches per millisecond on average, which is far above APTED and \textsc{XyDiff} that produce $3.6$ and $2.4$ good matches per millisecond, respectively. 
 
 \begin{figure}
     \centering
     \includegraphics[width=.8\linewidth]{tree-matching/graphs/efficiency}
     \caption{Matching efficiency of SFTM, APTED, and \textsc{XyDiff}.}
-    \label{fig:efficiency}
+    \label{sftm:fig:efficiency}
 \end{figure}
 
 \paragraph{Parameter sensitivity}
 Since we aim at improving the performances of FTM in term of computation times, we study the sensitivity of the sub-linear threshold function $f$, which is a parameter that directly influences the computation time of the algorithm.
 
-Figure~\ref{fig:parameter}, therefore, reports on the evolution of SFTM performances when $f$ varies.
+Figure~\ref{sftm:fig:parameter}, therefore, reports on the evolution of SFTM performances when $f$ varies.
 To study the sensitivity of $f$, we choose to use the power function $f(N) = N^\alpha$ as a threshold and display how the computation times and matching accuracy evolve with $\alpha$.
 
 \begin{figure}
     \centering
     \includegraphics[width=.8\linewidth]{tree-matching/graphs/sensitivity}
     \caption{Performance of SFTM given $f(N) = N^\alpha$ according to $\alpha$.}
-    \label{fig:parameter}
+    \label{sftm:fig:parameter}
 \end{figure}
 
-For this experiment, as we are interested in studying the sensitivity of the parameter $\alpha$ on the performances of SFTM, we therefore consider a subset of $243$ pairs from the complete dataset used in previous sections (cf. Section~\ref{sec:performances}), which represents a $6\%$ error margin with $95\%$ confidence.
+For this experiment, as we are interested in studying the sensitivity of the parameter $\alpha$ on the performances of SFTM, we therefore consider a subset of $243$ pairs from the complete dataset used in previous sections (cf. Section~\ref{sftm:sec:performances}), which represents a $6\%$ error margin with $95\%$ confidence.
 
 As expected, when $\alpha$ increases, the quality of the matching and the computation times increase.
 However, beyond a certain value of $\alpha$, the increase of computation time is superior to the gain in accuracy: increasing $\alpha$ from $0.5$ to $0.8$ entails more than $10$ times longer computation times for $8\%$ gain in accuracy. 
 Intuitively, this is because tokens contained in most nodes provide few relevant information (low IDF), but increase the complexity quadratically.
 In this chapter, we thus adopted $\alpha = 0.5$ (\emph{i.e.}, $f(N) = \sqrt{N}$) as this value achieves good enough performances to demonstrate that SFTM can match two real-life web pages in practical time, with a minimum of compromise on quality.  
 
-\section{Threats to Validity}\label{sec:threats}
+\section{Threats to Validity}\label{sftm:sec:threats}
 The absolute values of completion times depend on the machine on which the algorithms were executed.
 As computations took time, we had to run both SFTM, APTED and \textsc{XyDiff} on a server, which is shared among several users.
 Although we paid a careful attention to isolate our benchmarks, the available resources of the server might have varied along execution thus impacting our results.
@@ -765,7 +772,7 @@ However, our evaluation shows that the adopted values succeed to report tree mat
 
 % Finally, our approach consisting in filtering out the tokens contained by more than $f(N) = \sqrt{N}$ nodes is not backed by any theoretical analysis which means we cannot assure the SFTM algorithm with such tuning will conserve the same performance when the number of nodes grows beyond the empirically studied window.
 
-\section{Conclusion \& Perspectives}\label{sec:conclusion}
+\section{Conclusion \& Perspectives}\label{sftm:sec:conclusion}
 Comparing modern real-life web pages is a challenge for which traditional \emph{Tree Edit Distance} (TED) and \textsc{XyDiff} solutions are too restricted and computationally expensive. 
 \cite{Kumar2011_FTM} introduced \emph{Flexible Tree Matching} (FTM) to offer a restriction-free matching, but at the cost of prohibitive computational times.
 

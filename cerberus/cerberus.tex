@@ -33,19 +33,19 @@ As a matter of assessment, we observed that the concept of locator repair was un
 
 
 The remainder of this chapter is organized as follows.
-Section~\ref{sec:related-work} introduces the necessary background on web locators.
+Section~\ref{cerberus:sec:related-work} introduces the necessary background on web locators.
 % 
-Then, Sections~\ref{sec:erratum} and~\ref{sec:cerberus} overview \erratum and \cerberus, respectively, while Section~\ref{sec:integration} reports on the integration of a robust locator solution in \cerberus based on \erratum.
-Section~\ref{sec:impact} discusses the preliminary impact of this integration on the software development projects managed by \laredoute.
+Then, Sections~\ref{cerberus:sec:erratum} and~\ref{cerberus:sec:cerberus} overview \erratum and \cerberus, respectively, while Section~\ref{cerberus:sec:integration} reports on the integration of a robust locator solution in \cerberus based on \erratum.
+Section~\ref{cerberus:sec:impact} discusses the preliminary impact of this integration on the software development projects managed by \laredoute.
 % 
-% Section~\ref{sec:locator} formalizes the locator problem we address in this paper.
-% Section~\ref{sec:implementation} introduces our approach, \erratum, which leverages an efficient flexible tree matching solution that we identified.
-% Section~\ref{sec:benchmark} describes the locator benchmark we designed and implemented.
-% Section~\ref{sec:evaluation} reports on the performance of our approach compared to the state-of-the-art algorithms.
-% Section~\ref{sec:threats} discusses the threats to validity of our contribution.
-Finally, Section~\ref{sec:perspectives} presents some perspectives for this work, while Section~\ref{sec:conclusion} concludes.
+% Section~\ref{cerberus:sec:locator} formalizes the locator problem we address in this paper.
+% Section~\ref{cerberus:sec:implementation} introduces our approach, \erratum, which leverages an efficient flexible tree matching solution that we identified.
+% Section~\ref{cerberus:sec:benchmark} describes the locator benchmark we designed and implemented.
+% Section~\ref{cerberus:sec:evaluation} reports on the performance of our approach compared to the state-of-the-art algorithms.
+% Section~\ref{cerberus:sec:threats} discusses the threats to validity of our contribution.
+Finally, Section~\ref{cerberus:sec:perspectives} presents some perspectives for this work, while Section~\ref{cerberus:sec:conclusion} concludes.
 
-\section{Background}\label{sec:related-work}
+\section{Background}\label{cerberus:sec:related-work}
 \subsection{Web Element Locators}
 To detect regressions in web applications, software engineers often rely on automated web-testing solutions to make sure that end-to-end user scenarios keep exhibiting the same behavior along changes applied to the system under test.
 Such automated tests usually trigger interactions as sequences of actions applied on selected elements and followed by assertions on the updated state of the web page.
@@ -87,7 +87,7 @@ In this chapter, we adopt the following notations:
 The robustness of a locator can be characterized by its capability to keep selecting the element $e$ on any mutation of $D$.
 In the following section, we therefore report on how we integrated \erratum---an effective solution to the locator repair problem---into the \cerberus web testing framework to implement an elegant solution to the robust locator problem, thus addressing a major concern of web testers.
 
-\section{Repairing web locators with \erratum}\label{sec:erratum}
+\section{Repairing web locators with \erratum}\label{cerberus:sec:erratum}
 \erratum was developed as a locator repair solution. 
 Given a locator $loc_{e, D}$ broken on a new page $D'$, \erratum allows to relocate $e$ on $D'$---\emph{i.e.}, to find $e' \in D'$.
 Formally, a locator repair solution, like \erratum, is defined as a function: $(D', loc_{e, D}) \to e'$.
@@ -112,7 +112,7 @@ To do so, SFTM relies on a distinctive characteristic of DOM trees: the \emph{la
 SFTM thus relies mostly on the labels of the trees and only makes use of topology in a second step, to fine-tune the estimated matchings.
 Intuitively, matching two sets of labels is significantly easier than trying to match trees, which is the reason why SFTM achieves such competitive performances.
 
-We walk through the key steps of the SFTM algorithm we integrated in \erratum{} by using HTML snippets reported in Figure~\ref{fig:example_html}.
+We walk through the key steps of the SFTM algorithm we integrated in \erratum{} by using HTML snippets reported in Figure~\ref{cerberus:fig:example_html}.
 The figure provides two versions ($D$ and $D'$) of a simplified HTML code sample extracted from the homepage of the search engine \textit{duckduckgo.com}.
 In this example, our purpose is to relocate $\text{a}_1 \in D$ with $\text{a}_1' \in D'$.
 
@@ -141,7 +141,7 @@ In this example, our purpose is to relocate $\text{a}_1 \in D$ with $\text{a}_1'
     \begin{subfigure}[b]{\linewidth}
         \centering
         \caption{Original document $D$.}
-        \begin{lstlisting}[language=html, label={fig:first_version}]
+        \begin{lstlisting}[language=html, label={cerberus:fig:first_version}]
 <div class="content-info__item"> /*!\mymk{div_1}!*/
     <div class="item__title">...</div> /*!\mymk{div_2}!*/
     <div class="item__subtitle"> /*!\mymk{div_3}!*/
@@ -155,7 +155,7 @@ In this example, our purpose is to relocate $\text{a}_1 \in D$ with $\text{a}_1'
     \begin{subfigure}[b]{\linewidth}
         \centering
         \caption{Updated document $D'$ from $D$.}
-        \begin{lstlisting}[language=html, label={fig:second_version}]
+        \begin{lstlisting}[language=html, label={cerberus:fig:second_version}]
 <div class="items-wrap"> /*!\mymk{div'_4}!*/
     <div class="item"> /*!\mymk{div'_1}!*/
     <div class="item__title">...</div> /*!\mymk{div'_2}!*/
@@ -172,15 +172,15 @@ In this example, our purpose is to relocate $\text{a}_1 \in D$ with $\text{a}_1'
         \end{lstlisting}
     \end{subfigure}
     \caption{Two versions of an HTML snippet extracted from the homepage of \emph{duckduckgo.com}.}
-    \label{fig:example_html}
+    \label{cerberus:fig:example_html}
 \end{figure}
 
 Unlike the state-of-the-art matching algorithms, SFTM first tries to match elements in $D'$ whose labels are similar to $D$, before using these matched elements to adjust the similarity of surrounding elements in the tree.
 For example, the \emph{similarity scores} of the tuple $(a_1,a'_1)$ links will increase as their direct parents $(div_3,div'_3)$ are matched with confidence.
 % 
-Figure~\ref{fig:steps_sftm} summarizes the SFTM algorithm's key steps and the remainder of this section provides an overview of its integration in \erratum{} first and then Cerberus.
+Figure~\ref{cerberus:fig:steps_sftm} summarizes the SFTM algorithm's key steps and the remainder of this section provides an overview of its integration in \erratum{} first and then Cerberus.
 
-\paragraph{Step\,1: Node Similarity}\label{sec:node_similarity}
+\paragraph{Step\,1: Node Similarity}\label{cerberus:sec:node_similarity}
 Elements of DOMs $D$ and $D'$ are compared. 
 The first step consists in computing an \emph{initial similarity} $s_0 : D \times D' \to [0, 1]$.
 For each pair of nodes $(e, e') \in D \times D'$, $s_0(e,e')$ measures how similar the labels of $e$ and $e'$ are.
@@ -189,7 +189,7 @@ This may include the type of the HTML element, its attributes, and eventually th
 % After empirically comparing different settings, we noticed that the algorithm performed better (and faster) when ignoring the content of the elements thus only using the tag name and attributes.
 % For example, the label of $div_1$ is the following set of tokens $\{\text{div}, \text{class}, \text{content-info__item} \}$
 \begin{ex}
-The \emph{label} computed for $div_1$ (cf. Figure~\ref{fig:example_html}) includes the following tokens: $\{\texttt{div}, \texttt{class}, \texttt{content-info\_\_item} \}$. %The algorithm ignores the content.
+The \emph{label} computed for $div_1$ (cf. Figure~\ref{cerberus:fig:example_html}) includes the following tokens: $\{\texttt{div}, \texttt{class}, \texttt{content-info\_\_item} \}$. %The algorithm ignores the content.
 \end{ex}
 % For example, the label of $div_1$ is the following set of tokens $\{\text{div}, \text{class}, \text{content-info\_\_item} \}$
 
@@ -197,13 +197,13 @@ To compute $s_0$, SFTM first indexes the labels of each node of $D$.
 The idea of this step is to prune the space of possible matches by pre-matching nodes with similar labels.
 When indexing, to improve the accuracy of $s_0$, we apply the \emph{Term Frequency-Inverse Document Frequency} (TF-IDF)~\cite{jones1972statistical} formula to take into account how rare each token is.
 \begin{ex}
-    Following our previous Example~\ref{fig:example_html}, when considering the match $(div_1, div'_1)$:
+    Following our previous Example~\ref{cerberus:fig:example_html}, when considering the match $(div_1, div'_1)$:
     \begin{compactenum}
         \item token $\texttt{div}$ will yield very few similarity points, since it is included in the labels of almost all the nodes,
         \item token $\texttt{content-info\_\_item}$ will increase the score significantly, as it only appears once in both documents.
     \end{compactenum}
 \end{ex}
-% Following our previous example~\ref{fig:example_html}, when considering the match $(div_1, div'_1)$:
+% Following our previous example~\ref{cerberus:fig:example_html}, when considering the match $(div_1, div'_1)$:
 % \begin{compactenum}
 % \item the token $\text{div}$ that both elements have in common will yield very few similarity points since it appears in the labels of almost all nodes.
 % \item The token $\text{content-info\_\_item}$ will increase the score significantly as it only appears once in both documents.
@@ -216,10 +216,10 @@ That is why, in order to reduce the computation times, the algorithm rules out m
 The initial similarity $s_0$ only takes into account the labels of nodes.
 In this second step, the idea is to enrich the information contained in $s_0$ by leveraging the topology of the trees $D$ and $D'$.
 \begin{ex}
-    In Example~\ref{fig:example_html}, it is hard to choose the correct match $m_1 = (a_1, a'_1)$ over the incorrect one $m_2 = (a_1, a'_2)$ by only considering labels, since all three elements share the same set of tokens: $\{\texttt{a}, \texttt{href}\}$.
+    In Example~\ref{cerberus:fig:example_html}, it is hard to choose the correct match $m_1 = (a_1, a'_1)$ over the incorrect one $m_2 = (a_1, a'_2)$ by only considering labels, since all three elements share the same set of tokens: $\{\texttt{a}, \texttt{href}\}$.
     In the similarity propagation step, we leverage the fact that the parents of $a_1$ and $a'_1$ are similar to increase the similarity between $a_1$ and $a'_1$, thus preferring $m_1$ over $m_2$.
 \end{ex}
-% In our example~\ref{fig:example_html}, it is hard to choose the correct match $m_1 = (a_1, a'_1)$ over the incorrect one $m_2 = (a_1, a'_2)$ using only labels since all three elements have the same set of tokens in common: $\{\text{a}, \text{href}\}$. In the similarity propagation step, we use the fact that the parents of $a_1$ and $a'_1$ are similar to increase the similarity between $a_1$ and $a'_1$ which allows to successfully choose $m_1$ over $m_2$.
+% In our example~\ref{cerberus:fig:example_html}, it is hard to choose the correct match $m_1 = (a_1, a'_1)$ over the incorrect one $m_2 = (a_1, a'_2)$ using only labels since all three elements have the same set of tokens in common: $\{\text{a}, \text{href}\}$. In the similarity propagation step, we use the fact that the parents of $a_1$ and $a'_1$ are similar to increase the similarity between $a_1$ and $a'_1$ which allows to successfully choose $m_1$ over $m_2$.
 In general, for each considered match $(e, e') \in D \times D'$, the parents of $e$ and $e'$ gets more similarity points if $e$ and $e'$ are similar and inversely, $s(e, e')$ is increased if the parents of $e$ and $e'$ are similar (with regard to $s_0$).
 We call $s$ the final similarity produced by this step.
 
@@ -233,13 +233,13 @@ The idea is to randomly walk through several possible configurations (set of mat
     \centering
     \includegraphics[width=0.8\linewidth]{cerberus/explanations/sftm}
     \caption{Key steps followed by our \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm.}
-    \label{fig:steps_sftm}
+    \label{cerberus:fig:steps_sftm}
 \end{figure*}
 
 At the end of the optimization step, the SFTM algorithm yields a full matching $M \subset D \times D' $ comprising matches between nodes of $D$ and $D'$.
 These matches can be further analyzed by \erratum{} to locate broken locators and fix them by generating new locators in the target document $D'$.
 
-\section{Building test cases with \cerberus}\label{sec:cerberus}
+\section{Building test cases with \cerberus}\label{cerberus:sec:cerberus}
 \cerberus is a low-code open source scalable test automation solution.
 It is used by several large companies to create, organize, and run their test suites.
 \cerberus contains many features, including parallel test execution, test requirement management, and reporting.
@@ -247,7 +247,7 @@ We integrated \erratum in one of the core component of \cerberus: the test case 
 
 A test case in \cerberus describes a sequence of \textit{actions} to be executed.
 Each action has a type and specific arguments that match this type.
-Figure~\ref{fig:cerberus} depicts the action editor of \cerberus.
+Figure~\ref{cerberus:fig:cerberus} depicts the action editor of \cerberus.
 For most action types, the main required argument is the \textit{locator} ("element path" in the screenshot)---\emph{e.g.}, if the action is "click", the locator refers to the element on which \cerberus should click.
 The action "form" allows the tester to specify the locator using element properties, like \textit{id}, \textit{class}, \textit{name}, or use more expressive query languages, like CSS or XPath.
 Nonetheless, there are mainly two drawbacks to such basic queries:
@@ -260,7 +260,7 @@ Nonetheless, there are mainly two drawbacks to such basic queries:
     \centering
     \includegraphics[width=.85\linewidth]{cerberus/explanations/cerberus}
     \caption{A screenshot of the \cerberus web interface to define a test case.}
-    \label{fig:cerberus}
+    \label{cerberus:fig:cerberus}
 \end{figure*}
 
 It appears that these drawbacks are more than a mere inconvenience. 
@@ -286,18 +286,18 @@ In the worst case, they even mention that some test campaigns were cancelled and
 Unfortunately, \textit{data-cerberus} identifiers failed to be applied in this specific case, due to the proprietary source code used by the web application under test.
 In this context, the integration of \erratum{} in \cerberus{} offers a practical alternative to standard web locators, thus aiming to drastically reduce the cost of broken locators for web testing teams.
 
-\section{Integrating \erratum into \cerberus}\label{sec:integration}
+\section{Integrating \erratum into \cerberus}\label{cerberus:sec:integration}
 Given the maturity of the \cerberus open-source project, the integration of \erratum{} has been achieved in several steps that we report in this section.
 % To help solving the problems described in the previous section, we integrated Erratum to Cerberus.
 
-\subsection{Preliminary Demonstration of \erratum}\label{sec:demo}
+\subsection{Preliminary Demonstration of \erratum}\label{cerberus:sec:demo}
 Since integrating a solution like \erratum requires a non-negligible amount of work, we decided to start by sharing a demonstration of \erratum's core matching algorithm to encourage testers to assess some of their typical test breakages before starting to integrate.
 
 Given an element $e$ in a DOM $D$, the broken locator problem happens when the locator that located $e \in D$ does not return any results on $D'$.
 In this scenario, the key idea of \erratum is to match all elements from $D \to D'$ and use this matching to locate $e \in D'$.
 % This matching is done using SFTM. That's why, before integrating Erratum, it was crucial to make sure SFTM yields accurate results on typical web pages used by La Redoute. 
 
-Figure~\ref{fig:demo_app} reports on a screenshot of the demo application.
+Figure~\ref{cerberus:fig:demo_app} reports on a screenshot of the demo application.
 To use the application, one simply needs to:
 \begin{compactenum}[\em i)]
     \item \emph{Input} the URL of 2 web pages to match (\emph{e.g.}, two different product pages or two versions of the same product page),
@@ -309,7 +309,7 @@ To use the application, one simply needs to:
     \centering
     \includegraphics[width=\linewidth]{cerberus/explanations/demo_matching}
     \caption{The demo application developed to test \erratum on real use-cases before starting integration. In this example, the description of a book is hovered on the left-side webpage, which automatically highlights the matched element on the right-side webpage.}
-    \label{fig:demo_app}
+    \label{cerberus:fig:demo_app}
 \end{figure*}
 
 The application also allows users to input HTML files, which allowed to test the matching algorithm on several alternative versions of pages.
@@ -332,14 +332,14 @@ Indeed, given a locator $l = loc_{e,D}$ that identifies en element $e \in D$, if
 Since the history of pages is not recorded by \cerberus, the repair approach would require some major structural changes to keep track of web application histories.
 
 As a first iteration, we therefore chose the second strategy.
-Instead of using \erratum as a locator repair method, we consider its extension as a robust locator method to replace standard locators, like \textit{CSS} or \textit{XPath}, as described in Section~\ref{sec:erratum}.
+Instead of using \erratum as a locator repair method, we consider its extension as a robust locator method to replace standard locators, like \textit{CSS} or \textit{XPath}, as described in Section~\ref{cerberus:sec:erratum}.
 Interestingly, the existing support for multiple classes of web locators in \cerberus offers a more straightforward hook to integrate \erratum.
 
 \subsection{The \erratum Robust Locators}
 To leverage the integration of \erratum in \cerberus, we therefore packaged \erratum as a robust locator.
 The key property that differentiates \erratum from other web locators is that \erratum requires the original DOM $D$ on which the element was successfully located.
 To build a robust locator with \erratum, we embedded the whole DOM $D$ in the locator---\emph{i.e.}, the \erratum locator of an element $e \in D$ is the pair $(XPath(e), D)$, where $XPath(e)$ is the absolute XPath of $e \in D$.
-Figure~\ref{fig:erratum_as_locator} depicts how we extended \erratum to implement to robust locator support in \cerberus:
+Figure~\ref{cerberus:fig:erratum_as_locator} depicts how we extended \erratum to implement to robust locator support in \cerberus:
 \begin{compactenum}
     \item from the original page $D$, the tester selects the element to locate $e$,
     \item so far, with XPath:
@@ -358,7 +358,7 @@ Figure~\ref{fig:erratum_as_locator} depicts how we extended \erratum to implemen
     \centering
     \includegraphics[width=.7\linewidth]{cerberus/explanations/erratum_as_locator}
     \caption{Describing how \erratum is integrated as a robust locator in \cerberus. Both locator types originally locate an element $e \in D$. The figure illustrates the ways \cerberus evaluates XPath or \erratum locators on a new DOM $D'$.}
-    \label{fig:erratum_as_locator}
+    \label{cerberus:fig:erratum_as_locator}
 \end{figure*}
 
 % Addressing the integration of \erratum through the robust locator problem rather than locator repair is a subtle pivot that eases the implementation, as it allows \erratum to be included in a similar way to already existing locator methods, like \textit{XPath} or \textit{CSS}.
@@ -371,7 +371,7 @@ Then, the integration of the \erratum library in the \cerberus platform represen
 The usage of the new \erratum locator on Cerberus is very similar to that of other locators.
 Given an element $e$ that the tester wants to select on the page $p$, she has to:
 \begin{compactenum}
-\item select the \erratum locator type on the test case select box (see figure~\ref{fig:cerberus}), and then
+\item select the \erratum locator type on the test case select box (see figure~\ref{cerberus:fig:cerberus}), and then
 \item copy-paste the absolute XPath of $e$ and the whole HTML of $p$ in the input form.
 \end{compactenum}
 To ease this process, we developed a browser extension allowing to simply click on the targeted element $e$ to copy the required data in the clipboard before pasting it into the input form.
@@ -379,7 +379,7 @@ To ease this process, we developed a browser extension allowing to simply click 
 In addition to providing more robust locators, writing test scenario using \erratum along with its extension represents a significant time gain: instead of manually crafting a locator that the tester judges to be robust enough, she simply needs to click on the targeted element. 
 It allows the tester to completely ignore the details of how a certain element should be located and instead focus on building the most relevant test scenarios.
 
-\section{Industrial Impact}\label{sec:impact}
+\section{Industrial Impact}\label{cerberus:sec:impact}
 Every year, the \laredoute{} web testing team estimated that the locator breakage entailing the failure of their test campaigns induced more than 11\,K\texteuro{} worth of load to their teams.
 For industrial projects that evolve quickly, some testing campaigns were even cancelled because of the cost to continuously repair the broken test scripts.
 In addition to that, repairing broken locators was considered as a tedious low-value task, which may be harmful to the moral of testers. 
@@ -395,7 +395,7 @@ The purpose of this evaluation was mainly to assess if \erratum could be used sy
 We tried to design evaluation strategies that would not require too much time from the testing experts.
 In particular, there were three stages of testing:
 \begin{enumerate}
-    \item Each tester tested 2 to 3 typical pages from their testing campaigns on the demo described earlier (see section~\ref{sec:demo});
+    \item Each tester tested 2 to 3 typical pages from their testing campaigns on the demo described earlier (see section~\ref{cerberus:sec:demo});
     \item After \erratum was integrated to \cerberus, the \erratum locator type was tested on the same pages within the \cerberus framework;
     \item For two campaigns, each new test case written by the testers was duplicated for a period of one month: one version used an XPath locator and the other version, the \erratum locator.
 \end{enumerate}
@@ -434,7 +434,7 @@ As for whether \erratum provides more robust locators than manually written XPat
 Following the evaluation, \laredoute{} now adopted \erratum as the preferred locator method, along with \texttt{data-cerberus} attributes, and have not yet reported any relocation failure at the time of writing this manuscript.
 Beyond the collaboration with \laredoute, we believe that these promising results will benefit to the wider \cerberus community.
 
-\section{Perspectives}\label{sec:perspectives}
+\section{Perspectives}\label{cerberus:sec:perspectives}
 \paragraph{Visual integration}
 considering the above \erratum web extension, the tester no longer needs to analyze the HTML source code and manually assemble a robust locator.
 It means that, theoretically, \cerberus could integrate a fully visual locator selection approach where
@@ -452,7 +452,7 @@ Web pages are described using HTML and Android views are written in XML.
 While HTML and XML are very similar and our tree matching library theoretically allows \erratum to match any kind of tree (and not only HTML trees), some technical adjustments still need to be completed to include XML trees in \cerberus.
 Furthermore, the robustness of \erratum's locators to typical Android XML view mutations still need to be assessed, as they may differ from typical HTML mutations.
 
-\section{Conclusion}\label{sec:conclusion}
+\section{Conclusion}\label{cerberus:sec:conclusion}
 Web locators remain a fragile keystone of automated test suites executed by modern test platforms.
 Whenever a locator fails to locate a web element in a test suite, it directly impacts the whole test campaign and impose some additional maintenance tasks to the web testing team.
 

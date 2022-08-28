@@ -1,5 +1,5 @@
 \chapter{Appstract}\label{chap:appstract}
-\section{Introduction}\label{sec:introduction}
+\section{Introduction}\label{appstract:sec:introduction}
 Web applications are often perceived by end-users as online systems exposing a limited set of views, concepts, and related actions.
 % As humans, we see a web application as composed of a relatively limited amount of views exposing a limited amount of potential actions. 
 From a user perspective, an online shop---like Amazon---mainly offers to search and list products, while clicking on a given product brings us to its details view. 
@@ -40,11 +40,11 @@ We empirically demonstrate that our \emph{appstraction} succeeds to generate app
 \textbf{MORE TO BE SAID ON THE DEMONSTRATION}.
 
 The remainder of this chapter is therefore organized as follows.
-Section~\ref{sec:related} introduces the required background and related works in this area.
-Section~\ref{sec:appstract} presents the design and implementation of \textsc{Appstract}, while Section~\ref{sec:evaluation} reports on an evaluation of the perceived accuracy of \textsc{Appstract}.
-Finally, Section~\ref{sec:conclusion} concludes.
+Section~\ref{appstract:sec:related} introduces the required background and related works in this area.
+Section~\ref{appstract:sec:appstract} presents the design and implementation of \textsc{Appstract}, while Section~\ref{appstract:sec:evaluation} reports on an evaluation of the perceived accuracy of \textsc{Appstract}.
+Finally, Section~\ref{appstract:sec:conclusion} concludes.
 
-\section{Background \& Related Works}\label{sec:related}
+\section{Background \& Related Works}\label{appstract:sec:related}
 In this section, we present several studies across different research fields that offer partial solutions to the general problem of web application abstraction inference. 
 Throughout this chapter, we consider a subset of the Amazon web application as a running example.
 In particular, we focus on two related page templates: the product details and product list pages (cf. Figure~\ref{fig:amazon}).
@@ -141,7 +141,7 @@ A lot of studies have been published on the subject since the popularisation of 
 Research that do rely on a certain model of an application usually use an \textit{url-based} model. While the first research works on the subject, at the beginning of the web, could use simple logs of visited urls~\cite{gunduz2003web, mobasher2001effective, sarukkai2000link}, modern web applications are generally much more complex with virtually unlimited amounts of urls dynamically generated making it hard to reason about unprocessed logs of visited urls.
 To tackle this challenge, recent work on web browsing behavior use a variety of techniques to encode url like Recurrent neural network~\cite{Ou2021ModelingSide} so that several strictly different urls that refer to the same template page will have similar encodings. While using url-based encoding to create an abstract model of a web application can help abstracting relationship \textit{between} pages (given that they contain enough information which depends on the application), it will not provide the \textit{intra-page} abstraction that we need to obtain meaningful encodings within pages.
 
-\section{Appstract}\label{sec:appstract}
+\section{Appstract}\label{appstract:sec:appstract}
 \subsection{Abstracting a Web Application}
 This section starts by defining the notions of \emph{application} and \emph{application abstraction} we assume, before discussing the challenges of inferring such defined abstractions.
 
@@ -333,12 +333,12 @@ The cases of \emph{over-abstraction} are more problematic since it will mean tha
 \textbf{EST-CE QUE ÇA FAIT PARTIE DE L'ÉVALUATION POUR QUANTIFIER À QUEL POINT ÇA POLLUE LES RESULTATS? -> oui ca fera partie integrante de l'evaluation}
 
 \subsubsection{Node Tagging}
-\label{sec:node_tagging}
+\label{appstract:sec:node_tagging}
 At this stage, we have a list of all leaf-groups ($LG_1, LG_2...$). 
 In order to be able to recursively merge all leaf-groups, we propagate the information that a leaf belongs to a certain group to all ancestors of the leaf using the node-tagging algorithm~\ref{algo:node_tagging}.
 
 \begin{algorithm}
-\caption{Intra-Page abstraction: Node Tagging}\label{alg:intra_tagging}
+\caption{Intra-Page abstraction: Node Tagging}\label{appstract:alg:intra_tagging}
 \begin{algorithmic}[1]
   \Function{createTags}{$LGs = [LG_1, LG_2...]$}
     \Function{tagBranch}{$depth$, $LG$, $e$}
@@ -373,7 +373,7 @@ Figure~\ref{fig:node_tagging} shows an example result of the node-tagging algori
 An important implementation detail: the above algorithm assumes that the $tag$ tuple's hash code will be generated from the value of its components (and not the object's reference)---\emph{i.e.}, two $tag$ tuples containing the same leaf group $LG$ and the same $depth$ should have the same hash code when inserted into the $e.tags$ map (even though the tags will have different addresses in memory since they were created at a different stage of the algorithm).
 
 \subsubsection{Recursive Branch Merging}
-\paragraph{Overview}\label{sec:overview}
+\paragraph{Overview}\label{appstract:sec:overview}
 The last step of the intra-page abstraction consists in merging all required nodes such that the resulting DOM contains only one node instance of each leaf group. 
 Figure~\ref{fig:intra} shows an example of the result obtained after this last step of the intra-page abstraction. 
 In the final abstract tree of Figure~\ref{fig:intra}, the red dotted edge connecting the template element $\hat{e}$ to its parent indicates that $\hat{e}$ has a special relationship with its parent, in this case: a 1-to-many relationship.
@@ -410,23 +410,23 @@ In this chapter, we distinguish two relationships:
 \end{compactitem}
 
 \paragraph{Algorithm}
-Algorithm~\ref{alg:abstractTree} gives a high level view of the solution.
+Algorithm~\ref{appstract:alg:abstractTree} gives a high level view of the solution.
 The function \emph{abstractTree} recursively traverses the tree.
-For each node $e$ considered, it checks if $e$ is already abstract using the \emph{isAbstract} function (line \ref{alg:abstractTree:isAbstract}).
+For each node $e$ considered, it checks if $e$ is already abstract using the \emph{isAbstract} function (line \ref{appstract:alg:abstractTree:isAbstract}).
 A node is abstract if none of its children need to be merged.
 If $e$ is already abstract then it is returned, otherwise, we:
 \begin{compactenum}
   \item recursively call the \emph{abstractTree} function on all children of $e$,
   \item group all abstract children by group of tags using \emph{assocGroup} (see paragraph~\ref{par:assocGroup}), and
-  \item merge each group of children using \emph{mergeGroup} (see paragraph~\ref{sec:mergeGroup})
+  \item merge each group of children using \emph{mergeGroup} (see paragraph~\ref{par:mergeGroup})
 \end{compactenum}
 
 \begin{algorithm}
-\caption{Intra-page abstraction: recursive merge}\label{alg:abstractTree}
+\caption{Intra-page abstraction: recursive merge}\label{appstract:alg:abstractTree}
 \begin{algorithmic}[1]
   \Function{abstractTree}{$e: Element$}
     \If {isAbstract($e$)}
-      \label{alg:abstractTree:isAbstract}
+      \label{appstract:alg:abstractTree:isAbstract}
       \State \Return $e$
     \Else
       \State children $\gets$ $e$.children.map(abstractTree)
@@ -438,7 +438,7 @@ If $e$ is already abstract then it is returned, otherwise, we:
 \end{algorithmic}
 \end{algorithm}
 
-We describe in details the three functions used in algorithm~\ref{alg:abstractTree}, namely:
+We describe in details the three functions used in algorithm~\ref{appstract:alg:abstractTree}, namely:
 \begin{inparaenum}
   \item \emph{isAbstract},
   \item \emph{assocGroup}, and
@@ -448,7 +448,7 @@ We describe in details the three functions used in algorithm~\ref{alg:abstractTr
 \paragraph{isAbstract}
 The function \emph{isAbstract} checks if an element $e$ is already abstract.
 An element $e$ is abstract if none of its offsprings need to be merged.
-This information is obtained using the tags computed in previous steps (see Section~\ref{sec:node_tagging}).
+This information is obtained using the tags computed in previous steps (see Section~\ref{appstract:sec:node_tagging}).
 
 Each tag $tag$ associated to a node $e$ is associated to its tag count $|tag|$.
 Using the tag counts, we can then detect if $e$ is abstract: a node $e$ is abstract iff all tag counts are equal to 1.
@@ -480,13 +480,13 @@ In our case, the letters $A$ to $E$ are nodes and $t1$ to $t4$ are tags.
 The function \emph{mergeGroup} is the core of the recursive merging algorithm.
 As an input, it takes a list of abstract nodes---\emph{i.e.}, abstract subtrees---that need to be merged and the set of common tags between the groups of nodes.
 The output is the abstract node $\hat{e}$.
-The inputs come from the output of the function \emph{assocGroup}, described above, and the abstract node output replaces all children that were merged in the tree, as shown in the \emph{abstractTree} algorithm~\ref{alg:abstractTree}
+The inputs come from the output of the function \emph{assocGroup}, described above, and the abstract node output replaces all children that were merged in the tree, as shown in the \emph{abstractTree} algorithm~\ref{appstract:alg:abstractTree}
 
 The function \emph{mergeGroup} reduces the group list taken as input by repeatedly applying the function \emph{mergeAbstractTrees}.
-Algorithm~\ref{alg:mergeAbstractTrees} describes how the function merges two abstract trees into one.
+Algorithm~\ref{appstract:alg:mergeAbstractTrees} describes how the function merges two abstract trees into one.
 
 \begin{algorithm}
-\caption{Intra-page abstraction: merge two abstract trees}\label{alg:mergeAbstractTrees}
+\caption{Intra-page abstraction: merge two abstract trees}\label{appstract:alg:mergeAbstractTrees}
 \begin{algorithmic}[1]
   \Function{mergeAbstractTrees}{$\hat{e}_1, \hat{e}_2$}
     \State \Comment{Group pairs of children containing the same tags}
@@ -541,7 +541,7 @@ For example, given three nodes having the following class values:  \emph{class} 
 \paragraph{Stack Diagram}
 Since the algorithm has several levels of recursion, it may be hard to understand how a given tree will be abstracted. 
 
-In Figure~\ref{} we describe the different steps of the algorithm.
+In Figure~\ref{fig:steps_abstractTree} we describe the different steps of the algorithm.
 At each step, we show the output of the current function that is called.
 Below each tree, we show the current stack of functions called.
 
@@ -652,7 +652,7 @@ For simplicity, however, the \emph{mergeTwoAbstractTrees} is not explicitly ment
 % In this situation, it is very likely that the four menu links will be abstracted into one single template link $\hat{e}_{menu link}$.
 % Unfortunately, the fact that all menu links are matched to a single template element may be problematic: if \textsc{Appstract} is used to monitor users' activity, then all clicks on the menu will be assimilated to 
 
-\subsection{Inter-Page Abstraction}\label{sec:inter}
+\subsection{Inter-Page Abstraction}\label{appstract:sec:inter}
 We described how to detect and abstract the repeating patterns contained within one page. 
 In the second part of the \textsc{Appstract} approach, we detect and abstract repeating patterns across pages of the web application.
 
@@ -660,14 +660,14 @@ The inter-page abstraction relies on tree-matching.
 A tree matching solution allows to match two web page DOM trees $p$ and $p'$. 
 The matching $M_{p, p'}$ obtained is a subset of  $p \times p'$ such that each tuple $(e, e') \in M_{p, p'}$ represents the fact that the element $e \in p$ matches with the element $e' \in p'$ (e.g. $e$ and $e'$ contain the names of two different products on two different product pages $p$ and $p'$).
 
-As described in Section~\ref{sec:overview}, inter-page abstraction is used at both learning and prediction phases. In both cases, the inter-page abstraction can be described as a function that:
+As described in Section~\ref{appstract:sec:overview}, inter-page abstraction is used at both learning and prediction phases. In both cases, the inter-page abstraction can be described as a function that:
 \begin{enumerate}
     \item takes two templates as input: the reference template and a new template,
     \item returns a template in which every template element $\hat{e}$ of the new template references its corresponding template element $\hat{e'}$ in the reference template (if a match was found).
 \end{enumerate}
 
 \begin{algorithm}
-    \caption{Inter-page abstraction}\label{alg:inter-page}
+    \caption{Inter-page abstraction}\label{appstract:alg:inter-page}
     \begin{algorithmic}[1]
       \Function{inter}{$\langle p_{ref}, T_{ref} \rangle, \langle p, T \rangle$}
           \State $M \gets$ tree-matching($p$, $p_{ref}$)
@@ -677,7 +677,7 @@ As described in Section~\ref{sec:overview}, inter-page abstraction is used at bo
     \end{algorithmic}
 \end{algorithm}
 
-Algorithm~\label{alg:inter-page} describes the inter-page abstraction process.
+Algorithm~\ref{appstract:alg:inter-page} describes the inter-page abstraction process.
 The function role is to create a new identifier map $T_{new}$ in which each element from $p$ maps to the id of the matching element in $p_{ref}$ (if there is any) or remains the same.
 
 Figure~\ref{fig:appstract_overview} describes how the function \emph{inter} is used for both learning and prediction:
@@ -703,7 +703,7 @@ Our current \emph{appstraction} method do not allow to infer such template topol
 During the learning stage, we choose the mother template arbitrarily among the existing template pages.
 This selection process assumes that all template pages have an equivalent amount of common parts.
 
-\section{Evaluation}\label{sec:evaluation}
+\section{Evaluation}\label{appstract:sec:evaluation}
 In this section, we describe the experiment we devised allowing to evaluate Appstract.
 The idea of the experiment is to consider several samples of DOM elements couples and manually judge if they are correctly labeled (should they have the same id?)
 
@@ -866,7 +866,7 @@ We do not disclose the results of the comparison to avoid influencing the follow
 % We try to choose applications belonging to different categories.
 
 % \subsubsection{Limits}
-% As mentioned in Section \ref{sec:introduction}, Appstract opens up many applications, notably in data extraction, analytics or testing. However, testing Appstract indirectly through one of these applications will not provide the same level of precision as the more direct evaluation that we propose. For example, trying to extract data using Appstract requires a lot of additional work that is not directly linked to Appstract (e.g. separating menu items from data records).
+% As mentioned in Section \ref{appstract:sec:introduction}, Appstract opens up many applications, notably in data extraction, analytics or testing. However, testing Appstract indirectly through one of these applications will not provide the same level of precision as the more direct evaluation that we propose. For example, trying to extract data using Appstract requires a lot of additional work that is not directly linked to Appstract (e.g. separating menu items from data records).
 % This is the reason why we chose to develop a dedicated evaluation protocol for Appstract.
 
 \subsubsection{Preliminary Results and Limitations}
@@ -874,7 +874,7 @@ While we unfortunately did not have enough time to lead the described experiment
 We call \textit{Free Text}, portions of web pages containing text written and, more importantly, formatted by the user. The most significant example of free text is content written on forums or comment sections.  Comment editors on these websites often offer users the option to format (bold, italic, paragraphs...) their text. The formatting tags in free text introduce noise that is difficult to ignore for Appstract. Indeed, the main assumption used by Appstract to separate content from presentation (templates) is that web applications present a high variability of content (text) encoded in a limited amount of templates. In the case of free text, this assumption is false: the structure of the webpage defined through tags is partially written by the user which leads to a high variability of structure since, in this case, the structure is also part of the content. Appstract then mistakenly believes the formatting tags should be used to infer the template which can lead to unexpected results.
 To solve the free-text limitation, we need to find a way to detect free text.
 
-\section{Conclusion}\label{sec:conclusion}
+\section{Conclusion}\label{appstract:sec:conclusion}
 We believe Appstract's approach is an important and pioneering solution in two ways.
 
 Firstly, we introduce the webpage abstraction problem independently to its traditional areas of application (e.g. web testing, data extraction, web analytics). We propose a formalisation of the abstraction problem using the idea of robust and semantically-rich application-wide identifiers.
