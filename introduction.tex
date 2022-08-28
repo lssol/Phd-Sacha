@@ -42,11 +42,11 @@ Since the locator objective as formulated above is ambitious, in our work, we tr
 
 \section{Objectives}
 My objective is thus to explore the idea of general web application abstraction. To do so, we explore three different ideas:
-\begin{enumerate}
-\item Tree Matching: how to compare two web pages?
-\item Robust Locators: how to use tree matching to build robust locators on web pages?
-\item Appstract: how to leverage tree matching and intra-page abstract a whole web application
-\end{enumerate}
+\begin{itemize}[label={}]
+\item \textbf{RQ.1 } Tree Matching: how to compare two web pages?
+\item \textbf{RQ.2 } Robust Locators: how to use tree matching to build robust locators on web pages?
+\item \textbf{RQ.3 } Appstract: how to leverage tree matching and intra-page abstract a whole web application?
+\end{itemize}
 
 \subsection{Tree Matching}
 One of the core components of humans' ability to create abstract models of the world is the ability to compare.
@@ -60,11 +60,11 @@ The internal representation of a web page is the Document Object Model (DOM). Th
 Comparing two web pages $D$ and $D'$ thus means to be able to match every element in $D$ with its corresponding element in $D'$ (if there is one). Such a comparison is called a matching.
 Thus the first research question that I propose to investigate is:
 
-RQ.1.1: What solutions can be used to efficiently produce a matching between two web page DOMs?
+\textbf{RQ.1.1:} What solutions can be used to efficiently produce a matching between two web page DOMs?
 
 Modern web pages can contain several thousand elements and certain applications contain hundreds of thousand of pages. It means that the efficiency (i.e memory and time complexity) of the studied solutions is crucial to be able to apply such a solution on real life web applications.
 
-RQ.1.2: How to benchmark the accuracy of a given matching solution?
+\textbf{RQ.1.2:} How to benchmark the accuracy of a given matching solution?
 
 When considering a matching between two web pages, asserting the quality of this matching manually can be hard or even impossible for large web pages containing thousands of elements and to our knowledge, there is no existing large scale benchmark for web page matching.
 
@@ -74,7 +74,7 @@ Our final goal is to build robust, semantically rich and application wide locato
 We first focus on the robustness of our locators. 
 Several works studying the robustness of locators exist.
 
-RQ.2: How to apply DOM matching solutions to improve the robustness of locators? How does such an approach compare to existing robust-locators solutions?
+\textbf{RQ.2.1:} How to apply DOM matching solutions to improve the robustness of locators? How does such an approach compare to existing robust-locators solutions?
 
 \subsection{Web Page Abstraction}
 The last part of our objective is to study how to leverage tree-matching to infer the abstraction of any application as a whole in the form of a set of robust and semantically rich locators.
@@ -85,12 +85,12 @@ Our ability to generate such locators depend on our ability to separate the cont
 
 We formulate the problem as a template extraction one.
 In particular, we separate this objective into two parts:
-RQ.3.1: How to infer a template that can be used to generate a given web page?
+\textbf{RQ.3.1:} How to infer a template that can be used to generate a given web page?
 
 Such an inferred template is optimal when it abstracts away a maximum of the web page variability while remaining as simple (i.e. few optional nodes) as possible. 
 
 Secondly, we wonder how to generalize our results on one page to the full application:
-RQ.3.2: How to infer the set of templates that generates a given sample of web pages from an application?
+\textbf{RQ.3.2:} How to infer the set of templates that generates a given sample of web pages from an application?
 
 Once we have a set of templates that generates a given sample of web pages, we can easily match any web page against this set of templates to generate locators.
 
@@ -112,6 +112,8 @@ Our algorithm thus takes a different approach from traditional tree-matching alg
 
 We also developed the first large scale synthetic benchmark to compare SFTM to other state-of-the-art solutions. Our benchmark shows significant gains in terms of both computation times and accuracy.
 
+We describe SFTM in chapter~\ref{chap:sftm}
+
 \subsection{ERRATUM}
 While we believe tree-matching is a crucial step towards our objective, the SFTM contribution does not describe how to use tree-matching to progress towards the inference of web application abstraction through locator generation.
 
@@ -132,12 +134,16 @@ Unlike existing approaches, ERRATUM uses a holistic approach to locator repair: 
 
 We then developed a benchmark for ERRATUM combining synthetic and real-life mutations to compare its performance with existing locator repair approaches. Results show the ERRATUM outperforms other locator repair solutions with little to no overhead depending on the number of locators to repair.
 
+We describe ERRATUM in chapter~\ref{chap:erratum}
+
 \subsection{ERRATUM Industrial Application}
 Following our work on ERRATUM, we were approached by the engineering department of a major online french retailer interested by the potential benefits of ERRATUM. Indeed, the company was struggling a lot with the broken locator problem causing them to spend considerable amount of resources on fixing past testing campaigns.
 We thus released SFTM as an open-source maven library and followed ERRATUM's approach to integrate it to Cerberus, the open-source testing framework used by the company.
 
 We then followed-up with the company to track the usage and impact of ERRATUM to their workflow. 
 While executing rigorous and meaningful empirical experiences in this industrial context proved challenging, we found out that ERRATUM worked flawlessly as a replacement to manually written locators.
+
+We describe the industrial application of Erratum in chapter~\ref{chap:cerberus}
 
 \subsection{APPSTRACT}
 A consequent body of research concerns the study of web application, in particular in the domains of testing, web analytics and information extraction. A large part of works on web application in these domains must resort to innovative heuristics to make sense of the thousands of pages and nodes in modern applications.
@@ -157,4 +163,6 @@ Our approach has two main components:
 APPSTRACT uses these components at several stages for both the creation of the abstraction model and its use. 
 
 Finally, we designed an experiment to evaluate the quality of APPSTRACT. 
+
+We describe APPSTRACT in chapter~\ref{chap:appstract}
 
