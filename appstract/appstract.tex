@@ -1,13 +1,5 @@
-\chapter{Appstract}
-\section{Abstract}
-  A clear and well-documented \LaTeX\ document is presented as an
-  article formatted for publication by ACM in a conference proceedings
-  or journal publication. Based on the ``acmart'' document class, this
-  article presents and explains many of the common variations, as well
-  as many of the formatting elements an author may use in the
-  preparation of the documentation of their work.
-
-\section{Introduction}
+\chapter{Appstract}\label{chap:appstract}
+\section{Introduction}\label{sec:introduction}
 Web applications are often perceived by end-users as online systems exposing a limited set of views, concepts, and related actions.
 % As humans, we see a web application as composed of a relatively limited amount of views exposing a limited amount of potential actions. 
 From a user perspective, an online shop---like Amazon---mainly offers to search and list products, while clicking on a given product brings us to its details view. 
@@ -33,7 +25,7 @@ This is an example of what we categorize as \emph{intra-page abstraction}.
 That is what is done by the state-of-the-art algorithms, like EXALG~\cite{ArasuExtractingPages} and \textsc{RoadRunner}~\cite{Crescenzi2001RoadRunner:Sites}.
 However, none of these approaches provide any insight to take into account the intra-page variability.
 
-In this paper, we thus propose an unsupervised approach to infer the navigation model of a whole web application that we call an \textit{appstraction}.
+In this chapter, we thus propose an unsupervised approach to infer the navigation model of a whole web application that we call an \textit{appstraction}.
 The \textit{appstraction} of a web application aims at delivering actionable insights: it allows a machine to understand application states (\emph{e.g.}, product pages, blog page), as well as elements within states (\emph{e.g.}, product title, price), hence guiding the information extraction process, as well as identifying relevant navigation actions.
 The \textit{appstraction} process aims to abstract away the natural variability of web pages into a canonical model built as a compact tree of \emph{template pages} and \emph{template elements}.
 Our unsupervised approach assumes that even web applications with billions of pages will build on a limited set of template pages, thus making it possible to infer these generative templates from a dataset of visited pages.
@@ -47,14 +39,14 @@ To achieve this, our approach---named \textsc{Appstract}---builds on three stage
 We empirically demonstrate that our \emph{appstraction} succeeds to generate application-wide locators that can be used to support semantic guidance across multiple pages of any web application.
 \textbf{MORE TO BE SAID ON THE DEMONSTRATION}.
 
-The remainder of this paper is therefore organized as follows.
+The remainder of this chapter is therefore organized as follows.
 Section~\ref{sec:related} introduces the required background and related works in this area.
 Section~\ref{sec:appstract} presents the design and implementation of \textsc{Appstract}, while Section~\ref{sec:evaluation} reports on an evaluation of the perceived accuracy of \textsc{Appstract}.
 Finally, Section~\ref{sec:conclusion} concludes.
 
 \section{Background \& Related Works}\label{sec:related}
 In this section, we present several studies across different research fields that offer partial solutions to the general problem of web application abstraction inference. 
-Throughout this paper, we consider a subset of the Amazon web application as a running example.
+Throughout this chapter, we consider a subset of the Amazon web application as a running example.
 In particular, we focus on two related page templates: the product details and product list pages (cf. Figure~\ref{fig:amazon}).
 
 \begin{figure*}[ht]
@@ -74,7 +66,7 @@ In particular, we focus on two related page templates: the product details and p
   \label{fig:amazon}
 \end{figure*}
 
-\subsection*{Data Extraction}
+\subsection{Data Extraction}
 The role of a web page is mainly to \emph{present} a subset of the information it has access to in a certain way.
 All data extraction solutions attempt to separate the information from its presentation---\emph{i.e.}, the template.
 The process of data extraction is thus a form of abstraction of an application: instead of viewing the different pages as a multitude of unrelated blobs of HTML, the application is seen as a limited set of templates that presents various information in a consistent way.
@@ -89,7 +81,7 @@ Following the classification made by a survey on data extraction~\cite{Chang2006
 Supervised approaches are usually qualified as "wrapper-based".
 The idea of wrapper-based data extraction is to consider the set of web pages containing the data to extract as an unstructured (or semi-structured) database and build a query language (and its query engine) to query the desired data.
 
-In this paper, we focus solely on \emph{unsupervised approaches}.
+In this chapter, we focus solely on \emph{unsupervised approaches}.
 These approaches rely on the assumption that, even though there is a lot of different pieces of information exposed by an application, the same type of information will always be structured in the same way.
 For example, on the product list page of an online shop, each product will be structured in a similar fashion (\emph{e.g.}, product name, price, description).
 In this context, we distinguish two families of unsupervised approaches: \emph{intra-page} and \emph{inter-page} data extraction.
@@ -119,45 +111,35 @@ The challenge of data extraction presented above is very similar to that of our 
 Web testing covers a large body of research that encompasses various themes, such as test generation, test coverage, or test robustness.
 We claim that, essentially, the main challenge of web testing comes from the lack of abstract understanding of the application under study and most works in this field have to resort to ingenious ideas to compensate for this lack of abstract model.
 
-\textbf{MAYBE REFER TO THE PAPER WITH XAVIER ON EXPLORATORY TESTING AS THEY BUILD MANUALLY SUCH AN abstraction THROUGH THEIR DSL.}
-
-\paragraph{Test Robustness.}
+\paragraph{Test Robustness}
 One of the main challenges of web testing encountered by the industry is test breakage: tests written for a given version of a web application break when the application evolves.
 For example, let us consider a testing script that applies to a web page $D$.
 One part of the script instructs to click on a given button $e$ in the page $D$.
 To locate $e$, scripts usually use xPath or CSS selector to build what is called a \emph{locator} $l_e$. 
 Breakage can then happen when a new version $D'$ of the page $D$ is published.
 Most of these breakage are locator based~\cite{Hammoudi2016WhyBreak}: the locator $l_e$ that successfully located $e$ on $D$ does not locate the matching element $e'$ in $D'$. 
-To solve this problem, some attempt to automatically generate more robust locators relying on the structure to the tree~\cite{Leotta2016spanLocators, Leotta2021Sidereal:Testing, Yandrapally2014RobustClues, Bajaj2016SynthesizingLocators} while other works offered solutions to repair broken locators~\cite{Brisset2022Erratum:Scripts, Choudhary2011WATER:Repair, Kirinuki2019COLOR:Application}.
+To solve this problem, some attempt to automatically generate more robust locators relying on the structure to the tree~\cite{Leotta2016spanLocators, Leotta2021Sidereal:Testing, Yandrapally2014RobustClues, Bajaj2016SynthesizingLocators} while other works offered solutions to repair broken locators~\ref{chap:erratum}.
 
-In particular, The \textsc{Erratum} approach~\cite{Brisset2022Erratum:Scripts} achieves high accuracy specifically thanks to a more holistic stance: instead of looking at individual locators independantly, the approach considers the page as a whole using a similar technique to the \emph{inter-page abstraction} part of our \emph{appstraction}.
+In particular, The \textsc{Erratum} approach~\ref{chap:erratum} achieves high accuracy specifically thanks to a more holistic stance: instead of looking at individual locators independently, the approach considers the page as a whole using a similar technique to the \emph{inter-page abstraction} part of our \emph{appstraction}.
 
 The "locator" problem is a more specific instance of the web application abstraction: the breakage happen because when a machine sees a multitude of different pages (\emph{e.g.}, different versions), a human perceives a single page template with slight differences and thus comes to expect the locators on $D$ should naturally work on $D'$. 
 
-In the present work, we go beyond \textsc{Erratum}~\cite{Brisset2022Erratum:Scripts} on the generalization scale and create "locators" that are valid through all pages of a web application.
+In the present work, we go beyond \textsc{Erratum}~\ref{chap:erratum} on the generalization scale and create "locators" that are valid through all pages of a web application.
 
 \paragraph{Test Generation}
+Automatic test generation is a domain of research that studies different approaches to automatically generate tests. Most test generation techniques rely on an abstraction of the application called a navigational model. A navigational model of a web application describes the different states an application can be in and the transitions between them~\cite{mesbah2009invariant}.
 
-?
+There exists many approaches to take advantage of this navigational model. The goal of these techniques is to generate the minimum amount of tests that covers a maximum of the application's behavior given a navigation model~\cite{leveau2022fostering, mesbah2009invariant, yuan2007using, biagiola2019diversity}
 
+We are particularly interested in the generation of the underlying navigational model.
+The navigational model can be written manually, for example, Leveau and al.~\cite{leveau2022fostering} developed a whole Domain Specific Language to describe this navigational model. 
+It can also be generated. The only approach we managed to find that generates a navigational model is APOGEN~\cite{stocco2017apogen}. APOGEN is quite close in spirit to our APPSTRACT solution. The idea of APOGEN is not originally to create a navigational model, but to create \textit{page objects}. However, it has been used as a way to generate a navigational model~\cite{biagiola2019diversity}. APOGEN crawls, clusters and then analyses the different clusters of web application to generate page objects. The main difference with our approach is that APOGEN is heavily based on the analysis of links to understand how different pages interact with one another and most importantly, it does not include any \textit{intra-page abstraction}.
 
 \subsection{Web Analytics}
-We know of no work that allows to create a full model of a web application.
-
-2021 Modeling Web Browsing Behavior across Tabs and Websites with Tracking and Prediction on the Client Side~\cite{Ou2021ModelingSide}
-
-\begin{itemize}
-\item Web behavior analysis using clickstream
-\item Novelty: Client Side only / Multi-tab analysis
-\item End results: Classify navigation types / Predict user next click
-\item How: url encoding - weird RNN fed with actions and timestamps
-\item Eval: Give missions to users on different websites (132 action paths / 19 test)
-\item Results: classification -> 100\%, prediction -> not amazing
-\end{itemize}
-
-What did they do? Understanding clickstreams with the WebQuilt visualization system~\cite{Ou2021ModelingSide}
-
-
+Web analytics deals with the analysis of the user behavior on a given web application.
+A lot of studies have been published on the subject since the popularisation of the web. However, most works are applied on controlled environments where the ability to automatically infer an abstract model of an application is not needed. For example, some research focus solely on mouse movements~\cite{guo2008exploring, yamauchi2013mouse} or focus on a given search engine and try to analyse behavior to optimize search results~\cite{agichtein2006learning, agichtein2006improving}.
+Research that do rely on a certain model of an application usually use an \textit{url-based} model. While the first research works on the subject, at the beginning of the web, could use simple logs of visited urls~\cite{gunduz2003web, mobasher2001effective, sarukkai2000link}, modern web applications are generally much more complex with virtually unlimited amounts of urls dynamically generated making it hard to reason about unprocessed logs of visited urls.
+To tackle this challenge, recent work on web browsing behavior use a variety of techniques to encode url like Recurrent neural network~\cite{Ou2021ModelingSide} so that several strictly different urls that refer to the same template page will have similar encodings. While using url-based encoding to create an abstract model of a web application can help abstracting relationship \textit{between} pages (given that they contain enough information which depends on the application), it will not provide the \textit{intra-page} abstraction that we need to obtain meaningful encodings within pages.
 
 \section{Appstract}\label{sec:appstract}
 \subsection{Abstracting a Web Application}
@@ -234,7 +216,7 @@ The upper part of Figure~\ref{fig:appstract_overview} describes how intra- and i
 
 Before any abstraction, the application is perceived as a set of related pages.
 The first step is thus to organise these pages into clusters, each cluster representing a template page (\emph{e.g.}, product page).
-In order to do this, any clustering algorithm could be used and, in this paper, we consider the clustering part as out of scope as we focus on the actual abstraction process.
+In order to do this, any clustering algorithm could be used and, in this chapter, we consider the clustering part as out of scope as we focus on the actual abstraction process.
 The learning approach thus starts with the user picking one example page per template.
 
 Each template page goes through intra-page abstraction.
@@ -338,7 +320,7 @@ In our evaluation however, this threshold is set to $k=4$.
 
 % Probably to move somewhere else
 \paragraph{Limits}
-Our grouping method may fail to cluster items correctly in two situation:
+Our grouping method may fail to cluster items correctly in two situations:
 \begin{compactitem}
   \item \emph{Over-abstraction}: Items can be clustered together even if they are not of the same type, or
   \item \emph{Sub-abstraction}: Items can be put in different clusters even though a human would put them in the same cluster.
@@ -391,10 +373,10 @@ Figure~\ref{fig:node_tagging} shows an example result of the node-tagging algori
 An important implementation detail: the above algorithm assumes that the $tag$ tuple's hash code will be generated from the value of its components (and not the object's reference)---\emph{i.e.}, two $tag$ tuples containing the same leaf group $LG$ and the same $depth$ should have the same hash code when inserted into the $e.tags$ map (even though the tags will have different addresses in memory since they were created at a different stage of the algorithm).
 
 \subsubsection{Recursive Branch Merging}
-\paragraph{Overview}
+\paragraph{Overview}\label{sec:overview}
 The last step of the intra-page abstraction consists in merging all required nodes such that the resulting DOM contains only one node instance of each leaf group. 
 Figure~\ref{fig:intra} shows an example of the result obtained after this last step of the intra-page abstraction. 
-In the final abstract tree of Figure\ref{fig:intra}, the red dotted edge connecting the template element $\hat{e}$ to its parent indicates that $\hat{e}$ has a special relationship with its parent, in this case: a 1-to-many relationship.
+In the final abstract tree of Figure~\ref{fig:intra}, the red dotted edge connecting the template element $\hat{e}$ to its parent indicates that $\hat{e}$ has a special relationship with its parent, in this case: a 1-to-many relationship.
 
 The algorithm must be recursive because it is possible (and likely) that some leaf groups will have to be merged at different levels of the tree. 
 Figure~\ref{fig:intra-use-cases} illustrates this use case: $e_{a1}$ and $e_{a2}$ must be merged first before their ancestor $e_{b1}$ can merge with $e_{b2}$.
@@ -420,7 +402,7 @@ Figure~\ref{fig:intra-use-cases} illustrates this use case: $e_{a1}$ and $e_{a2}
 The second case illustrated in Figure~\ref{fig:optional_elements} occurs when merging two nodes even though not all their respective children are merged.
 In this case, the inferred abstract node $\hat{e}_1$ is said to have an \textit{optional} relationship with its parent template element---\emph{i.e.}, it only exists as a child node in certain instances of $\hat{e}_1$.
 In general, a template element $\hat{e}$ can have many types of relationship with its parent.
-In this paper, we distinguish two:
+In this chapter, we distinguish two relationships:
 %% TO revise, it's heavy and probably wrong
 \begin{compactitem}
     \item A \emph{zero-to-many relationship} when at least one element from $T^{-1}_e(par(\hat{e})) = par(e_1), par(e_2)...$ has no child element that is an instance of $\hat{e}$ and at least one other element has more than 1,
@@ -428,7 +410,7 @@ In this paper, we distinguish two:
 \end{compactitem}
 
 \paragraph{Algorithm}
-Algorithm~\ref{alg:abstractTree} gives a high level view of the algorithm.
+Algorithm~\ref{alg:abstractTree} gives a high level view of the solution.
 The function \emph{abstractTree} recursively traverses the tree.
 For each node $e$ considered, it checks if $e$ is already abstract using the \emph{isAbstract} function (line \ref{alg:abstractTree:isAbstract}).
 A node is abstract if none of its children need to be merged.
@@ -494,7 +476,7 @@ Below is an example of input/output pair of the \emph{assocGroup} function:
 
 In our case, the letters $A$ to $E$ are nodes and $t1$ to $t4$ are tags.
 
-\paragraph{mergeGroup}\ref{par:mergeGroup}
+\paragraph{mergeGroup}\label{par:mergeGroup}
 The function \emph{mergeGroup} is the core of the recursive merging algorithm.
 As an input, it takes a list of abstract nodes---\emph{i.e.}, abstract subtrees---that need to be merged and the set of common tags between the groups of nodes.
 The output is the abstract node $\hat{e}$.
@@ -584,7 +566,7 @@ All functions shown have been described in the previous sections.
 Figure~\ref{fig:functions_relations} summarizes all these functions and how they interact.
 For simplicity, however, the \emph{mergeTwoAbstractTrees} is not explicitly mentioned, it is considered as part of the function \emph{mergeGroup}.
 
-\subsubsection{Complexity}
+% \subsubsection{Complexity}
 
 % \subsubsection{Coordinate System}
 % When abstracting, in addition to the application abstraction $A$, we also build a coordinate system to locate each abstracted instance element.
@@ -678,7 +660,7 @@ The inter-page abstraction relies on tree-matching.
 A tree matching solution allows to match two web page DOM trees $p$ and $p'$. 
 The matching $M_{p, p'}$ obtained is a subset of  $p \times p'$ such that each tuple $(e, e') \in M_{p, p'}$ represents the fact that the element $e \in p$ matches with the element $e' \in p'$ (e.g. $e$ and $e'$ contain the names of two different products on two different product pages $p$ and $p'$).
 
-As described in section~\ref{sec:overview}, inter-page abstraction is used at both learning and prediction phases. In both cases, the inter-page abstraction can be described as a function that:
+As described in Section~\ref{sec:overview}, inter-page abstraction is used at both learning and prediction phases. In both cases, the inter-page abstraction can be described as a function that:
 \begin{enumerate}
     \item takes two templates as input: the reference template and a new template,
     \item returns a template in which every template element $\hat{e}$ of the new template references its corresponding template element $\hat{e'}$ in the reference template (if a match was found).
@@ -704,7 +686,6 @@ Figure~\ref{fig:appstract_overview} describes how the function \emph{inter} is u
     \item during prediction, inter-page abstraction is used to match all elements from an unseen page to the template elements of its matching template page.
 \end{compactenum}
 
-
 \section{Limits}
 Modeling a whole application is a highly ambitious task.
 We hope our work can help progress toward this goal, but we cannot claim that it already does.
@@ -722,6 +703,182 @@ Our current \emph{appstraction} method do not allow to infer such template topol
 During the learning stage, we choose the mother template arbitrarily among the existing template pages.
 This selection process assumes that all template pages have an equivalent amount of common parts.
 
+\section{Evaluation}\label{sec:evaluation}
+In this section, we describe the experiment we devised allowing to evaluate Appstract.
+The idea of the experiment is to consider several samples of DOM elements couples and manually judge if they are correctly labeled (should they have the same id?)
+
+\subsection{Experiment}
+We intend to measure over- and sub-abstraction rates of Appstract. 
+Fundamentally, Appstract allows to create semantically rich, application-wide ids for elements on a webpage.
+Where:
+\begin{compactitem}
+  \item \textit{Semantically Rich} means that two instances of the same template should have the same id
+  \item \textit{Application-wide} means that, on a given application instances of a template will have the same id regardless of the page
+\end{compactitem}
+There are two ways in which Appstract can fail:
+\begin{compactitem}
+  \item \emph{Over-abstraction}: Items have the same id even though they are not of the same type, or
+  \item \emph{Sub-abstraction}: Items have different ids even though a human would assign them the same.
+\end{compactitem}
+To analyse the performance of Appstract, we thus propose to measure the rates of over- and sub-abstraction.
+To do so, we developed a visual way to explore the web page abstractions created by Appstract.
+Given an application $A$:
+\begin{compactitem}
+  \item We apply Appstract to $A$ thus obtaining an abstraction $\langle \hat{A}, T_{\hat{A}} \rangle$
+  \item Open two pages $p_{a_1}, p_{a_2}$ that we assume to be instances from the same template $p_a$ (e.g. two product pages or two blog posts)
+  \item Use $\langle \hat{A}, T_{\hat{A}} \rangle$ to get the id $T_{\hat{p}}(e) = \hat{e}$ of every element $e$ on both pages $p_{a_1}, p_{a_2}$
+  \item Visually display the id $\hat{e}$ when the mouse hovers over an element $e$
+\end{compactitem}
+This method allows us to simply analyse the results of Appstract.
+
+We separate our experiment into two parts:
+\begin{inparaenum}
+    \item Over-abstraction and
+    \item Sub-abstraction
+\end{inparaenum}
+
+\subsubsection{Defining Measures}\label{sec_definition_measures}
+After having described what we refer as over-abstraction and sub-abstraction, in this section, we give a formal definitions of these measures.
+To do so, we formulate the experimental application of Appstract as a binary classification problem in which each couple of elements between two pages can either have the same locator or a different one.
+We then define over-abstraction and sub-abstraction as complementary to the precision and recall of our binary classification problem.
+
+Let us consider two pages $p_1$ and $p_2$ from the same application $A$.
+We apply Appstract to $A$ and obtain the abstraction $\langle \hat{A}, T_{\hat{A}} \rangle$.
+Then, we apply the abstract model to $p_1$ and $p_2$: 
+\begin{align}
+T_{\hat{A}}(\hat{p}_1) &= \langle \hat{p_1}, T_{\hat{p_1}} \rangle \\
+T_{\hat{A}}(\hat{p}_2) &= \langle \hat{p_2}, T_{\hat{p_2}} \rangle
+\end{align}
+
+We formulate the experimental application of Appstract as a binary classification problem.
+\begin{defn}[\em Ground Truth Binary Classification function $f$]
+\begin{align}
+f:  p_1 & \times p_2 \to [0, 1] \\
+f(e_1, e_2) &= 1 \text{ if $e_1 \sim e_2$} \\
+f(e_1, e_2) &= 0 \text{ otherwise}
+\end{align}
+where $e_1 \sim e_2$ means that $e_1$ and $e_2$ are instances of the same template element (e.g. a buy button on a product page) as judged by a human.
+\end{defn}
+$f$ is the ground truth of our experiment. In practice, in the experiment, we only know a small manually labeled sample of $f$.
+
+\begin{defn}[\em Prediction function $\hat{f}$]
+\begin{align}
+f:  p_1 \times p_2 & \to [0, 1] \\
+f(e_1, e_2) &= 1  \text{ if $T_{\hat{p_1}}(e_1) =  T_{\hat{p_2}}(e_2)$}\\
+f(e_1, e_2) &= 0 \text{ otherwise}
+\end{align}
+\end{defn}
+$\hat{f}$ is a guess made using Appstract predicting whether two elements should have the same locator.
+
+
+\begin{defn}[\em Prediction function $\hat{f}$]
+\begin{align}
+f:  p_1 \times p_2 & \to [0, 1] \\
+f(e_1, e_2) &= 1  \text{ if $T_{\hat{p_1}}(e_1) =  T_{\hat{p_2}}(e_2)$}\\
+f(e_1, e_2) &= 0 \text{ otherwise}
+\end{align}
+\end{defn}
+Given the above definitions, we can define the traditional precision and recall of our binary classification problem:
+\begin{defn}[\em Binary Classification Measures]
+\begin{align}
+tp &=|\{e_1, e_2 \in p_1, p_2 / f(e_1, e_2) = \hat{f}(e_1, e_2) = 1\}| \\
+fp &=|\{e_1, e_2 \in p_1, p_2 / f(e_1, e_2) = 0, \hat{f}(e_1, e_2) = 1\}| \\
+fn &=|\{e_1, e_2 \in p_1, p_2 / f(e_1, e_2) = 1, \hat{f}(e_1, e_2) = 0\}| 
+\end{align}
+where $tp, fp$ and $fn$ stand for true positive, false positive and false negative and |S| is the cardinality of a set $S$.
+\begin{align}
+precision_{p_1, p_2}(\hat{f}) &= \frac{tp}{tp + fp} \\
+recall_{p_1, p_2}(\hat{f})  &= \frac{tp}{tp + fn}
+\end{align}
+\end{defn}
+
+Finally, we define over-abstraction and sub-abstraction as the complementary measures of precision and recall:
+\begin{defn}[\em Over-abstraction rate]
+\begin{equation}
+o_{p_1, p_2}(\hat{f})  = 1 - precision
+\end{equation}
+\end{defn}
+\begin{defn}[\em Sub-abstraction rate]
+\begin{equation}
+s_{p_1, p_2}(\hat{f})  = 1 - recall
+\end{equation}
+\end{defn}
+
+In the next section, we describe an empirical experiment allowing to estimate the over-abstraction and sub-abstraction rates of predictions made by Appstract. 
+
+\subsubsection{Experimental Protocol}
+We devise an experimental protocol allowing to evaluate the performance of Appstract on an application.
+We separate the experiment into two parts: sub-abstraction and over-abstraction evaluations.
+In both experiments, we manually label couples of DOM elements from two pages of the same application.
+The idea is to estimate the precision and recall of the function $\hat{f}$ defined in section \ref{sec_definition_measures}.
+
+\paragraph{Selecting couples of pages}
+Given an application containing several pages, we need to select a subset of pages couples on which we conduct the experiment.
+There are two possibilities:
+\begin{enumerate}
+    \item Picking random couples
+    \item Picking couples of pages that seem to belong to the same template
+\end{enumerate}
+We choose the second possibility because it provides more relevant data to evaluate.
+
+In the rest of the section, we thus describe the evaluation process on a single couple of DOMs $(p, p')$ belonging to the same template of the same application to which we already applied Appstract. 
+Formally, it means we use the functions $T_{\hat{p}}$ and $T_{\hat{p'}}$.
+
+\paragraph{Over-abstraction}
+Over-abstraction measures the precision of our algorithm: to how many couple of elements do we mistakenly assign the same id?
+More formally:
+\begin{equation}
+o_{p, p'}(\hat{f}) = 1 - \frac{tp}{tp + fp}
+\end{equation}
+where $tp$ is the amount of true positives and $fp$ the amount of false positives.
+
+The objective of this part of the experiment is thus to estimate $tp$ and $fp$ given a couple of DOMs $(p, p')$.
+Both $tp$ and $fp$ concern the subset of positive couples: the subset of DOM elements couple $(e, e') \in p \times p'$ such that $T_{\hat{p}} = T_{\hat{p'}}$.
+
+To label true and false positives, we develop a script that, given two abstracted web pages $p, p'$:
+\begin{enumerate}
+\item Display $p$ and $p'$ side by side
+\item Highlights one element of each page that have the same id
+\item Offer a popup allowing the tester to manually choose between: "Correct", "Wrong" or "Skip"
+\end{enumerate}
+
+This experiment allows to estimate the amount of true positives $tp$ ("Correct") and false positives $fp$ ("Wrong").
+The "Skip" option is mostly useful in cases where the elements highlighted are not visible.
+Results allow us to calculate an estimate of the over-abstraction $\hat{o_{p, p'}}(\hat{f})$
+
+\paragraph{Sub-abstraction}
+ Sub-abstraction measures the recall of our algorithm: how many elements should have the same id but do not?
+ More formally:
+ \begin{equation}
+s_{p, p'}(\hat{f}) = 1 - \frac{tp}{tp + fn}
+\end{equation}
+ To estimate sub-abstraction, we develop a script that, given two abstracted web pages $p, p'$:
+\begin{enumerate}
+\item Display $p$ and $p'$ side by side
+\item Ask the user to select one element from each web page that should have the same id
+\item Check if they indeed have the same id. If yes, increment the number of true positive $tp$ else increment the number of false negatives $fn$
+\end{enumerate}
+
+We do not disclose the results of the comparison to avoid influencing the following experimenter's choices.
+
+% \paragraph{Building the Dataset}
+% Since the labeling is done manually, we can only select a limited set of applications to experiment on.
+% We try to choose applications belonging to different categories.
+
+% \subsubsection{Limits}
+% As mentioned in Section \ref{sec:introduction}, Appstract opens up many applications, notably in data extraction, analytics or testing. However, testing Appstract indirectly through one of these applications will not provide the same level of precision as the more direct evaluation that we propose. For example, trying to extract data using Appstract requires a lot of additional work that is not directly linked to Appstract (e.g. separating menu items from data records).
+% This is the reason why we chose to develop a dedicated evaluation protocol for Appstract.
+
+\subsubsection{Preliminary Results and Limitations}
+While we unfortunately did not have enough time to lead the described experiments quantitatively, our first tests of Appstract are promising but show some limitations, mainly related to Free Text detection.
+We call \textit{Free Text}, portions of web pages containing text written and, more importantly, formatted by the user. The most significant example of free text is content written on forums or comment sections.  Comment editors on these websites often offer users the option to format (bold, italic, paragraphs...) their text. The formatting tags in free text introduce noise that is difficult to ignore for Appstract. Indeed, the main assumption used by Appstract to separate content from presentation (templates) is that web applications present a high variability of content (text) encoded in a limited amount of templates. In the case of free text, this assumption is false: the structure of the webpage defined through tags is partially written by the user which leads to a high variability of structure since, in this case, the structure is also part of the content. Appstract then mistakenly believes the formatting tags should be used to infer the template which can lead to unexpected results.
+To solve the free-text limitation, we need to find a way to detect free text.
+
 \section{Conclusion}\label{sec:conclusion}
+We believe Appstract's approach is an important and pioneering solution in two ways.
 
+Firstly, we introduce the webpage abstraction problem independently to its traditional areas of application (e.g. web testing, data extraction, web analytics). We propose a formalisation of the abstraction problem using the idea of robust and semantically-rich application-wide identifiers.
 
+Secondly, we propose an abstraction approach combining intra and inter page abstraction to generate such identifiers. While both intra and inter-page abstraction underlying techniques are akin to existing approaches in different research areas, to our knowledge, the idea to combine both to infer a web application abstraction is original.
+
+The web application abstraction problem we described is very complex, mainly because of the high variety of existing modern web applications. Unfortunately, Appstract is not the off-the-shelf web application abstraction solution working on any application that we intended to develop. Appstract mainly suffers from a lack of quantitative evaluation benchmark and can be mislead by Free Text sections (e.g. comment sections or forum posts). However, we hope it will serve as a starting point to develop new solutions for the web application abstraction problem.

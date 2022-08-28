@@ -1,12 +1,12 @@
-\chapter{Tree Matching}
-\section{abstract}
+\chapter{Tree Matching}\label{chap:sftm}
+\section{Abstract}
 % With the emergence of modern web applications, the \emph{Document Object Model} (DOM) of web pages has reached a new level of complexity that prevents the use of state-of-the-art approaches to compare them pairwise.
 % Indeed, the existing approaches, like \emph{Tree-Edit Distance} (TED) or \emph{Flexible Tree Matching} (FTM) fail to scale beyond hundred of nodes, which is far below the average complexity of existing web apps.
 Tree matching techniques have been investigated in many fields, including web data mining and extraction, as a key component to analyze the content of web pages.
 However, when applied to existing web pages, traditional tree matching approaches, covered by algorithms like \emph{Tree-Edit Distance} (TED) or \emph{XyDiff}, either fail to scale beyond a few hundred nodes or exhibit a relatively low accuracy.
 
 %In this article, we therefore propose a novel similarity-based FTM algorithm that proposes a similarity metric to scale beyond the current limits.
-In this article, we therefore propose a novel algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), which enables high accuracy tree matching on real-life web pages, with practical computation times.
+In this section, we therefore propose a novel algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), which enables high accuracy tree matching on real-life web pages, with practical computation times.
 We approach tree matching as an optimisation problem and leverage node labels and local topology similarity in order to avoid any combinatorial explosion.
 Our practical evaluation demonstrates that SFTM significantly improves the state of the art in terms of accuracy, while allowing computation times significantly lower than the most accurate solutions.
 By gaining on these two dimensions, SFTM therefore offers an affordable solution to match complex trees in practice.
@@ -81,7 +81,7 @@ Unfortunately, while FTM provides a truly restriction-free matching, its high co
 % For example, \cite{fokaefs2011empirical} extended TED with some additional move operations executed \emph{a~posteriori} to address the ancestry restriction.
 % \cite{Kumar2011_FTM,Kumar2011_Bricolage} developed her own \emph{Flexible Tree Matching} (FTM) algorithm to address the ancestry restriction problem, while \cite{reis2004automatic} developed a fast matching system based on top-down matching to extract news faster than TED does. 
 
-In the line of the aforementioned work, this article therefore aims at enabling the fast and non-restricted comparison of complex web pages.
+In the line of the aforementioned work, this chapter therefore aims at enabling the fast and non-restricted comparison of complex web pages.
 In particular, we propose an alternative to the state-of-the-art FTM algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), that leverages similarity metrics to speed up the comparison of complex trees. 
 SFTM shares the properties of FTM to offer a non-restricted tree matching, while offering computation times much lower than FTM, even on restricted versions of the problem.
 To match two web page trees, the approach taken by SFTM strongly differs from traditional techniques.
@@ -97,7 +97,7 @@ Overall, our algorithm SFTM allows to consistently match real-life web pages wit
 
 The code for both SFTM and its benchmark is available openly.\footnote{https://anonymous.4open.science/r/7ae57bd7-3b29-463a-88a4-d31c04ecfcd2/}
 
-The remainder of this article is organized as follows.
+The remainder of this chapter is organized as follows.
 Section~\ref{sec:related_work} and~\ref{sec:ftm} cover related work, with section~\ref{sec:ftm} focusing in details on the \emph{Flexible Tree Matching} (FTM) original algorithm.
 Section~\ref{sec:SFTM} presents \emph{Similarity-based Flexible Tree Matching} (SFTM), our extension of FTM that leverages the node labels and local topology similarity to guide the comparison.
 Section~\ref{sec:evaluation} thoroughly evaluates our solution against the state of the art on a realistic dataset of web documents.
@@ -157,16 +157,16 @@ Our contributions therefore read as follows:
 \end{compactenum}
 
 \section{Flexible Tree Matching (FTM)}\label{sec:ftm}
-The \emph{Similarity-based Flexible Tree Matching} (SFTM) we introduce in this article can be considered as an extension of the \textit{Flexible Tree Matching} (FTM) algorithm.
+The \emph{Similarity-based Flexible Tree Matching} (SFTM) we introduce in this chapter can be considered as an extension of the \textit{Flexible Tree Matching} (FTM) algorithm.
 This section therefore introduces the FTM algorithm, as originally proposed by Kumar~\emph{et~al.}~\cite{Kumar2011_Bricolage}.
-We first describe the notations used throughout the rest of the article, and then describe the main steps of the algorithm.
+We first describe the notations used throughout the rest of the chapter, and then describe the main steps of the algorithm.
 
 \subsection{FTM Notations and Overview}
 We define an ordered tree $T$ as a directed graph $(N,\prec)$ where $N$ is the non-empty set of nodes and $\prec$ a total order relation that can relate a \emph{child} node $c \in N$ to its \emph{parent} $p \in N$, as $c \prec p$, or \emph{siblings}, as $s \in N$, as $c \prec s$.
 
 In particular, we choose a total order rather than a partial one as the order of siblings has a strong semantic value for a webpage (e.g. the order of paragraphs).
 
-In this article, we always consider \emph{matchings} between two trees $T=(N,\prec)$ and $T'=(N',\prec')$.
+In this chapter, we always consider \emph{matchings} between two trees $T=(N,\prec)$ and $T'=(N',\prec')$.
 
 Given two trees $T$ and $T'$, the FTM algorithm relies on the complete bipartite graph $G$ between $N^* = N\cup{\Theta}$ and $N'^* = N'\cup{\Theta}'$, where $\Theta$ and $\Theta'$ are \textit{no-match} nodes.
 The fact that $G$ is complete means that every nodes of $T^*$ shares exactly one edge with every nodes of $T'^*$.
@@ -748,7 +748,7 @@ For this experiment, as we are interested in studying the sensitivity of the par
 As expected, when $\alpha$ increases, the quality of the matching and the computation times increase.
 However, beyond a certain value of $\alpha$, the increase of computation time is superior to the gain in accuracy: increasing $\alpha$ from $0.5$ to $0.8$ entails more than $10$ times longer computation times for $8\%$ gain in accuracy. 
 Intuitively, this is because tokens contained in most nodes provide few relevant information (low IDF), but increase the complexity quadratically.
-In this article, we thus adopted $\alpha = 0.5$ (\emph{i.e.}, $f(N) = \sqrt{N}$) as this value achieves good enough performances to demonstrate that SFTM can match two real-life web pages in practical time, with a minimum of compromise on quality.  
+In this chapter, we thus adopted $\alpha = 0.5$ (\emph{i.e.}, $f(N) = \sqrt{N}$) as this value achieves good enough performances to demonstrate that SFTM can match two real-life web pages in practical time, with a minimum of compromise on quality.  
 
 \section{Threats to Validity}\label{sec:threats}
 The absolute values of completion times depend on the machine on which the algorithms were executed.
@@ -769,7 +769,7 @@ However, our evaluation shows that the adopted values succeed to report tree mat
 Comparing modern real-life web pages is a challenge for which traditional \emph{Tree Edit Distance} (TED) and \textsc{XyDiff} solutions are too restricted and computationally expensive. 
 \cite{Kumar2011_FTM} introduced \emph{Flexible Tree Matching} (FTM) to offer a restriction-free matching, but at the cost of prohibitive computational times.
 
-This article thus introduced \emph{Similarity-based Flexible Tree Matching} (SFTM), the first implementation of an advanced \emph{Flexible Tree Matching} (FTM) algorithm with scalable computation times.
+This chapter thus introduced \emph{Similarity-based Flexible Tree Matching} (SFTM), the first implementation of an advanced \emph{Flexible Tree Matching} (FTM) algorithm with scalable computation times.
 We evaluated our solution using mutations on real-life web pages and we showed that SFTM outperforms \textsc{XyDiff} qualitatively and compares to TED, while significantly improving the computation time of the latter.
 Our proof of concept demonstrates that accurate matching of real-life web pages in practical time is possible.
 
@@ -781,6 +781,12 @@ In future work, we will further investigate how to improve the quality of the tr
 
 Finally, whether our work might be applicable to other trees than web DOMs remains to be demonstrated.
 Indeed, SFTM strongly relies on the fact that node labels in DOMs are highly differentiating (many specific attributes on each element), which is not the case for all kinds of trees.
+
+%% TRANSITION
+The final objective of our work is to build a set of tools allowing to create an abstraction of any web application. Being able to compare two web pages is a first step.
+In the next section, we will apply tree-matching to the robust locator problem.
+
+%% OLD ABANDONNED STUFF
 
 %%e.g: Given an element $E$ to locate,  $P$ is an ancestor of $E$, if $P$ has differentiating attributes (like an \textit{id}) we can locate $E$ relatively to $P$ and identify $P$ using its differentiating attributes. 
 

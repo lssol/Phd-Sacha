@@ -1,4 +1,4 @@
-\chapter{Integrating Erratum to Cerberus}
+\chapter{Integrating Erratum to Cerberus}\label{chap:cerberus}
 
 \section{Abstract}
 Web applications are constantly evolving to integrate new features and fix reported bugs.
@@ -10,7 +10,7 @@ When this DOM evolves, these locators tend to break, thus causing the related te
 So far, established test automation frameworks adopted by the industry, like \cerberus{}, only support CSS or XPath selectors to query web page elements.
 Such web locators require to be manually crafted and are often fragile with regards to DOM changes, hence often requiring testers to fix the broken test scenarios in priority. 
 While several solutions to this problem have been proposed in the scientific literature, to our knowledge, no locator repair or locator generator has been integrated in open-source test-automation software before.
-This paper thus reports on the seamless integration of a more robust web locator in \cerberus{} by leveraging a new locator repair solution, named \erratum{}. While \erratum was originally designed to repair broken locators, this paper demonstrates how it can be extended to deliver an elegant robust locator solution that succeeds to reduce the maintenance cost of automated tests.
+We thus report on the seamless integration of a more robust web locator in \cerberus{} by leveraging a new locator repair solution, named \erratum{}. While \erratum was originally designed to repair broken locators, this chapter demonstrates how it can be extended to deliver an elegant robust locator solution that succeeds to reduce the maintenance cost of automated tests.
 
 \section{Introduction}
 The implementation of automated tests on web applications (apps) requires software engineers to locate specific elements in the DOM (\emph{Document Object Model}) of a web page.
@@ -22,7 +22,7 @@ Several existing works focus on repairing tests on GUI applications, but there a
 These solutions either propose to \emph{i)} generate locators that are robust to changes (so-called \emph{robust locator problem}), or \emph{ii)} repair locators that are broken by the changes applied to the web pages (so-called \emph{locator repair problem}).
 Unfortunately, most of the existing solutions in the literature fail to accurately fix a broken locator, thus leaving all the related automation tests as broken~\cite{hammoudi2016record}.
 
-While we already introduced \erratum{},\footnote{\erratum{} stands for "\erratumlong{}"} as an holistic approach to the locator repair problem~\cite{brisset2021erratum}, this paper explores its extension to address the robust locator problem.
+While we already introduced \erratum{},\footnote{\erratum{} stands for "\erratumlong{}"} as an holistic approach to the locator repair problem~\ref{chap:erratum}, this         paper explores its extension to address the robust locator problem.
 More specifically, we report on the integration of \erratum{} in an open-source test automation solution called \cerberus{}~\cite{cerberus-icst20}.\footnote{\url{https://cerberus-testing.com/}}
 \cerberus{} is commonly adopted by several companies to write, organize, and run their test campaigns.
 In particular, we worked in close collaboration with the web testing team of \laredoute{},\footnote{\url{https://www.laredoute.com/}} a large (846M turnover, $1,700$ employees) french online fashion retailer.
@@ -32,7 +32,7 @@ Yet, to the best of our knowledge, none of the locator generator or locator repa
 As a matter of assessment, we observed that the concept of locator repair was unknown to all professional testers we interviewed.
 
 
-The remainder of this paper is organized as follows.
+The remainder of this chapter is organized as follows.
 Section~\ref{sec:related-work} introduces the necessary background on web locators.
 % 
 Then, Sections~\ref{sec:erratum} and~\ref{sec:cerberus} overview \erratum and \cerberus, respectively, while Section~\ref{sec:integration} reports on the integration of a robust locator solution in \cerberus based on \erratum.
@@ -75,7 +75,7 @@ While there can be many causes to test breakage, Hammoudi~\emph{et~al.}~\cite{ha
 \subsection{Web Locator Terminology}
 When a locator is defined, manually or automatically, it is written from and for a given web page.
 The internal representation of a web page by the browser is a \emph{Document Object Model} (DOM).
-In this paper, we adopt the following notations:
+In this chapter, we adopt the following notations:
 \begin{compactitem}
     \item we denote $D$ the original DOM of the web page for which the locator was written and $D'$ an evolution of $D$ on which the locator is expected to work,
     \item we note $e \in D$ an element of the DOM $D$ and $e'\in D'$ the corresponding element in $D'$,
@@ -92,7 +92,7 @@ In the following section, we therefore report on how we integrated \erratum---an
 Given a locator $loc_{e, D}$ broken on a new page $D'$, \erratum allows to relocate $e$ on $D'$---\emph{i.e.}, to find $e' \in D'$.
 Formally, a locator repair solution, like \erratum, is defined as a function: $(D', loc_{e, D}) \to e'$.
 
-\erratum differs from other locator repair solutions by using an holistic approach: all the elements from $D$ and $D'$ are matched by a efficient tree matching algorithm, and the resulting matching is processed to relocate all elements from $D$ in $D'$~\cite{brisset2021erratum}.
+\erratum differs from other locator repair solutions by using an holistic approach: all the elements from $D$ and $D'$ are matched by a efficient tree matching algorithm, and the resulting matching is processed to relocate all elements from $D$ in $D'$~\ref{chap:erratum}.
 
 \begin{ex}
 Given the Google search page $D$, the send button $e$ is located by the XPath locator $loc_{e,D} = /html/body/div[3]/button$.
@@ -101,7 +101,7 @@ Evaluating $loc_{e,D}$ on $D'$ yields no result as the button is now in a wrappe
 In such a situation, \erratum{} can automatically repair the broken locator $loc_{e,D}$ by detecting that the matched element $e \to e'$ is a now child of node \textsc{form}, hence located with $loc_{e',D'} = /html/body/div[3]/form/button$.
 \end{ex}
 
-The core of \erratum approach is a tree-matching solution called Similarity Based Flexible Tree Matching (SFTM)~\cite{brisset2020sftm}. 
+The core of \erratum approach is a tree-matching solution called Similarity Based Flexible Tree Matching (SFTM)~\ref{chap:sftm}. 
 Given two trees $D$ and $D'$, the SFTM algorithm allows to create a mapping between all elements $e \in D$ and $e' \in D'$.
 
 \erratum then uses this mapping to relocate all locators defined in $D$ in $D'$.
@@ -314,7 +314,7 @@ To use the application, one simply needs to:
 
 The application also allows users to input HTML files, which allowed to test the matching algorithm on several alternative versions of pages.
 This demonstration step constituted a crucial step of the integration process by convincing the \cerberus community of the benefit brought by \erratum with regards to existing support for web locators.
-Practitioners quickly understood that the algorithms of \erratum~\cite{brisset2021erratum,brisset2020sftm} could automate most of the situations they were facing during the web testing campaigns.
+Practitioners quickly understood that the algorithms of \erratum~\ref{chap:erratum} could automate most of the situations they were facing during the web testing campaigns.
 Furthermore, the fact that \erratum preserved the separation of concerns between the web application and the testing campaign emerged as another convincing argument in favour of \erratum.
 Once validated, we moved forward by studying the integration strategies to implement this research results into the open-source platform.
 
@@ -325,7 +325,7 @@ Two main strategies were investigated:
 \item use \erratum directly in the \cerberus testing environment, as an alternative way to locate elements.
 \end{inparaenum}
 
-The first approach reflects the case study considered in the original \erratum article~\cite{brisset2021erratum}.
+The first approach reflects the case study considered in the original \erratum article~\ref{chap:erratum}
 The main benefit of this approach is that it can be seamless for the tester: whenever a locator breaks, it is automatically repaired without requiring any action from the tester.
 However, integrating such a solution implies some significant changes in the \cerberus architecture.
 Indeed, given a locator $l = loc_{e,D}$ that identifies en element $e \in D$, if $l$ breaks on $D'$, then \erratum requires to recover the original page $D$ on which the locator was initially working.
@@ -363,7 +363,7 @@ Figure~\ref{fig:erratum_as_locator} depicts how we extended \erratum to implemen
 
 % Addressing the integration of \erratum through the robust locator problem rather than locator repair is a subtle pivot that eases the implementation, as it allows \erratum to be included in a similar way to already existing locator methods, like \textit{XPath} or \textit{CSS}.
 
-To allow this integration within \cerberus, we rewrote the generic matching algorithm of \erratum, namely SFTM~\cite{brisset2020sftm}, in a language that can compile to JVM.
+To allow this integration within \cerberus, we rewrote the generic matching algorithm of \erratum, namely SFTM~\ref{chap:sftm}, in a language that can compile to JVM.
 The code of the resulting library is open-source\footnote{\url{https://github.com/lssol/sftm\_tree\_matching}} and the library is published in Maven central.\footnote{\url{https://mvnrepository.com/artifact/io.github.amaris/sftm-tree-matching}}
 Then, the integration of the \erratum library in the \cerberus platform represents only 127 lines of Java code.\footnote{\url{https://github.com/cerberustesting/cerberus-source/commit/0a70d4cc0d70a797901652fd2b97d501bb7fa511}}
 
@@ -431,7 +431,7 @@ For \erratum, none of these relocations failed, while one failed for XPath.
 The results thus tend to indicate that \erratum can be safely used as a replacement of manually written {\sc XPaths}.
 As for whether \erratum provides more robust locators than manually written XPath, there is still not enough data to conclude. 
 
-Following the evaluation, \laredoute{} now adopted \erratum as the preferred locator method, along with \texttt{data-cerberus} attributes, and have not yet reported any relocation failure at the time of writing this paper.
+Following the evaluation, \laredoute{} now adopted \erratum as the preferred locator method, along with \texttt{data-cerberus} attributes, and have not yet reported any relocation failure at the time of writing this manuscript.
 Beyond the collaboration with \laredoute, we believe that these promising results will benefit to the wider \cerberus community.
 
 \section{Perspectives}\label{sec:perspectives}
@@ -456,5 +456,8 @@ Furthermore, the robustness of \erratum's locators to typical Android XML view m
 Web locators remain a fragile keystone of automated test suites executed by modern test platforms.
 Whenever a locator fails to locate a web element in a test suite, it directly impacts the whole test campaign and impose some additional maintenance tasks to the web testing team.
 
-In this paper, we described how we extended and successfully integrated the locator repair solution \erratum into \cerberus, a widely used open source test-automation solution.
+In this section, we described how we extended and successfully integrated the locator repair solution \erratum into \cerberus, a widely used open source test-automation solution.
 In particular, we reported on the development of a robust locator based on \erratum that eases the pain of web testers, by saving time and reducing the cost of test campaigns.
+
+Through a thorough benchmark and the integration of Erratum to a largely used open-source testing framework, we showed that we are capable to build robust locators on any web application.
+In the following section, we extend our work to build locators that are not only robust, but also \textit{semantically rich}.
