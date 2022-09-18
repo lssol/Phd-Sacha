@@ -3,39 +3,57 @@
 
 \section{Motivation}
 Nowadays, software bugs are an unavoidable concern along all the stages of a software development process.
-From the specification, to the development and the production, software requires to be continuously tested and monitored to detect potential symptoms of dysfunction.
-Overall maintenance activities account for over two thirds of the life-cycle cost of a software system, summing up to a total of \$70 billion per year in then United States~\cite{planning2002economic}.
+From specification to development and production, software requires to be continuously tested and monitored to detect potential symptoms of dysfunction.
+Overall maintenance activities account for over two-thirds of the life-cycle cost of a software system, summing up to a total of \$70 billion per year in the United States~\cite{planning2002economic}.
 
-To support the process of fixing or preventing bugs, a considerable amount of research focuses on static analysis, software testing or formal methods to help detecting bugs before deployment and bug localization or triaging to help dealing with identified bugs after deployment.
+To support the process of fixing or preventing bugs, a considerable amount of research focuses on static analysis, software testing, or formal methods to help to detect bugs before deployment and bug localization or triaging to help to deal with identified bugs after deployment.
 However, less attention has been focused on the detection of bugs in deployed systems. 
 In some cases, detecting a bug is indeed trivial, for example, when the application crashes, it usually produces an exception that should be visible in the logs.
 However, some bugs (like functional bugs) do not produce any exception and are thus far harder to detect using server logs.
 In 2006, Zhenmin Li~\textit{et~al.}~\cite{li2006have} studied over 29K bug reports and showed that more than $75\,\%$ were functional bugs.
-How to detect such bugs? Surprisingly, this topic has been very sparsely explored given its importance.
+How to detect such bugs?
+Surprisingly, this topic has been very sparsely explored given its importance.
 
-How comes the detection of functional bugs gets so few attention then?
+How comes the detection of functional bugs gets so little attention then?
 We think this is due to the perception of bugs within the software engineering community.
 Analyzing different papers that focus on software defects, we often find classes of bugs based on the type of the bug (multi-threading, arithmetic, logic\dots) or on the way it manifests (Heisenbug, Bohrbug\dots).
 These classifications denote a \textbf{system-centric} perception of bugs.
 In a system-centric paradigm, a bug is a divergence from the specifications.
 This definition does not include nor needs to include the end-user of the application.
-Users may experience a bug, but the bug always pre-existed this experience. 
+Users may experience a bug, but the bug always preexisted this experience. 
 \textbf{In our work, I tried to shift toward a more user-centric definition of a software defect.}
 
-The motivation for our work can be illustrated with one simple idea: a human observing a user navigating a web application can easily understand various information about the user's state and intent. Is the user focused on a single task or browsing without any clear purpose? Is she frustrated? How effectively is the user achieving various tasks on the application?
-Automatically inferring such information requires a very deep understanding of the application under study. Several existing works studied human behavior on controlled experiments where the application is well known. In our work, we wonder if a systematic analysis of interactions can be applied to any web application without human supervision i.e. without requiring to manually describe the application under study.
+The motivation for our work can be illustrated with one simple idea: a human observing a user navigating a web application can easily understand various information about the user's state and intent.
+Is the user focused on a single task or browsing without any clear purpose?
+Is she frustrated?
+How effectively is the user achieving various tasks on the application?
+Automatically inferring such information requires a very deep understanding of the application under study.
+Several existing works studied human behavior in controlled experiments where the application is well known.
+In our work, we wonder if a systematic analysis of interactions can be applied to any web application without human supervision---i.e. with no manual description of the application under study.
 
-Building tools generic enough to apply to any applications poses a certain amount of challenges. As an example, let us try to analyze the behavior of a user on an e-commerce web application. The navigation of the user produces a sequence of actions.
-As a human, if I see a replay of this sequence, I understand that the user considered several items before buying one. On the other hand, for a machine, analyzing such a sequence poses a number of challenges.
-Firstly, how do we define an "action"? Let us only consider clicks, then an action is a tuple $\langle locator, time \rangle$ where the $locator$ describes the location of the click (e.g. link, button) and $time$ is the timestamp when the click occurred. Then the next question is: how do we define such a $locator$? A naive approach would be to use the absolute path of the element that was clicked on, but again, this is not a viable option: what if the website changes? What if the web pages are slightly different depending on the country or item category (e.g. electronics, books)? 
-The problem goes even further. When clicking on two different items from a list, a naively constructed $locator$ would be totally different for the two links even though, from a human point of view, both actions have a semantically identical value: the user clicked on an item.
+Building tools generic enough to apply to any application poses a certain amount of challenges.
+As an example, let us try to analyze the behavior of a user on an e-commerce web application.
+The navigation of the user produces a sequence of actions.
+As a human, if I see a replay of this sequence, I understand that the user considered several items before buying one.
+On the other hand, for a machine, analyzing such a sequence appears more challenging.
+Firstly, how do we define an "action"?
+Let us only consider clicks, then an action is a tuple $\langle locator, time \rangle$ where the $locator$ describes the location of the click (e.g. link, button) and $time$ is the timestamp when the click occurred.
+Then, the next question is: how do we define such a $locator$?
+A naive approach would be to use the absolute path of the element that was clicked on, but again, this is not a viable option: what if the website changes?
+What if the web pages are slightly different depending on the country or item category (e.g. electronics, books)? 
+The problem goes even further.
+When clicking on two different items from a list, a naively constructed $locator$ would be different for the two links even though, from a human point of view, both actions have a semantically identical value: the user clicked on an item.
 
-The locator problem~\cite{hammoudi2016record} is actually a very profound one. It directly relates to our ability to create an abstract model of an application from a huge amount of elements and pages in much the same way as computer vision requires an underlying understanding of the world to make sense out of millions of pixels. This abstract model can be very subtle and involve visual or contextual clues, it can rely on our experience on a given application or on different similar web applications (UI/UX conventions).
+The locator problem~\cite{hammoudi2016record} is a very profound one.
+It directly relates to our ability to create an abstract model of an application from a huge amount of elements and pages in much the same way as computer vision requires an underlying understanding of the world to make sense out of millions of pixels.
+This abstract model can be very subtle and involve visual or contextual clues, it can rely on our experience with a given application or different similar web applications (UI/UX conventions).
 
 Surprisingly, while the locator generation problem has been extensively studied in the context of web application testing, we have never seen it formulated as an instance of the more general web application abstraction problem.
-Concretely, it means existing work focus on building \textit{robust} locators (i.e. locators that do not break when the page changes). While robustness is a fundamental property for a locator, we seek to build locators that are not only robust, but also carry semantic information about the nature of the element with regards to other elements in the application. We say that such locators are \textit{semantically rich}. 
+Concretely, it means existing work focus on building \textit{robust} locators (i.e. locators that do not break when the page changes).
+While robustness is a fundamental property of a locator, we seek to build locators that are not only robust but also carry semantic information about the nature of the element about other elements in the application.
+We say that such locators are \textit{semantically rich}. 
 
-\textbf{The overall objective of our work is thus to provide an generic approach to automatically build robust and semantically rich locators.}
+\textbf{The overall objective of our work is thus to provide a generic approach to automatically build robust and semantically rich locators.}
 Such locators can constitute a powerful web page abstraction which is the cornerstone of many kinds of web page interaction analysis.
 
 Since the locator objective as formulated above is ambitious, in our work, we tried to make progress on the locator problem and the more general web page abstraction problem while applying each iterative progress to improve state-of-the-art on real-life solutions to bug prevention and detection (in particular testing).
@@ -45,31 +63,31 @@ My objective is thus to explore the idea of general web application abstraction.
 \begin{itemize}[label={}]
 \item \textbf{RQ.1 } Tree Matching: how to compare two web pages?
 \item \textbf{RQ.2 } Robust Locators: how to use tree matching to build robust locators on web pages?
-\item \textbf{RQ.3 } Appstract: how to leverage tree matching and intra-page abstract a whole web application?
+\item \textbf{RQ.3 } \appstract{}: how to leverage tree matching and intra-page abstract a whole web application?
 \end{itemize}
 
 \subsection{Tree Matching}
 One of the core components of humans' ability to create abstract models of the world is the ability to compare.
-For example, recent significant progress in image generation were obtained by training neural network to discriminate between real and synthetic images. As humans, one of the elements that enable us to build an abstraction of a web page is our ability 
+For example, recent significant progress in image generation was obtained by training a neural network to discriminate between real and synthetic images. As humans, one of the elements that enable us to build an abstraction of a web page is our ability 
 to compare several parts of one web page and detect patterns (e.g. list of items), 
 compare several pages from a given application and locate invariant elements (e.g. menus, logo)
 compare several pages from a given page template (e.g. product page or news page) and extract what they have in common (e.g. a buy button, a share icon),
 and even compare several different web applications to understand common patterns and conventions.
 
 The internal representation of a web page is the Document Object Model (DOM). The DOM is a tree of elements that the browser is capable to render into a web page.
-Comparing two web pages $D$ and $D'$ thus means to be able to match every element in $D$ with its corresponding element in $D'$ (if there is one). Such a comparison is called a matching.
+Comparing two web pages $D$ and $D'$ thus means being able to match every element in $D$ with its corresponding element in $D'$ (if there is one). Such a comparison is called \emph{matching}.
 Thus the first research question that I propose to investigate is:
 
 \textbf{RQ.1.1:} What solutions can be used to efficiently produce a matching between two web page DOMs?
 
-Modern web pages can contain several thousand elements and certain applications contain hundreds of thousand of pages. It means that the efficiency (i.e memory and time complexity) of the studied solutions is crucial to be able to apply such a solution on real life web applications.
+Modern web pages can contain several thousand elements and certain applications contain hundreds of thousands of pages. It means that the efficiency (i.e memory and time complexity) of the studied solutions is crucial to be able to apply such a solution to real-life web applications.
 
 \textbf{RQ.1.2:} How to benchmark the accuracy of a given matching solution?
 
-When considering a matching between two web pages, asserting the quality of this matching manually can be hard or even impossible for large web pages containing thousands of elements and to our knowledge, there is no existing large scale benchmark for web page matching.
+When considering a matching between two web pages, asserting the quality of this matching manually can be hard or even impossible for large web pages containing thousands of elements, and to our knowledge, there is no existing large-scale benchmark for web page matching.
 
 \subsection{Robust and Semantically Rich Locators}
-Our final goal is to build robust, semantically rich and application wide locators.
+Our final goal is to build robust, semantically rich, and application-wide locators.
 
 We first focus on the robustness of our locators. 
 Several works studying the robustness of locators exist.
@@ -79,9 +97,9 @@ Several works studying the robustness of locators exist.
 \subsection{Web Page Abstraction}
 The last part of our objective is to study how to leverage tree-matching to infer the abstraction of any application as a whole in the form of a set of robust and semantically rich locators.
 
-Such locators must allow to identify several instances of an element as semantically equivalent (e.g. the price of each item in a list) throughout the whole web application.
+Such locators must allow the identification of several instances of an element as semantically equivalent (e.g. the price of each item in a list) throughout the whole web application.
 
-Our ability to generate such locators depend on our ability to separate the content from the container on a given application. For example, on an item list, each item has a different price (content), but the same container instantiated several times.
+Our ability to generate such locators depends on our ability to separate the content from the container on a given application. For example, on an item list, each item has a different price (content), but the same container is instantiated several times.
 
 We formulate the problem as a template extraction one.
 In particular, we separate this objective into two parts:
@@ -98,71 +116,76 @@ Once we have a set of templates that generates a given sample of web pages, we c
 To achieve the aforementioned objectives, we made four distinct contributions.
 
 \begin{enumerate}
-\item SFTM: an algorithm allowing to match DOM trees several orders of magnitude faster and more accurately than generic tree matching algorithms
-\item ERRATUM: a solution that leverages tree-matching to improve the robustness of locators
-\item Integration of ERRATUM to an open-source testing framework and empirical analysis of its impact in partnership with a major online retailer
-\item APPSTRACT: a solution allowing to infer a set of robust and semantically rich application wide locators with almost no human supervision
+\item SFTM: an algorithm allowing to match DOM trees several orders of magnitude faster and more accurately than generic tree matching algorithms,
+\item \erratum{}: a solution that leverages tree-matching to improve the robustness of locators,
+\item Integration of \erratum{} to an open-source testing framework and empirical analysis of its impact in partnership with a major online retailer,
+\item \appstract{}: a solution allowing to infer a set of robust and semantically rich application-wide locators with almost no human supervision.
 \end{enumerate}
 
 \subsection{SFTM}
-A critical part of our objective relies on our ability to compare two web pages. Unfortunately, none of the state-of-the art solution we managed to test allowed us to produce an accurate matching between real-life web pages (containing up to several thousands of nodes) within acceptable time constraints (in the order of milliseconds).
+A critical part of our objective relies on our ability to compare two web pages.
+Unfortunately, none of the state-of-the-art solutions we managed to test allowed us to produce an accurate matching between real-life web pages (containing up to several thousands of nodes) within acceptable time constraints (in the order of milliseconds).
 
-That is why, we developed SFTM. SFTM is a tree-matching solution specialized in web pages. It takes advantage of the fact that web page DOM nodes naturally contain very rich labels (e.g. element tags and attributes).
+That is why we developed SFTM.
+SFTM is a tree-matching solution specializing in web pages. It takes advantage of the fact that web page DOM nodes naturally contain very rich labels (e.g. element tags and attributes).
 Our algorithm thus takes a different approach from traditional tree-matching algorithms by using statistical tools to, first, match labels before taking into account the topology of the trees.
 
-We also developed the first large scale synthetic benchmark to compare SFTM to other state-of-the-art solutions. Our benchmark shows significant gains in terms of both computation times and accuracy.
+We also developed the first large-scale synthetic benchmark to compare SFTM to other state-of-the-art solutions. Our benchmark shows significant gains in terms of both computation times and accuracy.
 
-We describe SFTM in chapter~\ref{chap:sftm}
+We describe SFTM in Chapter~\ref{chap:sftm}
 
-\subsection{ERRATUM}
+\subsection{\erratum{}}
 While we believe tree-matching is a crucial step towards our objective, the SFTM contribution does not describe how to use tree-matching to progress towards the inference of web application abstraction through locator generation.
 
-For this reason, we developed ERRATUM, a solution that leverages tree-matching to repair broken locators.
+For this reason, we developed \erratum{}, a solution that leverages tree-matching to repair broken locators.
 Broken locators are the main reason web page test scripts break along the development of a web application. 
-As an example let us consider a test script for an e-commerce website consisting in three actions:
+As an example let us consider a test scenario for an e-commerce website consisting of three actions:
 \begin{enumerate}
-    \item On a product list page, click on an product title
-    \item Once on the product page, click on the buy button
-    \item Ensure we get to the checkout page
+    \item On a product list page, click on a product title,
+    \item Once on the product page, click on the buy button,
+    \item Ensure we get to the checkout page.
 \end{enumerate}
-This script contains a minimum of two locators locating the product title and the buy button.
+This scenario contains a minimum of two locators locating the product title and the buy button.
 These locators will function as long as the page remains strictly the same but any change on the page could break them.
-In this case, the script will have to be updated which. In practise, broken locators can be a major pain for testing teams.
+In this case, the script will have to be updated. In practice, broken locators can be a major pain for testing teams.
 
-Several approaches to repair broken locators exist. These approaches all take as input a locator on an element $e$ on a page $D$ and try to find this element on another version of the page $D'$.
-Unlike existing approaches, ERRATUM uses a holistic approach to locator repair: instead of trying to repair one isolated locator , it matches all nodes between $D$ and $D'$ and use the produced matching to fix any broken locators.
+Several approaches to repairing broken locators exist. These approaches all take as input a locator on an element $e$ on a page $D$ and try to find this element on another version of the page $D'$.
+Unlike existing approaches, \erratum{} uses a holistic approach to locator repair: instead of trying to repair one isolated locator, it matches all nodes between $D$ and $D'$ and uses the produced matching to fix any broken locators.
 
-We then developed a benchmark for ERRATUM combining synthetic and real-life mutations to compare its performance with existing locator repair approaches. Results show the ERRATUM outperforms other locator repair solutions with little to no overhead depending on the number of locators to repair.
+We then developed a benchmark for \erratum{} combining synthetic and real-life mutations to compare its performance with existing locator repair approaches. Results show the \erratum{} outperforms other locator repair solutions with little to no overhead depending on the number of locators to repair.
 
-We describe ERRATUM in chapter~\ref{chap:erratum}
+We describe \erratum{} in Chapter~\ref{chap:erratum}
 
-\subsection{ERRATUM Industrial Application}
-Following our work on ERRATUM, we were approached by the engineering department of a major online french retailer interested by the potential benefits of ERRATUM. Indeed, the company was struggling a lot with the broken locator problem causing them to spend considerable amount of resources on fixing past testing campaigns.
-We thus released SFTM as an open-source maven library and followed ERRATUM's approach to integrate it to Cerberus, the open-source testing framework used by the company.
+\subsection{\erratum{} Industrial Case Study}
+Following our work on \erratum{}, we were approached by the engineering department of a major online french retailer interested in the potential benefits of \erratum{}.
+Indeed, the company was struggling a lot with the broken locator problem causing them to spend a considerable amount of resources on fixing past testing campaigns.
+We thus released SFTM as an open-source maven library and followed \erratum{}'s approach to integrating it into \cerberus{}, the open-source testing framework used by the company.
 
-We then followed-up with the company to track the usage and impact of ERRATUM to their workflow. 
-While executing rigorous and meaningful empirical experiences in this industrial context proved challenging, we found out that ERRATUM worked flawlessly as a replacement to manually written locators.
+We then followed up with the company to track the usage and impact of \erratum{} on their workflow. 
+While executing rigorous and meaningful empirical experiences in this industrial context proved challenging, we found out that \erratum{} worked flawlessly as a replacement for manually written locators.
 
-We describe the industrial application of Erratum in chapter~\ref{chap:cerberus}
+We describe the industrial application of \erratum{} in Chapter~\ref{chap:cerberus}
 
-\subsection{APPSTRACT}
-A consequent body of research concerns the study of web application, in particular in the domains of testing, web analytics and information extraction. A large part of works on web application in these domains must resort to innovative heuristics to make sense of the thousands of pages and nodes in modern applications.
-While we originally tackled this idea from the analytics point of view (i.e. creating some kind of rich encoding for user actions) this idea is more general.
-In fact, I strongly believe most of aforementioned research domains linked with the study of web applications would highly benefit from having a unified objective: unsupervised inference of an abstract model for any real-life web application. 
+\subsection{\appstract{}}
+A consequent body of research deals with the study of web applications, in particular in the domains of testing, web analytics, and information extraction.
+A large part of the work on web applications in these domains must resort to innovative heuristics to make sense of the thousands of pages and nodes in modern applications.
+While we originally tackled this idea from the analytics point of view---i.e. creating some kind of rich encoding for user actions---this idea is more general.
+I strongly believe most of the aforementioned research domains linked with the study of web applications would highly benefit from having a unified objective: unsupervised inference of an abstract model for any real-life web application. 
 To my knowledge, such an objective has never been formulated as such in the literature.
-Thus it is important for us to note that beyond the actual algorithms, the first contribution of APPSTRACT is to make a step in this direction.
+Thus, we need to note that beyond the actual algorithms, the first contribution of \appstract{} is to make a step in this direction.
 
-APPSTRACT is an approach to infer an abstract model from a web application.
-Concretely, given a set of web pages from a single web application, APPSTRACT is capable to infer an abstract model. Once the model is built, APPSTRACT allows to assign an identifier to any node of a provided (previously unseen) page from this application. The assigned identifier is both robust and semantically rich (i.e. two buy buttons from different products will have the same identifier) 
+\appstract{} is an approach to inferring an abstract model from a web application.
+Concretely, given a set of web pages from a single web application, \appstract{} is capable to infer an abstract model.
+Once the model is built, \appstract{} allows the assignment of an identifier to any node of a provided (previously unseen) page from this application.
+The assigned identifier is both robust and semantically rich---i.e. two buy buttons from different products will have the same identifier.
 
 Our approach has two main components:
 \begin{enumerate}
-    \item \textbf{Intra-page} abstraction: detect patterns within one page
-    \item \textbf{Inter-page} abstraction: detect patterns between two pages 
+    \item \textbf{Intra-page} abstraction: detect patterns within one page,
+    \item \textbf{Inter-page} abstraction: detect patterns between two pages. 
 \end{enumerate}
-APPSTRACT uses these components at several stages for both the creation of the abstraction model and its use. 
+\appstract{} uses these components at several stages for both the creation of the abstraction model and its use. 
 
-Finally, we designed an experiment to evaluate the quality of APPSTRACT. 
+Finally, we designed an experiment to evaluate the quality of \appstract{}. 
 
-We describe APPSTRACT in chapter~\ref{chap:appstract}
-
+We describe \appstract{} in Chapter~\ref{chap:appstract}

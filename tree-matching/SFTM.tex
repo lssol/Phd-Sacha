@@ -1,32 +1,32 @@
 \chapter{Tree Matching}\label{chap:sftm}
-\section{Abstract}
+\section*{Summary}
 % With the emergence of modern web applications, the \emph{Document Object Model} (DOM) of web pages has reached a new level of complexity that prevents the use of state-of-the-art approaches to compare them pairwise.
-% Indeed, the existing approaches, like \emph{Tree-Edit Distance} (TED) or \emph{Flexible Tree Matching} (FTM) fail to scale beyond hundred of nodes, which is far below the average complexity of existing web apps.
+% Indeed, the existing approaches, like \emph{Tree-Edit Distance} (TED) or \emph{Flexible Tree Matching} (FTM) fail to scale beyond hundreds of nodes, which is far below the average complexity of existing web apps.
 Tree matching techniques have been investigated in many fields, including web data mining and extraction, as a key component to analyze the content of web pages.
 However, when applied to existing web pages, traditional tree matching approaches, covered by algorithms like \emph{Tree-Edit Distance} (TED) or \emph{XyDiff}, either fail to scale beyond a few hundred nodes or exhibit a relatively low accuracy.
 
-%In this article, we therefore propose a novel similarity-based FTM algorithm that proposes a similarity metric to scale beyond the current limits.
-In this section, we therefore propose a novel algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), which enables high accuracy tree matching on real-life web pages, with practical computation times.
-We approach tree matching as an optimisation problem and leverage node labels and local topology similarity in order to avoid any combinatorial explosion.
-Our practical evaluation demonstrates that SFTM significantly improves the state of the art in terms of accuracy, while allowing computation times significantly lower than the most accurate solutions.
-By gaining on these two dimensions, SFTM therefore offers an affordable solution to match complex trees in practice.
-% Tree Matching consists in computing a node to node matching between two trees. It is an extensively studied problem arising in many different fields. The traditional approach to address this problem is Tree-Edit Distance (TED). TED-based algorithms intend to find the optimal sequence of basic operations to transform a tree into another. TED based algorithms have two main limitations though: 
+%In this article, we, therefore, propose a novel similarity-based FTM algorithm that proposes a similarity metric to scale beyond the current limits.
+In this section, we, therefore, propose a novel algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), which enables high accuracy tree matching on real-life web pages, with practical computation times.
+We approach tree matching as an optimization problem and leverage node labels and local topology similarity to avoid any combinatorial explosion.
+Our practical evaluation demonstrates that SFTM significantly improves the state of the art in terms of accuracy while allowing computation times significantly lower than the most accurate solutions.
+By gaining on these two dimensions, SFTM, therefore, offers an affordable solution to match complex trees in practice.
+% Tree Matching consists in computing a node-to-node matching between two trees. It is an extensively studied problem arising in many different fields. The traditional approach to address this problem is Tree-Edit Distance (TED). TED-based algorithms intend to find the optimal sequence of basic operations to transform one tree into another. TED-based algorithms have two main limitations though: 
 % \begin{inparaenum}
-% 	\item there is currently no TED based algorithm with less than $O(n^3)$ time complexity and
+% 	\item there is currently no TED-based algorithm with less than $O(n^3)$ time complexity and
 %     \item by definition of TED, once two nodes $n$ and $m$ are matched, descendants of $n$ can only be matched with descendants of $m$ (ancestry restriction), which makes TED a more restrictive problem than general tree-matching.  
 % \end{inparaenum}
-% A recent work by Kumar et al introduced a novel flexible tree-matching algorithm to relax this ancestry restriction of TED, but the proposed algorithm is impractical to run on trees that have more than a few hundreds of nodes.
-% Based on Kumar et al's work, we introduce a novel flexible-tree-matching algorithm that performs in $O(n\ log(n))$ time, thus solving both limitations of TED. In order to do so, we approach tree matching as an optimisation problem and leverage node labels and local topology similarity to avoid combinatorial explosion.
+% A recent work by Kumar et al introduced a novel flexible tree-matching algorithm to relax this ancestry restriction of TED, but the proposed algorithm is impractical to run on trees that have more than a few hundred nodes.
+% Based on Kumar et al's work, we introduce a novel flexible-tree-matching algorithm that performs in $O(n\ log(n))$ time, thus solving both limitations of TED. To do so, we approach tree matching as an optimization problem and leverage node labels and local topology similarity to avoid combinatorial explosion.
 % Finally, we empirically evaluate our algorithm on webpage DOM trees, on both synthetic and real-life examples. Results show that our algorithm qualitatively compares to TED while drastically reducing time complexity.
 
 \section{Introduction} 
 % Modern web applications are widely used to assist users in their daily tasks.
-The success of Internet has led to the publication and the delivery of a deluge of structured content.
+The success of the Internet has led to the publication and delivery of a deluge of structured content.
 Nowadays, web services and applications are heavily adopting tree-based documents to structure and transfer online content.
-However, these web pages keep evolving over time and keeping track of such changes remains a critical issue for the ecosystem and the research community.
+However, these web pages keep evolving, and keeping track of such changes remains a critical issue for the ecosystem and the research community.
 Examples of usages that require to detect or track changes in web pages include web extraction~\cite{reis2004automatic,yao2013answer,zhai2005web}, web testing~\cite{choudhary2011water,stocco2017apogen}, comparison of web service versions~\cite{fokaefs2011empirical}, web schema matching~\cite{hao2007web}, and automatic re-organization of websites~\cite{Kumar2011_Bricolage}.
 
-% For example, when it comes to HTML web pages, keeping track of all changes requires to compare \emph{Document Object Model} (DOM) trees across multiples versions of a given resources.
+% For example, when it comes to HTML web pages, keeping track of all changes requires comparing \emph{Document Object Model} (DOM) trees across multiple versions of a given resource.
 To date, few solutions are specifically designed or tested to match and compare two web pages.
 However, the more general question of tree matching has been extensively studied by two families of solutions applicable to the problem of web page matching: 
 \begin{inparaenum}
@@ -35,17 +35,17 @@ However, the more general question of tree matching has been extensively studied
 \end{inparaenum}
 
 TED is the first and most widely known approach to match trees.
-The matchings computed by TED solutions are optimal and there have been much effort into developing openly available efficient implementations of the algorithm~\cite{Pawlik2011,pawlik2015efficient,pawlik2016tree}.
+The matchings computed by TED solutions are optimal and there has been much effort into developing openly available efficient implementations of the algorithm~\cite{Pawlik2011,pawlik2015efficient,pawlik2016tree}.
 Despite these efforts, TED remains costly to compute. A recent study~\cite{bringmann2018tree} theoretically showed that no algorithm could compute the optimal TED in less than $O(N^3)$ worst time complexity.
 To address TED's limitations, several restrictions to TED have been developed. These TED-related algorithms add constraints to the produced matching allowing to trade accuracy for speed.
 
 XML\,diff solutions aim to find the sequence of editions between two XML trees.
 The approach is similar to TED, but solutions sometimes make use of XML specificities.
-For example, the most widely-known XML\,diff solution---\textsc{XyDiff}~\cite{Cobena2002DetectingDocuments}---is extremely fast, but makes heavy use of XSD schemas and XML primary keys, which cannot be assumed on for any web page.
-Without such an additional information, the algorithm unfortunately yields low-accuracy results.
+For example, the most widely-known XML\,diff solution---\textsc{XyDiff}~\cite{Cobena2002DetectingDocuments}---is extremely fast, but makes heavy use of XSD schemas and XML primary keys, which cannot be assumed on any web page.
+Without such additional information, the algorithm unfortunately yields low-accuracy results.
 
-Overall, when matching two web pages, even the most efficient TED implementation~\cite{pawlik2016tree} offers far from optimal accuracy (69\% of precision in average in our empirical evaluation) for computation times often reaching several seconds.
-The lack of accuracy may be due to the restrictions TED solutions impose on the produced matching: ancestors and siblings order must be preserved.
+Overall, when matching two web pages, even the most efficient TED implementation~\cite{pawlik2016tree} offers far from optimal accuracy (69\% of precision on average in our empirical evaluation) for computation times often reaching several seconds.
+The lack of accuracy may be due to the restrictions TED solutions impose on the produced matching: ancestors' and siblings' orders must be preserved.
 However, such restrictions do not hold for web pages and Figure~\ref{sftm:fig:ted_mistake} illustrates how TED can report biased matchings, even on simple trees.
 
 \begin{figure}
@@ -56,17 +56,17 @@ However, such restrictions do not hold for web pages and Figure~\ref{sftm:fig:te
 \end{figure}
 
 To address these restrictions when attempting to match two web documents, \cite{fokaefs2011empirical} extended TED with some additional move operations executed \emph{a~posteriori} to address the ancestry restriction and \cite{Kumar2011_FTM,Kumar2011_Bricolage} developed her own \emph{Flexible Tree Matching} (FTM) algorithm to address the ancestry restriction problem.
-Unfortunately, while FTM provides a truly restriction-free matching, its high complexity does not allow FTM to scale beyond more than a few dozens of nodes, which is far below the average size of real-life web pages.
+Unfortunately, while FTM provides a truly restriction-free matching, its high complexity does not allow FTM to scale beyond more than a few dozen of nodes, which is far below the average size of real-life web pages.
 
-% Unfortunately, state-of-the-art algorithms have been proposed to achieve this goal impose to choose between \emph{matching accuracy} or \emph{fast matching}~\cite{xydiff} for any tuple of web documents.
-% Furthermore, one can also observe that existing algorithms fail to scale beyond a few hundred of nodes.
+% Unfortunately, state-of-the-art algorithms have been proposed to achieve this goal imposing to choose between \emph{matching accuracy} or \emph{fast matching}~\cite{xydiff} for any tuple of web documents.
+% Furthermore, one can also observe that existing algorithms fail to scale beyond a few hundred nodes.
 
 % For example, the traditional approach, which is general to any kind of tree, is \emph{Tree Edit Distance} (TED)~\cite{Tai1979} and can be computed in minimum $O(N^3)$ time~\cite{bringmann2018tree}.
-% % TED is a restriction of tree matching where descendants of matched nodes can only match with each others (ancestry restriction) and siblings order must be preserved.
+% % TED is a restriction of tree matching where descendants of matched nodes can only match with each other (ancestry restriction) and siblings' order must be preserved.
 % We executed a robust implementation of TED, named APTED~\cite{pawlik2015efficient,pawlik2016tree}, on two instances of the DOM of YouTube, which took more than 4 minutes to propose a matching.
 % Unfortunately, when processing and comparing a large dataset of Web documents, one cannot afford such computation times, which makes TED difficult to use in production.
 
-% However, when reproducing this experiment with \textsc{XyDiff},\footnote{\url{https://github.com/fdintino/xydiff}} which is a set of tools for creating and applying deltas from XML documents, results are reported much faster, but the price of a poor accuracy of the resulting tree matchings.
+% However, when reproducing this experiment with \textsc{XyDiff},\footnote{\url{https://github.com/fdintino/xydiff}} which is a set of tools for creating and applying deltas from XML documents, results are reported much faster, but the price of poor accuracy of the resulting tree matchings.
 
 % Figure~\ref{sftm:fig:tree_matching_example} illustrates the tree-matching problem. 
 
@@ -77,11 +77,11 @@ Unfortunately, while FTM provides a truly restriction-free matching, its high co
 %     \label{sftm:fig:tree_matching_example}
 % \end{figure}
 
-% The qualitative restrictions or speed limitations of the state of the art therefore led to the development of alternative algorithms.
+% The qualitative restrictions or speed limitations of the state of the art, therefore, led to the development of alternative algorithms.
 % For example, \cite{fokaefs2011empirical} extended TED with some additional move operations executed \emph{a~posteriori} to address the ancestry restriction.
 % \cite{Kumar2011_FTM,Kumar2011_Bricolage} developed her own \emph{Flexible Tree Matching} (FTM) algorithm to address the ancestry restriction problem, while \cite{reis2004automatic} developed a fast matching system based on top-down matching to extract news faster than TED does. 
 
-In the line of the aforementioned work, this chapter therefore aims at enabling the fast and non-restricted comparison of complex web pages.
+In line with the aforementioned work, this chapter, therefore, aims at enabling the fast and non-restricted comparison of complex web pages.
 In particular, we propose an alternative to the state-of-the-art FTM algorithm, named \emph{Similarity-based Flexible Tree Matching} (SFTM), that leverages similarity metrics to speed up the comparison of complex trees. 
 SFTM shares the properties of FTM to offer a non-restricted tree matching, while offering computation times much lower than FTM, even on restricted versions of the problem.
 To match two web page trees, the approach taken by SFTM strongly differs from traditional techniques.
@@ -92,8 +92,8 @@ SFTM instead relies on a \textit{label-centric} approach: it prunes the space of
 % Through empirical evaluation on real websites, we show that our implementation of SFTM qualitatively compares to APTED and scales in $O(n\cdot log(n))$ with the size of the DOM considered in our experiments, thus making it applicable in many production contexts.
 
 We compared SFTM to other state-of-the-art solutions on a large dataset of popular web pages.
-SFTM showed almost twice more efficiency than the best existing solution.
-Overall, our algorithm SFTM allows to consistently match real-life web pages with high precision (89\% precision on average) in reasonable time (182\,ms on average).
+SFTM showed almost twice more efficiency as the best existing solution.
+Overall, our algorithm SFTM allows us to consistently match real-life web pages with high precision (89\% precision on average) in a reasonable time (182\,ms on average).
 
 The code for both SFTM and its benchmark is available openly.\footnote{https://anonymous.4open.science/r/7ae57bd7-3b29-463a-88a4-d31c04ecfcd2/}
 
@@ -117,28 +117,28 @@ In our work, we consider APTED as one of the baselines to evaluate our contribut
 
 % \subsection{Restrictions of TED}
 \cite{bringmann2018tree} showed that TED cannot be computed in worst-case complexity lower than $O(n^3)$.
-In order to circumvent this limitation, several restricted versions of the TED problem have been formulated.
+To circumvent this limitation, several restricted versions of the TED problem have been formulated.
 The \textit{Constrained Edit Distance}~\cite{zhang1995algorithms, zhang1996constrained} is an edit distance where disjoint subtrees can only be mapped to disjoint subtrees.
 The \textit{Tree Alignment Distance}~\cite{jiang1994alignment} is a TED where all insertions must be performed before any deletion.
 The \textit{Top-Down} distance~\cite{selkow1977tree} is computable in $O(|T|\times|T'|)$, but imposes as a restriction that the parents of nodes in a mapping must be in the mapping.
 The \textit{Bottom-Up} distance~\cite{valiente2001efficient} between trees builds a mapping in linear time, but such mapping must respect the following constraint: if two nodes have been mapped, their respective children must also be part of the mapping.
-\cite{reis2004automatic} proposes a variation of the \textit{Top-Down} mapping, called \textit{Restricted Top-Down Mapping} (RTDM), where replacement operations are restricted to the leaves of the trees, which delivers considerable speed gains, despite a theoretical worst case time complexity still in $O(N^2)$.
+\cite{reis2004automatic} proposes a variation of the \textit{Top-Down} mapping, called \textit{Restricted Top-Down Mapping} (RTDM), where replacement operations are restricted to the leaves of the trees, which delivers considerable speed gains, despite a theoretical worst-case time complexity still in $O(N^2)$.
 By definition TED already sets strong restrictions on produced matchings: sibling order and ancestry relationships must be preserved~\cite{zhang1995algorithms}.
 These restrictions are particularly problematic when matching two full web pages together~\cite{Kumar2011_Bricolage}.
-While above solutions improve computation times, they answer a restricted version of the TED problem leading to an even more restricted set of possible matchings.
+While the above solutions improve computation times, they answer a restricted version of the TED problem leading to an even more restricted set of possible matchings.
 
 \paragraph{\bf XML\,diff}\label{sftm:sec:xmldiff}
 While TED-related approaches focus on computing a distance between trees, another part of the scientific literature focuses on inferring the set of edit operations between two XML documents.
-Most XML\,diff solutions use an intermediary matching step in order to compute the diff.
-Computing the set of diff from a given matching is quite straightforward, which means that most works on the subject actually focus on the matching part.
+Most XML\,diff solutions use an intermediary matching step to compute the diff.
+Computing the set of diff from a given matching is quite straightforward, which means that most works on the subject focus on the matching part.
 \textsc{XyDiff}~\cite{Cobena2002DetectingDocuments} matches and computes the diff of two XML documents very quickly.
 To do so, \textsc{XyDiff} hashes subtrees from both documents and prunes the space of matching possibilities by matching subtrees with identical hashes.
 The algorithm can also make use of id attributes and XSD schemas if they exist.
-On the other end of the spectrum, \textsc{X-Diff}~\cite{wang2003x} favors accuracy over speed and computes an optimal matching using hashings of path signatures.
+On the other end of the spectrum, \textsc{X-Diff}~\cite{wang2003x} favors accuracy over speed and computes an optimal matching using hashing of path signatures.
 \textsc{XKeyDiff}~\cite{dos2007semantical} builds on \textsc{XyDiff} and adds matching logic based on XML primary keys, \texttt{XML\_SIM\_CHANGE}~\cite{viyanon2010xml} and \texttt{XREL\_CHANGE\_SQL}~\cite{sundaram2012change} match XMLs stored in relational databases using SQL. 
 \textsc{Phoenix}~\cite{oliveira2018efficient} interestingly uses a more flexible similarity metric between nodes (\emph{e.g.}, to compare the content of two nodes, they use the \emph{Longest Common Sequence}) and choose how to match each subtree by recursively applying the Hungarian algorithm~\cite{kuhn1955hungarian}.
 Unfortunately, \textsc{Phoenix} runs in $O(n^4)$ and yields less accurate results than \textsc{X-Diff}.
-In our empirical evaluation, we evaluated our solution along with \textsc{XyDiff}, which is widely known and used for XML\,diff, has an efficient implementation openly available and runs in scalable computation times.
+In our empirical evaluation, we evaluated our solution along with \textsc{XyDiff}, which is widely known and used for XML\,diff, has an efficient implementation openly available, and runs in scalable computation times.
 
 \paragraph{\bf \emph{Flexible Tree Matching} (FTM)}
 In~\cite{Kumar2011_Bricolage}, TED is found to be unpractical when applied on DOM, as the resulting matching enforces ancestry relationship---\emph{i.e.}, once two nodes $n, n'$ have been matched, the descendants of $n$ can only be matched with the descendants of $n'$, and \emph{vice~versa}. 
@@ -147,10 +147,10 @@ It restricts its use to small HTML trees composed of less than a hundred nodes, 
 Furthermore, to the best of our knowledge, there is no public implementation of FTM that can be considered for comparison.
 
 % \subsection{Limitations \& challenges}
-We therefore aim at reducing the complexity of the FTM algorithm in order to scale on complex web pages without enforcing restrictions on produced tree-matching solutions.
-While all above contributions are structure-based, we build on FTM's approach and rather offer a flexible, label-based matching where labels are used to match nodes and structure is only used \emph{a~posteriori} to improve the matching.
+We, therefore, aim at reducing the complexity of the FTM algorithm to scale on complex web pages without enforcing restrictions on produced tree-matching solutions.
+While all the above contributions are structure-based, we build on FTM's approach and rather offer a flexible, label-based matching where labels are used to match nodes and structure is only used \emph{a~posteriori} to improve the matching.
 
-Our contributions therefore read as follows:
+Our contributions, therefore, read as follows:
 \begin{compactenum}
     \item we develop an algorithm inspired by FTM, coined as \emph{Similarity-based Flexible Tree Matching} (SFTM), by leveraging the notion of label similarity, and similarity propagation to reduce the computation time, and
     \item we apply mutations on real-life web documents to provide a thorough evaluation of our implementation of SFTM, showing that it outperforms state-of-the-art approaches in terms of efficiency.
@@ -158,8 +158,8 @@ Our contributions therefore read as follows:
 
 \section{Flexible Tree Matching (FTM)}\label{sftm:sec:ftm}
 The \emph{Similarity-based Flexible Tree Matching} (SFTM) we introduce in this chapter can be considered as an extension of the \textit{Flexible Tree Matching} (FTM) algorithm.
-This section therefore introduces the FTM algorithm, as originally proposed by Kumar~\emph{et~al.}~\cite{Kumar2011_Bricolage}.
-We first describe the notations used throughout the rest of the chapter, and then describe the main steps of the algorithm.
+This section, therefore, introduces the FTM algorithm, as originally proposed by Kumar~\emph{et~al.}~\cite{Kumar2011_Bricolage}.
+We first describe the notations used throughout the rest of the chapter and then describe the main steps of the algorithm.
 
 \subsection{FTM Notations and Overview}
 We define an ordered tree $T$ as a directed graph $(N,\prec)$ where $N$ is the non-empty set of nodes and $\prec$ a total order relation that can relate a \emph{child} node $c \in N$ to its \emph{parent} $p \in N$, as $c \prec p$, or \emph{siblings}, as $s \in N$, as $c \prec s$.
@@ -169,7 +169,7 @@ In particular, we choose a total order rather than a partial one as the order of
 In this chapter, we always consider \emph{matchings} between two trees $T=(N,\prec)$ and $T'=(N',\prec')$.
 
 Given two trees $T$ and $T'$, the FTM algorithm relies on the complete bipartite graph $G$ between $N^* = N\cup{\Theta}$ and $N'^* = N'\cup{\Theta}'$, where $\Theta$ and $\Theta'$ are \textit{no-match} nodes.
-The fact that $G$ is complete means that every nodes of $T^*$ shares exactly one edge with every nodes of $T'^*$.
+The fact that $G$ is complete means that every node of $T^*$ shares exactly one edge with every node of $T'^*$.
 Formally, we thus have $E(G) = N^* \times N'^*$ where $E(G)$ are the edges of the graph $G$.
 An edge $e=(n, n') \in E(G)$ between $n\in N^*$ and $n'\in N'^*$ represents the matching of $n$ with $n'$. Each edge linking a tuple $(n, n')$ is called a \textit{match}.
 So, intuitively, $G$ represents all possible matchings between nodes of $T^*$ and $T'^*$ (cf. Figure~\ref{sftm:fig:g_SFTM}).
@@ -177,7 +177,7 @@ So, intuitively, $G$ represents all possible matchings between nodes of $T^*$ an
 \begin{figure}
     \centering 
     \includegraphics[width=.5\textwidth]{tree-matching/explanation/g_ftm}
-    \caption{Building a bipartite graph $G$ representing the set of all possible matchings (left) and then compute the optimal full matching (right).}
+    \caption{Building a bipartite graph $G$ representing the set of all possible matchings (left) and then computing the optimal full matching (right).}
     \label{sftm:fig:g_SFTM}%
 \end{figure}
 
@@ -195,12 +195,12 @@ The upper part of Figure~\ref{sftm:fig:steps} describes the main steps involved 
 \begin{figure*}
     \centering
 	\includegraphics[width=\linewidth]{tree-matching/explanation/ftm-sftm-steps}
-    \caption{Steps to compute a full matching between two trees $T$ and $T'$. Upper part covers FTM, while lower part is SFTM.}
+    \caption{Steps to compute a full matching between two trees $T$ and $T'$. The upper part covers FTM, while the lower part is SFTM.}
     \label{sftm:fig:steps}
 \end{figure*}
 
 \subsection{Cost Estimation}\label{sftm:sec:FTM_cost}
-As FTM provides a wide flexibility regarding possible matchings, the design of the cost function $c$ is a key parameter in order to obtain a matching that takes into account both the labels and the topology of the trees.
+As FTM provides wide flexibility regarding possible matchings, the design of the cost function $c$ is a key parameter to obtain a matching that takes into account both the labels and the topology of the trees.
 Typically, the cost $c(e)$ of an edge $e$ between two nodes $n$ and $n'$ is estimated by FTM as follows:
 %\text{if }n\text{ or }m\text{ is a no-match node}
 \begin{equation}\label{eq:FTM_cost}
@@ -215,16 +215,16 @@ $w_n, w_r, c_r, w_a$ and $w_s$ are parameters of the cost function that depend o
 By extension, we note $c(M) = \sum_{e \in M} c(e)$ the cost of a matching $M$.
 
 Given $e=(n, n')$, the ancestry and sibling costs, $c_a(e)$ and $c_s(e)$, model the changes in topology that matching $n$ with $n'$ entails.
-Unfortunately, we can only estimate the costs $c_a$ and $c_s$ if we have access to a full matching, as both costs require a knowledge on how other nodes in the tree were matched (\emph{e.g.}, $c_a$ involves counting the number of children of $n$ matched with nodes that are not children of $n'$).
-In order to circumvent the problem, FTM rather considers the approximate costs $\hat{c_a}, \hat{c_s}$ that can be estimated from bounds on the different components of the cost $c$.
-Practically, in order to generate one possible full matching, FTM iteratively selects edges in $G$ and, each time an edge is selected, the bounds of $c$ are tightened (we can approximate $c$ more precisely), which means that the costs $\hat{c_a}, \hat{c_s}$ keep being re-estimated along iterations (cf. upper part of Figure~\ref{sftm:fig:steps}).
-The need to re-estimate the approximated costs after each edge selection actually imposes some critical limitations on the scalability of the algorithm.
+Unfortunately, we can only estimate the costs $c_a$ and $c_s$ if we have access to a full matching, as both costs require knowledge of how other nodes in the tree were matched (\emph{e.g.}, $c_a$ involves counting the number of children of $n$ matched with nodes that are not children of $n'$).
+To circumvent the problem, FTM rather considers the approximate costs $\hat{c_a}, \hat{c_s}$ that can be estimated from bounds on the different components of the cost $c$.
+Practically, to generate one possible full matching, FTM iteratively selects edges in $G$ and, each time an edge is selected, the bounds of $c$ are tightened (we can approximate $c$ more precisely), which means that the costs $\hat{c_a}, \hat{c_s}$ keep being re-estimated along iterations (cf. upper part of Figure~\ref{sftm:fig:steps}).
+The need to re-estimate the approximated costs after each edge selection imposes some critical limitations on the scalability of the algorithm.
 
 \subsection{\textsc{Metropolis} Algorithm}\label{sftm:sec:metropolis_ftm}% \cite{Kumar2011_FTM}
 Finding the optimal matching, given the graph $G$ and the cost function $c$ is a challenging problem, the authors even proved in~\cite{Kumar2011_FTM} that this problem is NP-hard.
 Consequently, the authors described how to use the \textsc{Metropolis} algorithm~\cite{metropolis1953equation} to approximate the optimal matching. 
 The \textsc{Metropolis} algorithm provides a way to explore a probability distribution by random walking through samples.
-FTM uses this algorithm to random walk through several full matchings, and select the least costly.
+FTM uses this algorithm to walk randomly through several full matchings, and select the least costly.
 The \textsc{Metropolis} algorithm requires to be configured with:
 \begin{compactenum}
     \item An initial sample (full matching) $M_0$,
@@ -237,14 +237,14 @@ Kumar~\emph{et~al.} defines the objective function $f$ by:
 \begin{equation} \label{eq:objective_FTM}
 	f_{FTM}(M) = \exp(-\beta\ c(M))
 \end{equation}
-In order to suggest a matching $M_{t+1}$ from a previously accepted one $M_t$, FTM selects a random number of edges from $M_t$ to keep, sorts remaining edges by increasing costs and iterate through the ordered edges with a probability $\gamma$ to select it.
+To suggest a matching $M_{t+1}$ from a previously accepted one $M_t$, FTM selects a random number of edges from $M_t$ to keep, sorts remaining edges by increasing costs, and iterates through the ordered edges with a probability $\gamma$ to select it.
 Once an edge $e = (n,n')$ is selected, all edges connected to $n$ and $n'$ are removed from $G$, and approximate costs need to be re-estimated for all remaining edges, and then sorted so we can select another edge.
 The process is repeated until an alternative full matching is obtained.
 Therefore, despite using the \textsc{Metropolis} algorithm to reduce the time complexity of the problem, the overall algorithm remains prohibitively costly to compute (cf. Section~\ref{sftm:sec:evaluation}), notably due to the continuous re-estimation of the approximated costs at each step of the full matching generation.
 
 \subsection{Complexity Analysis}\label{sftm:sec:ftm_complexity}
-The original FTM article~\cite{Kumar2011_FTM} does not report on the complexity nor the computation time of the algorithm.
-We, therefore, provide an analysis of FTM's theoretical complexity in order to compare it to the one of SFTM (cf. Section~\ref{sftm:sec:complexity}).
+The original FTM article~\cite{Kumar2011_FTM} does not report on the complexity of the computation time of the algorithm.
+We, therefore, provide an analysis of FTM's theoretical complexity to compare it to the one of SFTM (cf. Section~\ref{sftm:sec:complexity}).
 
 When discussing complexity, to simplify the notations, we consider the matching of two trees with the same number of nodes and we note $N$ the number of nodes of both trees.
 
@@ -255,13 +255,13 @@ Building the complete bipartite graph requires matching each node from $T$ to on
 For each iteration of the \textsc{Metropolis} algorithm, FTM has to suggest a new matching.
 In the worst case, the algorithm should choose among all $N^2$ edges.
 Each time an edge between $e_1$ and $e_2$ is selected, all other edges connected to $e_1$ and $e_2$ are pruned and remaining costs requires to be re-estimated.
-It means that costs have to be re-estimated and sorted for $N^2$ edges, then $(N-1)^2$ edges (after selection and pruning) and so on, until all edges have been selected or pruned.
+It means that costs have to be re-estimated and sorted for $N^2$ edges, then $(N-1)^2$ edges (after selection and pruning), and so on, until all edges have been selected or pruned.
 This implies that the total number of times the costs are re-estimated and sorted is in $O(\sum^N_{n = 0}n^2)$ = $O(N^3)$.
 Estimating the cost for a given edge linking $e_1$ and $e_2$ involves counting the number of potential ancestry and sibling violations, which requires going through all edges connected to siblings and children of $e_1$ and $e_2$.
-Even if we assume the number of siblings and children is independent from $N$, it still means that estimating the cost of one edge requires $O(N)$ operations.
+Even if we assume the number of siblings and children is independent of $N$, it still means that estimating the cost of one edge requires $O(N)$ operations.
 Thus, in the worst case, the amount of operations required by FTM for each iteration of the \textsc{Metropolis} algorithm is in $O(\sum^N_{n = 0}n^3)$ = $O(N^4)$ (using Faulhaber's Formula).
 
-Overall, the \textsc{Metropolis} step is the one with highest complexity, which means that the complexity of the FTM algorithm is in $O(N^4)$ where $N$ is the number of nodes to match.
+Overall, the \textsc{Metropolis} step is the one with the highest complexity, which means that the complexity of the FTM algorithm is in $O(N^4)$ where $N$ is the number of nodes to match.
 
 % \section{Similarity-based Flexible Tree~Matching}\label{sftm:sec:SFTM}
 \section{Similarity-based FTM (SFTM)}\label{sftm:sec:SFTM}
@@ -279,7 +279,7 @@ This new similarity measure allows SFTM to improve the FTM algorithm in two key 
 In this section, we therefore
 \begin{inparaenum}[(a)]
 	\item introduce our new similarity metric, and
-    \item describe how we leverage it to approximate the optimal full matching.
+    \item describes how we leverage it to approximate the optimal full matching.
 \end{inparaenum}
 
 \subsection{Overview of Similarity-based Matching}\label{se:newCost}
@@ -306,7 +306,7 @@ Thus, to reduce the number of operations, SFTM uses---instead---inverted indices
 Section~\ref{tokenSelection} provides a detailed description of the function $tokenize$ we use in our evaluation.
 
 Decomposing nodes from $N$ into tokens allows SFTM to build an inverted index $TM$ (\emph{Token Map}), which maps every token $tk$ with the list of nodes of $N$ that contains $tk$.
-The idea behind the inverted index $TM$ is to use the information that a node $n \in N$ contains a token as a differentiating feature of $n$ allowing to quickly compare it to nodes in $N'$.
+The idea behind the inverted index $TM$ is to use the information that a node $n \in N$ contains a token as a differentiating feature of $n$ allowing us to quickly compare it to nodes in $N'$.
 If a token $tk$ appears in all nodes $N$, this token has no differentiating power.
 In general, the rarest a token, the more differentiating it is.
 This idea is very common in \emph{Natural Language Processing} (NLP) and a common tool to measure how rare is a token in TF-IDF~\cite{jones1972statistical} and more precisely, the \emph{Inverted Document Frequency} (IDF) part of the formula.
@@ -328,8 +328,8 @@ In Section~\ref{sftm:sec:complexity}, we discuss how $f(N)$ influences the worst
 % An exhaustive theoretical and empirical analysis of precisely how $f$ influences the computation times and matching quality will be the object of future studies.
 
 \subsubsection{Local Topology (step\,2)}
-$s_{0}$ represents the similarity between node labels, but does not take into account the topology of the trees.
-To weight in local topology similarities, we propagate the score of each node pair to their offspring and siblings.
+$s_{0}$ represents the similarity between node labels but does not take into account the topology of the trees.
+To weigh in local topology similarities, we propagate the score of each node pair to their offspring and siblings.
 This idea of propagation is inspired by recent \emph{Graph Convolutional Network} (GCN) techniques~\cite{kipf2016semi}.
 
 The original FTM algorithm includes two terms in the cost function, $c_a$ (ancestry cost) and $c_s$ (sibling cost), which reflect the topology of the trees.
@@ -353,7 +353,7 @@ We repeat the process $P$ times ($P$ for propagation) where $P$ is a parameter o
 The resulting function $s_{P}$ then reflects both label similarity and local topology similarity.
 
 Intuitively, at each iteration, we propagate information further up in the tree.
-This is why, the weight sequences $w$ and $v$ should be decreasing so that close kinship among nodes prevails.
+This is why the weight sequences $w$ and $v$ should be decreasing so that close kinship among nodes prevails.
 From our experiments, we advice the following values for the $P=3$ weights: $w_0 = 0.4, w_1 = 0.04, w_2 = 0.004$ and $w_0 = 0.8, w_1 = 0.08, w_2 = 0.008$.
 These values were used and unchanged for all results presented in the empirical evaluation~\ref{sftm:sec:evaluation}, leading to high accuracy on a large variety of web documents.
 
@@ -404,13 +404,13 @@ In Section~\ref{tokenSelection}, we further describe how we sort HTML nodes into
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{tree-matching/explanation/inverted_index}
-    \caption{Creating the bipartite graph $G$ from two example DOMs $T,T'$. (1a,b)~are the input DOMs, (2a,b)~the extracted tokens, (3)~the inverted index $TM$, (4)~the neighbours dictionaries, and (5)~the resulting bipartite graph $G$. For simplicity, the figure shows a matching where $IDF(tk)=1$, $P=0$ and no-match nodes are not displayed.}\label{sftm:fig:inverted_index}
+    \caption{Creating the bipartite graph $G$ from two example DOMs $T,T'$. (1a,b)~are the input DOMs, (2a,b)~the extracted tokens, (3)~the inverted index $TM$, (4)~the neighbors' dictionaries, and (5)~the resulting bipartite graph $G$. For simplicity, the figure shows a matching where $IDF(tk)=1$, $P=0$, and no-match nodes are not displayed.}\label{sftm:fig:inverted_index}
 \end{figure*}
 
 Given the inverted index $TM$, we define the function $IDF: tk \mapsto log(|N|/|TM[tk]|)$.
-In order to limit the complexity of our algorithm, we remove every token $tk \in TM$ that is contained by more than $f(N)=\sqrt{N}$ nodes, where $f$ is the chosen sub-linear threshold function.
+To limit the complexity of our algorithm, we remove every token $tk \in TM$ that is contained by more than $f(N)=\sqrt{N}$ nodes, where $f$ is the chosen sub-linear threshold function.
 This is equivalent to putting a threshold on $IDF$ to only keep tokens $\{tk \in TM |IDF(tk) > log(\sqrt{N})\}$.
-Removing the most common tokens has a limited impact on matching quality, since these are exactly the tokens that provide the least information on the nodes they appear in.
+Removing the most common tokens has a limited impact on matching quality since these are exactly the tokens that provide the least information on the nodes they appear in.
 
 \begin{algorithm}
 \caption{For a given node $n'\in N'$, compute similarity score $s_0(n,n')$ with all $n\in N$, such that $s_0 > 0$}
@@ -454,11 +454,11 @@ We decompose $n$ into the following tokens:
 \begin{equation}
 	tokens(n) = \{xPath(n), \texttt{tag}, att_1..a_l, tok(val_1)..tok(val_l)\}
 \end{equation}
-where $tok$ is a standard string tokenizing function that takes a string and splits it into a list of tokens on each non Latin character.
+where $tok$ is a standard string tokenizing function that takes a string and splits it into a list of tokens on each non-Latin character.
 The absolute XPath of a node $n$ in a tree is the full path from the root to the element where ranks of the nodes are indicated when necessary---\emph{e.g.}, \texttt{html/body/div[2]/p}.
 
 SFTM does not include the text content of the nodes in the extracted token vectors.
-This decision allow to match pages in different languages or containing different content (e.g. news website) in a robust way.
+This decision allows to match pages in different languages or containing different content (e.g. news website) robustly.
 
 \subsubsection{Building G (step\,4)}
 Using Equation~\ref{eq:SFTM_cost}, we compute the cost $c(n,n')$ for each couple $(n,n')$ where $s_p(n,n') \neq 0$.
@@ -466,7 +466,7 @@ Then, for each node $n'\in N'$, we add one edge for all nodes $values(neighbours
 
 \subsubsection{Metropolis Algorithm (step\,5)}
 Once we built the graph $G$ with its associated costs, we need to find the set of edges $M$ in $G$ that represents the best full matching between $T$ and $T'$.
-In order to do so, we apply the \textsc{Metropolis} algorithm in a different way than FTM does: 
+To do so, we apply the \textsc{Metropolis} algorithm in a different way than FTM does: 
 \begin{inparaenum}
 	\item we adopt an alternative objective function, and
     \item SFTM matching suggestion function is faster to compute, as costs never need to be re-estimated.
@@ -474,7 +474,7 @@ In order to do so, we apply the \textsc{Metropolis} algorithm in a different way
 
 Typically, FTM uses the objective function $f_{FTM}(M) = \exp(-\beta\ c(M))$.
 In the original FTM article, the authors noted that the parameter $\beta$ seemed to depend on $|M|$.
-In order to avoid this dependency, we therefore normalize the total cost:
+To avoid this dependency, we, therefore, normalize the total cost:
 \begin{equation}
 	f_{SFTM}(M) = \exp(-\beta\ \frac{c(M)}{|M|})
 \end{equation}
@@ -518,12 +518,12 @@ The parameter $\gamma$ defines a trade-off between exploration (low $\gamma$) an
 For the Metropolis related parameters, we used mostly the values advised in the original FTM article~\cite{Kumar2011_FTM}: $\gamma = 0.8, \beta = 2.5$ and a number of iterations of 10.
 
 \subsection{Complexity Analysis}\label{sftm:sec:complexity}
-We are interested in evaluating the time complexity of the algorithm with respect to the size of both trees $N$.
+We are interested in evaluating the time complexity of the algorithm concerning the size of both trees $N$.
 In our analysis, we consider that $N_{tk}=max(|tokens(n)|, n \in nodes(T))$, the maximum number of tokens per node is a constant since it does not evolve with $N$.
 
-When building $G$, we first compute the inverted index $TM$, which requires to iterate through the tokens of all the nodes in $T$, and thus implies a complexity in $O(N \cdot N_{tk}) = O(N)$.
+When building $G$, we first compute the inverted index $TM$, which requires iterating through the tokens of all the nodes in $T$, and thus implies complexity in $O(N \cdot N_{tk}) = O(N)$.
 
-To find the neighbours of nodes from $T'$ using $TM$, we iterate through all the nodes in $T'$, while each node in $T'$ has $N_{tk}$ tokens.
+To find the neighbors of nodes from $T'$ using $TM$, we iterate through all the nodes in $T'$, while each node in $T'$ has $N_{tk}$ tokens.
 The number of nodes containing a token is artificially limited to $f(N)$.
 Thus, building the similarity function $s_0$ takes $O(N \cdot f(N))$ time.
 
@@ -551,9 +551,9 @@ The objective of this evaluation is to assess that:
 We need to assess the ability of SFTM to match the nodes between two slightly different web pages $d$ and $d'$.
 To measure and compare the accuracy of all studied solutions, we must have access to the ground truth matching between $d$ and $d'$---\emph{i.e.}, for each node $n$ in $d$, what is the true matching node $n'$ in $d'$.
 
-To the best of our knowledge, there is no established and public benchmark that include such pairs of trees, along with the ground truth matching of their nodes. Creating such a benchmark is challenging.
-Existing matching solutions usually do not provide any qualitative empirical benchmark~\cite{Bunke1998ASubgraph,Dinitz1998OnIsomorphism, jiang1994alignment,valiente2001efficient,Wang2001FindingHierarchy,zhang1995algorithms} and challenging matching problems involve thousands of nodes, which makes manual labeling error prone for humans (both trees could not even be rendered on the same screen).
-Therefore, we built a a semi-synthetic dataset built from mutations applied to real-life web pages, thus obtaining a large-scale dataset in which the ground truth is known.
+To the best of our knowledge, there is no established and public benchmark that includes such pairs of trees, along with the ground truth matching of their nodes. Creating such a benchmark is challenging.
+Existing matching solutions usually do not provide any qualitative empirical benchmark~\cite{Bunke1998ASubgraph,Dinitz1998OnIsomorphism, jiang1994alignment,valiente2001efficient,Wang2001FindingHierarchy,zhang1995algorithms} and challenging matching problems involve thousands of nodes, which makes manual labeling error-prone for humans (both trees could not even be rendered on the same screen).
+Therefore, we built a semi-synthetic dataset built from mutations applied to real-life web pages, thus obtaining a large-scale dataset in which the ground truth is known.
 
 \paragraph{DOM mutation}
 To build a grounded dataset of $(d,d')$ pairs---\emph{i.e.}, where the ground truth (perfect matching) is known---we developed a mutation-based tool that operates as follows:
@@ -561,12 +561,12 @@ To build a grounded dataset of $(d,d')$ pairs---\emph{i.e.}, where the ground tr
 	\item we construct the DOM $d$ from an input web document,
     \item for each element of $d$, we generate a unique signature attribute,
     \item for each original DOM $d$, we randomly generate a set of mutated versions: the \textit{mutants}.
-    Each \textit{mutant} $d'$ is stored along with the precisely described set of mutations that was applied to $d$ to obtain $d'$.
-    Importantly, the signature tags of the elements in $d$ are transferred to $d'$, which constitutes the perfect matching between $d$ and $d'$. These signatures are obviously ignored when applying the matching algorithms.
+    Each \textit{mutant} $d'$ is stored along with the precisely described set of mutations that were applied to $d$ to obtain $d'$.
+    Importantly, the signature tags of the elements in $d$ are transferred to $d'$, which constitutes the perfect matching between $d$ and $d'$. These signatures are ignored when applying the matching algorithms.
 \end{compactenum}
 
 In our tool, most attention has been dedicated to the choice of relevant mutations to apply.
-We therefore relied on the expertise of web developers to identify the most common changes that can apply to DOM.
+We, therefore, relied on the expertise of web developers to identify the most common changes that can apply to DOM.
 Their feedback led to the identification of the following list of mutation operations:
 % \begin{center}
 %   \begin{tabular}{|l l|} 
@@ -595,7 +595,7 @@ Their feedback led to the identification of the following list of mutation opera
 \end{center}
 where
 \textit{Structure: remove} removes an element and its children (recursively), 
-\textit{duplicate} duplicates a subtree, applies $mutate$ to duplicated subtree and insert the subtree anywhere in the tree,
+\textit{duplicate} duplicates a subtree, applies $mutate$ to duplicated subtree, and inserts the subtree anywhere in the tree,
 \textit{wrap} wraps an element within a new $div$ container,
 \textit{unwrap} removes an element $e$ and attach the children of $e$ to the parent of $e$,
 \textit{swap} swaps the position of two sibling elements,
@@ -606,7 +606,7 @@ where
 \textit{Content: remove} removes the content of an element,
 \textit{Content: remove words} removes random tokens from the content of an element.
 
-We believe that the above mutations are representative of a wide range of changes that apply in web pages, although they may not perfectly cover all the cases encountered in practice.
+We believe that the above mutations are representative of a wide range of changes that apply to web pages, although they may not perfectly cover all the cases encountered in practice.
 In particular, the distribution of these mutations might not be uniform in real life---\emph{i.e.} some mutations might happen more than others.
 Yet, this evaluation intends to compare the sensitivity of studied matching algorithms to common mutations, which remains a relevant context to estimate and compare their quality.
 
@@ -616,7 +616,7 @@ Alexa provides a list of websites ordered by popularity, thus providing a repres
 For each original DOM $d$, we created $10$ mutants $d'_0\dots d'_9$ with a ratio of mutated nodes ranging from $0$ to $50\%$ of the total number of nodes on the page, $|nodes(d)|$.
 
 Overall, we obtained a dataset composed of $6,276$ document pairs $d,d'_n$ that could be correctly processed by the algorithms under study.
-Figure~\ref{sftm:fig:distribution} reports on the size distribution, in number of nodes, of original and mutated web documents included in this dataset.
+Figure~\ref{sftm:fig:distribution} reports on the size distribution, in the number of nodes, of original and mutated web documents included in this dataset.
 
 \begin{figure}
     \centering
@@ -639,16 +639,16 @@ We used an existing open source implementation of \textsc{XyDiff}.\footnote{http
 We consider the pairs $(d,d')$ taken from the above input dataset, and we systematically ran SFTM, APTED, and \textsc{XyDiff} algorithms with each pair to match $d$ with $d'$ on the same machine.
 
 \paragraph{Ground truth}
-When building the dataset, we keep track of nodes' signature so that we always know which nodes from $d$ should match with nodes from $d'$.
-This ground truth is hidden from the evaluated algorithms, but is used \emph{a~posteriori} to measure and compare the quality of the matchings computed by the algorithms under evaluation.
-% Our purpose in this section is not to conduct a thorough qualitative comparison of the algorithms, since it would require optimizing the parameters of both algorithms in an unbiased way.
+When building the dataset, we keep track of nodes' signatures so that we always know which nodes from $d$ should match with nodes from $d'$.
+This ground truth is hidden from the evaluated algorithms but is used \emph{a~posteriori} to measure and compare the quality of the matchings computed by the algorithms under evaluation.
+% Our purpose in this section is not to conduct a thorough qualitative comparison of the algorithms since it would require optimizing the parameters of both algorithms in an unbiased way.
 % Instead, we show that SFTM returns qualitatively comparable results, while drastically reducing computation time.
 
 \subsection{Experimental Results}\label{sftm:sec:performances}
 All the results in this section have been obtained by running all three algorithms on the same server containing 252\,GB of RAM and an Intel(R)~Xeon(R) CPU E5-2660\,v3 @ 2.60\,GHz.
 
 \paragraph{Matching quality}
-The signature tags injected in nodes from $d$ and $d'$ allow us to assess the quality of the matchings by comparing to the ideal matching $M_{ideal}$.
+The signature tags injected in nodes from $d$ and $d'$ allow us to assess the quality of the matchings by comparing them to the ideal matching $M_{ideal}$.
 For the qualitative analysis, we model the tree matching algorithm as a binary classification problem: Given two trees $T$ and $T'$ containing the set of nodes $N$ and $N'$ respectively, $N \times N'$ is the set of all possible matches.
 We consider the matching $M_a \subset N \times N'$ produced by a tree matching solution $a$.
 Then, a match $e=(n,n') \in M$ is classified as positive by $a$ if $e \in M_a$.
@@ -675,11 +675,11 @@ Using the above confusion matrix, we can compute the \textit{precision}, \textit
 
 Figure~\ref{sftm:fig:f1score} reports on the precision, recall and F1 score of the 3 tree matching solutions we compared, namely SFTM, APTED, and \textsc{XyDiff}.
 As expected, the accuracy of all solutions decreases when the mutation ratio increases.
-However, for all the reported metrics, SFTM clearly outperforms both \textsc{XyDiff} and APTED.
+However, for all the reported metrics, SFTM outperforms both \textsc{XyDiff} and APTED.
 For both APTED and \textsc{XyDiff}, we believe the lack of accuracy stems from the lack of flexibility when matching labels.
-\textsc{XyDiff} relies entirely on hashing subtrees of the document and match subtrees with identical hash.
+\textsc{XyDiff} relies entirely on hashing subtrees of the document and matching subtrees with identical hash.
 While this approach might be robust to small structural mutations, it is naturally very sensitive to large amounts of mutations when both structures and labels are mutated.
-Similarly, TED compares the labels of most pairs of nodes and generate an associated cost of \texttt{1} when the labels are identical and \texttt{0} when they are different (no gradual costs if the labels are similar).
+Similarly, TED compares the labels of most pairs of nodes and generates an associated cost of \texttt{1} when the labels are identical and \texttt{0} when they are different (no gradual costs if the labels are similar).
 % We modified the cost function on APTED to provide a more flexible label cost function.
 % The accuracy obtained was better (equivalent to SFTM) but the computation times were prohibitive (4 minutes to match youtube pages) which is understandable since this comparison function runs $O(n^3)$ times.
 % For this reason, we could only run the modified version of APTED on a few hundred small pages and the results presented in Figure~\ref{sftm:fig:f1score} reports on the non-modified version.
@@ -693,8 +693,8 @@ Similarly, TED compares the labels of most pairs of nodes and generate an associ
 
 \paragraph{Completion time}
 For each couple ($d$, $d'$) retrieved from the dataset, we measured the time taken by SFTM, APTED, and \textsc{XyDiff} to compute a full matching.
-Figure~\ref{sftm:fig:computation_time} reports on the average time to match DOM couples of increasing size (in terms of number of nodes) for all three solutions.
-\textsc{XyDiff} exhibits very fast computation speed and despite its numerous optimizations, APTED's computation times increases exponentially large web documents.
+Figure~\ref{sftm:fig:computation_time} reports the average time to match DOM couples of increasing size (in terms of the number of nodes) for all three solutions.
+\textsc{XyDiff} exhibits a very fast computation speed and despite its numerous optimizations, APTED's computation times increase exponentially for large web documents.
 SFTM is not as fast as \textsc{XyDiff}, but seems to show reasonable growth when the size of web documents increases.
 Interestingly, APTED computation time varies greatly, which is due to the multiple heuristics used by this implementation to optimize the computation in certain situations.
 
@@ -719,15 +719,15 @@ Overall, one can observe that SFTM offers an interesting trade-off between two c
     % \end{figure}
     
 % This observation raises the question of the impact of the sublinear threshold function $f$ on the performance of SFTM.
-% We therefore conducted a sensitivity analysis of this parameter to better understand potential trade-offs offered by the definition of this function, with regards to the complexity analysis we performed (cf. Section~\ref{sftm:sec:complexity}).
+% We, therefore, conducted a sensitivity analysis of this parameter to better understand potential trade-offs offered by the definition of this function, with regards to the complexity analysis we performed (cf. Section~\ref{sftm:sec:complexity}).
 
 \paragraph{Matching efficiency}
 The matching efficiency measures how fast a given solution can produce accurate results.
-The efficiency is a way to combine both accuracy and speed metrics into one that can be used to compare all solutions.
+Efficiency is a way to combine both accuracy and speed metrics into one that can be used to compare all solutions.
 In our case, we already showed that SFTM outperforms APTED in both accuracy and computation time.
 This efficiency measure is thus particularly interesting to compare SFTM to \textsc{XyDiff}, as SFTM outperforms \textsc{XyDiff} in terms of accuracy, but remains slower when it comes to speed.
 To compute this matching efficiency, we consider the same metric as~\cite{oliveira2018efficient}---\emph{i.e.}, the number of good matches produced per millisecond.
-Figure~\ref{sftm:fig:efficiency} reports on the matching efficiency of all three matching solutions.
+Figure~\ref{sftm:fig:efficiency} reports the matching efficiency of all three matching solutions.
 One can observe that SFTM produces $7.7$ good matches per millisecond on average, which is far above APTED and \textsc{XyDiff} that produce $3.6$ and $2.4$ good matches per millisecond, respectively. 
 
 \begin{figure}
@@ -738,7 +738,7 @@ One can observe that SFTM produces $7.7$ good matches per millisecond on average
 \end{figure}
 
 \paragraph{Parameter sensitivity}
-Since we aim at improving the performances of FTM in term of computation times, we study the sensitivity of the sub-linear threshold function $f$, which is a parameter that directly influences the computation time of the algorithm.
+Since we aim at improving the performances of FTM in terms of computation times, we study the sensitivity of the sub-linear threshold function $f$, which is a parameter that directly influences the computation time of the algorithm.
 
 Figure~\ref{sftm:fig:parameter}, therefore, reports on the evolution of SFTM performances when $f$ varies.
 To study the sensitivity of $f$, we choose to use the power function $f(N) = N^\alpha$ as a threshold and display how the computation times and matching accuracy evolve with $\alpha$.
@@ -750,31 +750,31 @@ To study the sensitivity of $f$, we choose to use the power function $f(N) = N^\
     \label{sftm:fig:parameter}
 \end{figure}
 
-For this experiment, as we are interested in studying the sensitivity of the parameter $\alpha$ on the performances of SFTM, we therefore consider a subset of $243$ pairs from the complete dataset used in previous sections (cf. Section~\ref{sftm:sec:performances}), which represents a $6\%$ error margin with $95\%$ confidence.
+For this experiment, as we are interested in studying the sensitivity of the parameter $\alpha$ on the performances of SFTM, we, therefore, consider a subset of $243$ pairs from the complete dataset used in previous sections (cf. Section~\ref{sftm:sec:performances}), which represents a $6\%$ error margin with $95\%$ confidence.
 
 As expected, when $\alpha$ increases, the quality of the matching and the computation times increase.
 However, beyond a certain value of $\alpha$, the increase of computation time is superior to the gain in accuracy: increasing $\alpha$ from $0.5$ to $0.8$ entails more than $10$ times longer computation times for $8\%$ gain in accuracy. 
-Intuitively, this is because tokens contained in most nodes provide few relevant information (low IDF), but increase the complexity quadratically.
+Intuitively, this is because tokens contained in most nodes provide little relevant information (low IDF), but increase the complexity quadratically.
 In this chapter, we thus adopted $\alpha = 0.5$ (\emph{i.e.}, $f(N) = \sqrt{N}$) as this value achieves good enough performances to demonstrate that SFTM can match two real-life web pages in practical time, with a minimum of compromise on quality.  
 
 \section{Threats to Validity}\label{sftm:sec:threats}
 The absolute values of completion times depend on the machine on which the algorithms were executed.
-As computations took time, we had to run both SFTM, APTED and \textsc{XyDiff} on a server, which is shared among several users.
-Although we paid a careful attention to isolate our benchmarks, the available resources of the server might have varied along execution thus impacting our results.
-% Nevertheless, the repetition of measures reports a clear signal in favour of SFTM.
+As computations took time, we had to run both SFTM, APTED, and \textsc{XyDiff} on a server, which is shared among several users.
+Although we paid careful attention to isolating our benchmarks, the available resources of the server might have varied along execution thus impacting our results.
+% Nevertheless, the repetition of measures reports a clear signal in favor of SFTM.
 
 Our dataset contains the homepages of the Top\,1k Alexa websites.
 The fact that our qualitative evaluation has only been conducted on homepages might have biased the results, as such pages might not be fully representative of the complexity of online documents.
 Yet, one can observe that the distribution of page sizes in our datasets offers a good diversity of situations.
 
 The parameters used for SFTM and, in particular, the weights for the propagation may not be optimal.
-However, our evaluation shows that the adopted values succeed to report tree matchings that compete with the state-of-the-art accuracy in reasonable times and on a very large variety of web pages, which means the values we provided for the parameters do not require to be tuned for most web pages matching cases.
+However, our evaluation shows that the adopted values succeed to report tree matchings that compete with the state-of-the-art accuracy in reasonable times and on a very large variety of web pages, which means the values we provided for the parameters do not require to be tuned for most web page matching cases.
 
 % Finally, our approach consisting in filtering out the tokens contained by more than $f(N) = \sqrt{N}$ nodes is not backed by any theoretical analysis which means we cannot assure the SFTM algorithm with such tuning will conserve the same performance when the number of nodes grows beyond the empirically studied window.
 
 \section{Conclusion \& Perspectives}\label{sftm:sec:conclusion}
 Comparing modern real-life web pages is a challenge for which traditional \emph{Tree Edit Distance} (TED) and \textsc{XyDiff} solutions are too restricted and computationally expensive. 
-\cite{Kumar2011_FTM} introduced \emph{Flexible Tree Matching} (FTM) to offer a restriction-free matching, but at the cost of prohibitive computational times.
+\cite{Kumar2011_FTM} introduced \emph{Flexible Tree Matching} (FTM) to offer a restriction-free matching but at the cost of prohibitive computational times.
 
 This chapter thus introduced \emph{Similarity-based Flexible Tree Matching} (SFTM), the first implementation of an advanced \emph{Flexible Tree Matching} (FTM) algorithm with scalable computation times.
 We evaluated our solution using mutations on real-life web pages and we showed that SFTM outperforms \textsc{XyDiff} qualitatively and compares to TED, while significantly improving the computation time of the latter.
@@ -784,28 +784,28 @@ Our \textit{label-centric} approach to matching is significantly different than 
 In addition to providing a competitive solution to match web pages, we hope that our solution will encourage the development of solutions based on similar approaches.
 We also believe that having a robust algorithm to efficiently compare web pages will open up new perspectives within the web community.
 
-In future work, we will further investigate how to improve the quality of the tree matchings by analyzing which situations cause SFTM to report mismatches and to establish guidelines to adjust the exposed parameters.
+In future work, we will further investigate how to improve the quality of the tree matchings by analyzing which situations cause SFTM to report mismatches and establishing guidelines to adjust the exposed parameters.
 
-Finally, whether our work might be applicable to other trees than web DOMs remains to be demonstrated.
+Finally, whether our work might apply to other trees than web DOMs remains to be demonstrated.
 Indeed, SFTM strongly relies on the fact that node labels in DOMs are highly differentiating (many specific attributes on each element), which is not the case for all kinds of trees.
 
 %% TRANSITION
-The final objective of our work is to build a set of tools allowing to create an abstraction of any web application. Being able to compare two web pages is a first step.
+The final objective of our work is to build a set of tools allowing us to create an abstraction of any web application. Being able to compare two web pages is the first step.
 In the next section, we will apply tree-matching to the robust locator problem.
 
-%% OLD ABANDONNED STUFF
+%% OLD ABANDONED STUFF
 
 %%e.g: Given an element $E$ to locate,  $P$ is an ancestor of $E$, if $P$ has differentiating attributes (like an \textit{id}) we can locate $E$ relatively to $P$ and identify $P$ using its differentiating attributes. 
 
 %\subsubsection{Stateful identification architecture}
-%Existing methods to identify elements on a page (xPath) are limited. Notably, they don't allow to express \textit{flexible}, statistics based identifiers. That's why some works have developed some more flexible identification methods [...] and applied them to repair broken locators.
+%Existing methods to identify elements on a page (XPath) are limited. Notably, they do not allow the expression of \textit{flexible}, statistics-based identifiers. That's why some works have developed some more flexible identification methods [...] and applied them to repair broken locators.
 
-%If we are capable to use more efficient methods than xPath to identify elements as these studies suggest, why use it only to repair locators and not directly as locators?
+%If we are capable to use more efficient methods than XPath to identify elements as these studies suggest, why use it only to repair locators and not directly as locators?
 
 %In this contribution, we study the problems that moving to such a flexible identification system might rise and suggest a possible architecture allowing to practically use \textit{stateful identification methods}.
 
 % A naive approach would be to sort all edges by increasing cost and select $min(|U|, |V|)$ edges.
-% However, doing so would not guarantee to obtain a full matching, since we might have selected several edges linked to the same nodes.
+% However, doing so would not guarantee obtaining a full matching, since we might have selected several edges linked to the same nodes.
 % A valid approach would rather be to: 
 % \begin{compactenum}
 %     \item Sort all the edges by increasing cost,
@@ -814,16 +814,16 @@ In the next section, we will apply tree-matching to the robust locator problem.
 %     \item Repeat the selection process (from step (2)) until all edges have been selected/
 % \end{compactenum}
 
-% While this approach returns a full matching, it only optimizes the decision one-step-ahead.
-% In order to approach the optimal matching, we use the same technique as FTM does: the metropolis algorithm~\cite{metropolis1953equation}.
+% While this approach returns a full matching, it only optimizes the decision one step ahead.
+% To approach the optimal matching, we use the same technique as FTM does: the metropolis algorithm~\cite{metropolis1953equation}.
 % The metropolis algorithm provides a way to explore a probability distribution by random walking through samples.
-% We use this algorithm to random walk through several full matching, and retain the least costly.
+% We use this algorithm for a random walk-through of several full matching and retain the least costly.
 % The algorithm needs to be provided with:
 % \begin{compactenum}
 %     \item An initial sample $M_0$,
 %     \item A suggestion function $suggestMatching: M_t \mapsto M_{t+1}$,
 %     \item An objective function we want to maximize: $f(M)$,
-%     \item A parameter $N$ that defines the number of random walk to perform before returning the best visited sample.
+%     \item A parameter $N$ that defines the number of random walks to perform before returning the best-visited sample.
 % \end{compactenum}
 % Table~\ref{tab:equivalenceMetropolis} shows the equivalence between the general vocabulary and notations commonly used when describing the metropolis algorithm and our specific application to FTM.
 

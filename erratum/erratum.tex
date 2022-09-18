@@ -1,10 +1,10 @@
-\chapter{Erratum}\label{chap:erratum}
-\section{Abstract}
+\chapter{\erratum{}}\label{chap:erratum}
+\section*{Summary}
 % Web applications are constantly evolving to integrate new features or fix reported bugs.
-% Such continuous evolutions may alter the content and/or the rendering of web application.
-% Underneath, all these web applications relies on the \emph{Document Object Model} (DOM) to render content from web browsers.
+% Such continuous evolutions may alter the content and/or the rendering of web applications.
+% Underneath, all these web applications rely on the \emph{Document Object Model} (DOM) to render content from web browsers.
 % To interact with web applications, \emph{element locators} are identifiers used to navigate across the DOM when automating tasks (\emph{e.g.}. web test scripts, crawlers, or robotic process automation).
-% Unfortunately, element locators tend to become fragile when the underlying web pages evolve over time.
+% Unfortunately, element locators tend to become fragile when the underlying web pages evolve.
 % % 
 % \emph{Robust locators} have been introduced to overcome this issue, but they fail to repair broken locators on complex and dynamic web applications.
 % For this reason, several contributions explored the idea of automatically repairing broken locators on a page. 
@@ -13,16 +13,16 @@
 Web applications are constantly evolving to integrate new features and fix reported bugs.
 % or even simply when the displayed content is updated.
 Even an imperceptible change can sometimes entail significant modifications of the \emph{Document Object Model} (DOM), which is the underlying model used by browsers to render all the elements included in a web application.
-% In particular, when considering scripts that interact with these web applications (\emph{e.g.} web test scripts, crawlers, or robotic process automation), the continuous evolution of web applications make it extremely challenging to automate the actions on the elements of a web page in a robust way.
+% In particular, when considering scripts that interact with these web applications (\emph{e.g.} web test scripts, crawlers, or robotic process automation), the continuous evolution of web applications makes it extremely challenging to automate the actions on the elements of a web page in a robust way.
 Scripts that interact with web applications (\emph{e.g.} web test scripts, crawlers, or robotic process automation) rely on this continuously evolving DOM which means they are often particularly fragile.
-More precisely, the major cause of breakages observed in automation scripts are \emph{element locators}, which are identifiers used by automation scripts to navigate across the DOM. When the DOM evolves, these identifiers tend to break, thus causing the related scripts to no longer locate the intended target elements.
+More precisely, the major cause of breakages observed in automation scripts is \emph{element locators}, which are identifiers used by automation scripts to navigate across the DOM. When the DOM evolves, these identifiers tend to break, thus causing the related scripts to no longer locate the intended target elements.
 
 % \emph{Robust locators} have been introduced to overcome this issue, but they fail to repair broken locators on complex and dynamic web applications.
 For this reason, several contributions explored the idea of automatically repairing broken locators on a page. 
 These works attempt to repair a given broken locator by scanning all elements in the new DOM to find the most similar one.
-Unfortunately, this approach fails to scale when the complexity of web pages grows, leading either to long computation times or incorrect element repairs.
+Unfortunately, this approach fails to scale when the complexity of web pages grows, leading to either too long computation times or incorrect element repairs.
 % 
-We therefore, adopt a different perspective on this problem by introducing a new locator repair solution that leverages tree matching algorithms to relocate broken locators.
+We, therefore, adopt a different perspective on this problem by introducing a new locator repair solution that leverages tree matching algorithms to relocate broken locators.
 This solution, named \erratum{}, implements a holistic approach to reduce the element search space, which greatly eases the locator repair task and drastically improves repair accuracy.
 % 
 We compare the robustness of \erratum{} on a large-scale benchmark composed of realistic and synthetic mutations applied to popular web applications currently deployed in production.
@@ -33,7 +33,7 @@ Our empirical results demonstrate that \erratum{} outperforms the accuracy of WA
 The implementation of automated tasks on web applications (apps), like crawling or testing, often requires software engineers to locate specific elements in the DOM (\emph{Document Object Model}) of a web page.
 To do so, software engineers or automation/testing tools often rely on CSS (\emph{Cascading Style Sheets}) or XPath selectors to query the target elements they need to interact with.
 Unfortunately, such statically-defined locators tend to break along time and deployments of new versions of a web application.
-This often results in the failure of all the associated automation scripts (including test cases) that apply to the modified web pages.
+This often fails all the associated automation scripts (including test cases) that apply to the modified web pages.
 
 While several existing works focus on repairing tests on GUI applications, there are surprisingly very few test repair solutions targeting web interfaces~\cite{imtiaz2019systematic}.
 These solutions either propose to \emph{i)} generate locators that are robust to changes (so-called \emph{robust locator problem}), or \emph{ii)} repair locators that are broken by the changes applied to the web pages (so-called \emph{locator repair problem}).
@@ -45,20 +45,21 @@ However, this approach fails to leverage the element position and relations with
 We adopt a more holistic approach to the locator repair problem: instead of focusing on the element whose locator is broken individually, we leverage a tree matching algorithm to match all elements between the two DOM versions. 
 Intuitively, using a holistic approach to repair a broken locator should significantly improve accuracy by reducing the search space of candidate elements in the new version of the page: for example, if the parent of the element whose locator is broken is easily identifiable (\emph{e.g.}, the item of a menu) a tree matching algorithm will use this information to relocate the target element in the modified page with better accuracy.
 Additionally, if more than one locator is broken on a given web page, our approach will repair all of them consistently at once.
-The holistic solution we propose, named \erratum{},\footnote{\erratum{} stands for "\erratumlong{}"} more specifically leverages an efficient \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm to repair all broken locators by matching all changes in a web page with high accuracy, compared to the state-of-the-art solutions.
-SFTM is a tree matching algorithm providing fast computation times and high accuracy when compared to other generic tree matching solutions.
+The holistic solution we propose, named \erratum{},\footnote{\erratum{} stands for "\erratumlong{}"} more specifically leverages the efficient \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm we developed to repair all broken locators by matching all changes in a web page.
+
+As described in chapter~\ref{chap:sftm}, SFTM is a tree matching algorithm providing fast computation times and high accuracy when compared to other generic tree matching solutions.
 To do so, SFTM builds on a distinctive characteristic of DOM trees: the labels of the nodes (\emph{i.e.}, node attributes and tags) contain a high amount of information that can be leveraged to prune the space of possible matchings between two trees.
 
-Evaluating solutions to both robust locator and locator repair problems requires to build a dataset of web page versions---\emph{i.e.}, \textsf{(original page, modified page)} pairs.
+Evaluating solutions to both robust locator and locator repair problems requires building a dataset of web page versions---\emph{i.e.}, \textsf{(original page, modified page)} pairs.
 Unfortunately, previous works assessed their contributions on hardly-reproducible benchmarks of limited sizes (never beyond a dozen of websites).
 We rather evaluate the robustness of our approach against the state of the art by introducing an open benchmark, which covers a wider range of changes that can be found in modern web apps.
 Concretely, our open benchmark considers over 83k+ locators on more than $650$ web apps.
 It combines \emph{i)} a \emph{synthetic dataset} generated from random mutations applied to popular web apps and \emph{ii)} a \emph{realistic dataset} replaying real mutations observed in web apps from the Alexa~Top\,1K,\footnote{\url{https://www.alexa.com/topsites}} which ranks the most popular websites worldwide.
 
-When evaluated on both datasets, our results demonstrate that \erratum{} outperforms the state-of-the-art solution, namely WATER~\cite{choudhary2011water}, both in accuracy (67\% improvement on average) and performances, when more than 3 locators require to be repaired in a web page.
+When evaluated on both datasets, our results demonstrate that \erratum{} outperforms the state-of-the-art solution, namely WATER~\cite{choudhary2011water}, both in accuracy (67\% improvement on average) and performance, when more than 3 locators require to be repaired in a web page.
 
-Concerning the potential applications of \erratum, while we introduce and evaluate our solution within the well-studied context of locator repair, we also discuss a novel resilient architecture centered around \erratum allowing to entirely replace all locator-based interactions.
-This architecture intends to support much more interactive and robust script editions in the context of web testing, web crawling, and robotic process automation.
+Concerning the potential applications of \erratum, while we introduce and evaluate our solution within the well-studied context of locator repair, we also discuss a novel resilient architecture centered around \erratum allowing us to entirely replace all locator-based interactions.
+This architecture intends to support much more interactive and robust script editions in the context of web testing, web crawling, and \emph{Robotic Process Automation (RPA)}~\cite{ivanvcic2019robotic}
 
 \paragraph{Summary}
 Overall, the key contributions in this chapter consist of:
@@ -80,17 +81,17 @@ Section~\ref{erratum:sec:evaluation} reports on the performance of our approach 
 % Section~\ref{erratum:sec:threats} discusses the threats to validity of our contribution.
 Finally, Section~\ref{erratum:sec:perspectives} presents some perspectives for this work, while Section~\ref{erratum:sec:conclusion} concludes.
 
-% In order to identify elements on a page, developers usually use CSS Selectors and XPaths...
+% To identify elements on a page, developers usually use CSS Selectors and XPaths...
 
-% These identifiers often break leading to the breakage of the associated tests / robots.
+% These identifiers often break leading to the breakage of the associated tests/robots.
 % There are some techniques in the literature to \textit{generate} such \textit{identifiers}, but they are even much more fragile.
 % The fragility of automatically generated locators is one of the main obstacles to the development of visual frameworks for test/crawlers development. 
-% The problem is such that some articles developed alternative ways to identify elements on a page and used it to repair broken XPath identifiers [.....]
+% The problem is such that some articles developed alternative ways to identify elements on a page and used them to repair broken XPath identifiers [.....]
 % \subsection{Contribution}\label{erratum:sec:contribution}
 % Our contribution is two-fold:
 % \subsubsection{Robust locators using tree-matching}
-% The expressivity of xPath relies on the ability to use any other elements on the page as anchor to locate another element. 
-% This allows to identify elements that do not have intrinsic differentiating features. If we are already using surrounding elements to help in the identification process, why not using \textit{all} other elements?
+% The expressivity of xPath relies on the ability to use any other elements on the page as an anchor to locate another element. 
+% This allows us to identify elements that do not have intrinsic differentiating features. If we are already using surrounding elements to help in the identification process, why not use \textit{all} other elements?
 % In this contribution, we use tree-matching algorithms to match elements of a new version of a page with elements identified in its previous version.
 % \subsubsection{Benchmarking tools}
 % Existing works on robust locators all evaluate their contribution on a private dataset manually constructed which 
@@ -98,19 +99,19 @@ Finally, Section~\ref{erratum:sec:perspectives} presents some perspectives for t
 % \item Makes it impossible to reproduce
 % \item Might be subject to bias (since it was manually constructed) 
 % \end{enumerate}
-% In order to evaluate the quality of our identification system, we built two datasets, both containing a list of pair $(D, D')$ where $D$ and $D'$ are two different versions of the same page:
+% To evaluate the quality of our identification system, we built two datasets, both containing a list of pair $(D, D')$ where $D$ and $D'$ are two different versions of the same page:
 % \begin{enumerate}
 % \item A synthetic dataset made of different versions of famous websites' pages generated by applying random mutations to the original page
-% \item A real world dataset made of different versions in time of the same page, built using the \textit{wayback API} (to retrieve the different versions of the websites)
+% \item A real-world dataset made of different versions in time of the same page, built using the \textit{wayback API} (to retrieve the different versions of the websites)
 % \end{enumerate}
-% Both datasets are publicly available and the code that generated it is open source.
+% Both datasets are publicly available and the code that generated them is open source.
 
 \section{Background \& Related Work}\label{erratum:sec:related-work}
 We deliver a novel contribution to the locator repair problem, which has been initially studied in the domain of web testing.
-In this section, we thus introduce the required background and we describe state-of-the-art approaches to repair broken locator, and in particular the literature published in the domain of web test repair.
+In this section, we thus introduce the required background and describe state-of-the-art approaches to repairing broken locators, and in particular, the literature published in the domain of web test repair.
 
 \subsection{Introducing Web Element Locators}
-To detect regressions in web applications, software engineers often rely on automated web-testing solutions to make sure that end-to-end user scenarios keep exhibiting the same behavior along changes applied to the system under test.
+To detect regressions in web applications, software engineers often rely on automated web-testing solutions to make sure that end-to-end user scenarios keep exhibiting the same behavior along with changes applied to the system under test.
 % 
 Such automated tests usually trigger interactions as sequences of actions applied on selected elements and followed by assertions on the updated state of the web page.
 For example, \emph{"click on button $e_1$, and assert that the text block $e_2$ contains the text '{\tt Form sent}'"}.
@@ -119,7 +120,7 @@ To develop such test scenarios, a software engineer can
     \item manually write web test scripts to interact with the application, or
     \item use record/replay tools~\cite{burg2013interactive,sen2013jalangi,mickens2010mugshot} to visually record their scenarios.
 \end{inparaenum}
-In both cases, the scenario requires to identify the target elements on the page [$e_1$, $e_2$] in a deterministic way, which is usually achieved using XPath, a query language for selecting elements from an XML document.
+In both cases, the scenario requires identifying the target elements on the page [$e_1$, $e_2$] in a deterministic way, which is usually achieved using XPath, a query language for selecting elements from an XML document.
 % 
 For example, let us consider the following HTML snippet describing a form:
 
@@ -138,18 +139,18 @@ It is important to understand that a test \textit{breakage} is different from a 
 While there can be many causes to test breakage, \cite{hammoudi2016record} reports that $74\,\%$ of web tests break because one of the included locators fails to locate an element in a web page.
 
 % While we focus on web test repair, some previous work focused on GUI test repair for desktop applications~\cite{grechanik2009maintaining,zhang2013automatically,memon2008automatically,gao2015sitar,daniel2011reassert}.
-% This work most often uses platform-specific features hardly transposable to the web, as Zhang~\emph{et~al.}~\cite{zhang2013automatically} who rely on the methods associated to GUI elements.
+% This work most often uses platform-specific features hardly transposable to the web, as Zhang~\emph{et~al.}~\cite{zhang2013automatically} who relies on the methods associated with GUI elements.
 
 \subsection{Generating Web Element Locators}\label{erratum:sec:sota_robust_locator}
 The fragility of locators remains the root cause of test breakage, no matter
-they have been automatically generated (\emph{e.g.}, in the case of
+whether they have been automatically generated (\emph{e.g.}, in the case of
 record/replay tools), or manually written. To tackle this limitation, several
 studies have focused on generating more robust locators. This includes
-ROBULA~\cite{leotta2014reducing}, ROBULA+~\cite{leotta2016robula+}, which are algorithms that apply successive refining transformations from a raw XPath query until it yields an xPath locator that exclusively returns the desired element. Leotta~\emph{et~al.}~\cite{leotta2015meta,leotta2021sidereal} also propose
-Sideral, a graph-based algorithm to generate xPath locators. Sideral requires to
-specifically train on each application in order to learn what properties are
-most likely safe to rely on when building xPath locators. While these methods
-all use ancestors of a given elements as anchor to generate a locator,
+ROBULA~\cite{leotta2014reducing}, ROBULA+~\cite{leotta2016robula+}, which are algorithms that apply successive refining transformations from a raw XPath query until it yields an XPath locator that exclusively returns the desired element. Leotta~\emph{et~al.}~\cite{leotta2015meta,leotta2021sidereal} also propose
+Sideral, a graph-based algorithm to generate XPath locators. Sideral requires to
+specifically train on each application to learn what properties are
+most likely safe to rely on when building XPath locators. While these methods
+all use ancestors of a given element as an anchor to generate a locator,
 \cite{nguyen2021generating} uses siblings instead, arguing that they make more
 reliable anchors.
 
@@ -185,7 +186,7 @@ In this context, the repair tool considers
 
 \paragraph{Property Based}
 In this area, WATER~\cite{choudhary2011water} and COLOR~\cite{kirinuki2019color}
-provide algorithm to fix broken tests using intrinsic properties of the element
+provide an algorithm to fix broken tests using intrinsic properties of the element
 to relocate.
 The process of repairing a test involves several steps: 
 \begin{inparaenum}
@@ -199,13 +200,12 @@ Hammoudi~\emph{et~al.}~\cite{hammoudi2016waterfall} further studied the locator 
 
 \paragraph{Vision Based}
 Using a completely different approach, VISTA~\cite{stocco2018visual} is a recent technique that adopts computer vision to repair locators. VISTA falls within the category of computer vision-aided web tests~\cite{chang2010gui,leotta2018pesto,alegroth2013jautomate}.
-However, while using computer vision succeeds in repairing most of the \textit{invisible} changes, such solutions tend to fail when the content, the language, or the visual rendering of the website changes.
+However, while using computer vision succeeds in repairing most of the \textit{invisible} changes, such solutions tend to fail when the content, language, or visual rendering of the website changes.
 Furthermore, visual-based solutions fail to locate dynamic elements that only appear through user interactions (\emph{e.g.}, a dropdown menu).
 
 Finally, J.Imtiaz et al~\cite{imtiaz2021automated} developed a test repair
-solution that integrates to several different capture replay tools. While we
-focus specifically on the locator repair problem, they used and evaluated a more
-comprehensive test-repair strategy involving the classification of the test script and
+solution that integrates several different capture replay tools. While we
+focus specifically on the locator repair problem, they used and evaluated a more comprehensive test-repair strategy involving the classification of the test script and
 detected breakages and the extension of the UML Testing Profile specifications to
 capture more interaction details.
 
@@ -276,7 +276,7 @@ In the case of XPath-based locators, the descriptor $loc_{E,D}$ refers to an XPa
     \end{equation}
 \end{defn}
 
-Finally, we note $\lambda(e)$ the label of the node $e$ in the DOM tree. The label of a node comprises the tag, the attributes and their values and the textual content. However, in the context of \erratum, we willingly ignore the content as described in section \ref{erratum:sec:node_similarity}.
+Finally, we note $\lambda(e)$ the label of the node $e$ in the DOM tree. The label of a node comprises the tag, the attributes, their values, and the textual content. However, in the context of \erratum, we willingly ignore the content as described in section \ref{erratum:sec:node_similarity}.
 
 \subsection{Problem Statement}
 Given the above definitions, we can formalize the locator problem statement along with the two following research questions.
@@ -298,7 +298,7 @@ To the best of our knowledge, existing solutions to both \emph{robust locator} a
 
 Once the \textit{locator repair problem} is solved (\emph{i.e.}, $E'$ are correctly located), we need to generate new locators, which brings us back to the situation of the robust locator problem (cf. RQ.~\ref{robust_locator_problem}).
 
-We thus present a novel approach to solve the locator repair problem.
+We thus present a novel approach to solving the locator repair problem.
 
 
 % =================================== ERRATUM ========================================
@@ -306,7 +306,7 @@ We thus present a novel approach to solve the locator repair problem.
 % \subsection{Overview}
 The previous section formalized both \emph{robust locator} and \emph{locator repair} problems.
 % In a browser, HTML web pages are parsed into a \emph{Document Object Model} (DOM), which is a labeled tree where most nodes are elements embedded in the web page.
-% Existing approaches to locate web elements in such a DOM tree consider the locator to repair individually and generally build on the structure of the tree (XPath~\cite{leotta2016robula+}, CSS selectors), on fuzzy matching of elements' properties (WATER~\cite{choudhary2011water,hammoudi2016waterfall}), on contextual clues~\cite{yandrapally2014robust} or on the visual appearance of elements (VISTA~\cite{stocco2018visual}) to repair one specific locator.
+% Existing approaches to locate web elements in such a DOM tree consider the locator to repair individually and generally build on the structure of the tree (XPath~\cite{leotta2016robula+}, CSS selectors), on the fuzzy matching of elements' properties (WATER~\cite{choudhary2011water,hammoudi2016waterfall}), on contextual clues~\cite{yandrapally2014robust} or on the visual appearance of elements (VISTA~\cite{stocco2018visual}) to repair one specific locator.
 The approach we report, \erratum, therefore matches the DOM trees of 2 versions of a web page to solve the \emph{locator repair} problem.
 Several tree matching solutions exist in the literature, such as \emph{Tree Edit Distance} (TED)~\cite{tai1979tree} or tree alignment~\cite{jiang1994alignment}.
 This section therefore motivates and explains how \erratum leverages tree matching to repair locators, before discussing the choice of a tree matching implementation fitting \erratum's requirements.
@@ -339,11 +339,11 @@ Formally, given a pair of page versions $D$ and $D'$, we:
 
 Regarding the test repair process illustrated in Figure~\ref{fig:locator_repair}, our approach thus fits in the block "\textsf{relocate element}" (in green) by matching the elements of $D$ in $D'$ and reporting the relocated element. 
 Thus, once the element is relocated using tree matching---\emph{i.e.} \erratum found $e' \in D'|e \approx e'$---we only need to generate a new locator $loc_{e', D'}$ to achieve the test repair process.
-This task can be performed using solutions to the robust locator problem, like ROBULA~\cite{leotta2014reducing}, and is therefore considered as out of the scope of our study.
+This task can be performed using solutions to the robust locator problem, like ROBULA~\cite{leotta2014reducing}, and is therefore considered out of the scope of our study.
 
 \subsection{Integrating a Scalable Tree Matching Algorithm}
 The state-of-the-art approach to match two trees is \emph{Tree Edit Distance} (TED)~\cite{tai1979tree}. 
-When comparing two trees $T$ and $T'$, TED-based approaches rely on finding the optimal sequence of relabels, insertions and deletions that transforms $T$ into $T'$.
+When comparing two trees $T$ and $T'$, TED-based approaches rely on finding the optimal sequence of relabels, insertions, and deletions that transforms $T$ into $T'$.
 Unfortunately, TED might be unsuitable to match real-life web pages due to two core restrictions~\cite{Kumar2011_FTM}:
 \begin{inparaenum}
     \item if two nodes $e$ and $e'$ are matched, the descendants of $e$ can only match with the descendants of $e'$, and
@@ -358,23 +358,23 @@ To the best of our knowledge, the only contribution that provides a solution to 
 FTM models tree matching as an optimization problem: given two trees $T$ and $T'$ how to build a set of pairs $(e,e') \in T \times T'$ such that the similarity between all selected node pairs is maximal.
 The similarity used by FTM combines both the labels and the topology of the tree.
 
-However, as shown in~\ref{chap:sftm}, the theoretical complexity of FTM is high ($O(n^4)$) and the implementation of FTM was shown to take more than an hour to match a web page made of only 58 nodes, while the average number of nodes on a web page observed in our dataset is $1,507$.
+However, as shown in the previous chapter (\ref{chap:sftm}), the theoretical complexity of FTM is high ($O(n^4)$) and the implementation of FTM was shown to take more than an hour to match a web page made of only 58 nodes, while the average number of nodes on a web page observed in our dataset is $1,507$.
 Consequently, we believe that such computation times make FTM unpractical in the context of locator repair.
 
-% Given the above review, we therefore integrate SFTM as the reference tree matching algorithm implementation to relocate elements in \erratum and, in the following sections, we evaluate its effectiveness to repair broken locators in web test scripts.
+% Given the above review, we, therefore, integrate SFTM as the reference tree matching algorithm implementation to relocate elements in \erratum, and, in the following sections, we evaluate its effectiveness to repair broken locators in web test scripts.
 
 \subsection{Matching DOM Trees by Similarity}\label{erratum:sec:SFTM}
-Given the limitation of FTM, \erratum{} integrates a \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm, which is an extension of state-of-the-art FTM to improve the computation times of FTM without any restriction on the resulting matching~\ref{chap:sftm}. 
+Given the limitation of FTM, \erratum{} integrates the \emph{Similarity-based Flexible Tree Matching} (SFTM) algorithm we developed in the previous chapter, which is an extension of state-of-the-art FTM to improve the computation times of FTM without any restriction on the resulting matching. 
 
 In the context of \erratum{}, the SFTM algorithm assumes that, given a web page, several elements are easily identifiable by considering their intrinsic properties.
 The algorithm first assigns scores to all possible matches between nodes from the two trees based on their label and only then uses the topology of the trees to adjust these scores.
 
 Almost all existing tree matching algorithms rely first and foremost on the topology of the trees.
-Conversely, SFTM relies mostly on the labels of the trees and only makes use of topology in a second step, to fine-tune the already computed scores. Intuitively, matching two sets of labels is significantly easier than trying to match trees, which is the reason why SFTM achieves such competitive performances.
+Conversely, SFTM relies mostly on the labels of the trees and only makes use of topology in a second step, to fine-tune the already computed scores. Intuitively, matching two sets of labels is significantly easier than trying to match trees, which is the reason why SFTM achieves such competitive performance.
 The only trade-off of this approach is that it requires the labels of the trees to be highly differentiating (\emph{i.e.}, carry a lot of information). 
 Fortunately, this is the case for the great majority of web pages.
 
-We walk through the key steps of the SFTM algorithm we integrated in \erratum{} by using HTML snippets reported in Figure~\ref{fig:example_html}.
+In this section, we walk through the key steps of the SFTM algorithm (described in chapter~\ref{chap:sftm}) applied to \erratum{}'s approach. We use HTML snippets reported in Figure~\ref{fig:example_html}.
 The figure provides two versions ($D$ and $D'$) of a simplified HTML code sample extracted from the homepage of the famous search engine \textit{duckduckgo.com}.
 In this example, our purpose is to relocate $\text{a}_1 \in D$ with $\text{a}_1' \in D'$.
 
@@ -448,7 +448,7 @@ Elements of DOMs $D$ and $D'$ are compared.
 The first step consists in computing an \emph{initial similarity} $s_0 : D \times D' \to [0, 1]$.
 For each pair of nodes $(e, e') \in D \times D'$, $s_0(e,e')$ measures how similar the labels of $e$ and $e'$ are.
 In HTML pages, the label of a node $e \in D$ that we use is the set of tokens obtained from applying a tokenizer to the HTML code describing $e$. 
-This may include the type of the HTML element, its attributes, and eventually the raw content associated to this element---\emph{i.e.}, thus ignoring the content from the child elements.
+This may include the type of the HTML element, its attributes, and eventually, the raw content associated with this element---\emph{i.e.}, thus ignoring the content from the child elements.
 % After empirically comparing different settings, we noticed that the algorithm performed better (and faster) when ignoring the content of the elements thus only using the tag name and attributes.
 % For example, the label of $div_1$ is the following set of tokens $\{\text{div}, \text{class}, \text{content-info__item} \}$
 \begin{ex}
@@ -462,7 +462,7 @@ When indexing, to improve the accuracy of $s_0$, we apply the \emph{Term Frequen
 \begin{ex}
     Following our previous Example~\ref{fig:example_html}, when considering the match $(div_1, div'_1)$:
     \begin{compactenum}
-        \item token $\texttt{div}$ will yield very few similarity points, since it is included in the labels of almost all the nodes,
+        \item token $\texttt{div}$ will yield very few similarity points since it is included in the labels of almost all the nodes,
         \item token $\texttt{content-info\_\_item}$ will increase the score significantly, as it only appears once in both documents.
     \end{compactenum}
 \end{ex}
@@ -472,8 +472,8 @@ When indexing, to improve the accuracy of $s_0$, we apply the \emph{Term Frequen
 % \item The token $\text{content-info\_\_item}$ will increase the score significantly as it only appears once in both documents.
 % \end{compactenum}
 
-In general, very common tokens bring very few information to the relevance of a given match, while they cause a significant increase of potential matches to consider.
-That is why, in order to reduce the computation times, the algorithm rules out most common tokens.
+In general, very common tokens bring very little information to the relevance of a given match, while they cause a significant increase of potential matches to consider.
+That is why, to reduce the computation times, the algorithm rules out the most common tokens.
 
 \paragraph{Step\,2: Similarity Propagation}
 The initial similarity $s_0$ only takes into account the labels of nodes.
@@ -489,7 +489,7 @@ We call $s$ the final similarity produced by this step.
 \paragraph{Step\,3: Optimization}
 Producing the optimal matching with regards to the computed similarity means selecting the full set of matches such that each element of $D$ is matched with at most one element of $D'$ and the sum of similarity scores of the selected matches is maximum.
 
-In order to approximate the optimal set of matches, SFTM implements the Metropolis algorithm~\cite{metropolis1953equation}.
+To approximate the optimal set of matches, SFTM implements the Metropolis algorithm~\cite{metropolis1953equation}.
 The idea is to randomly walk through several possible configurations (set of matches) to converge towards the optimal one.
 
 \begin{figure*}[!t]
@@ -503,15 +503,15 @@ At the end of the optimization step, the SFTM algorithm yields a full matching $
 These matches can be analyzed by \erratum{} to locate broken locators and fix them by generating new locators in the target document $D'$.
 
 \paragraph{Best and worst case scenarios}
-The greatest strength of \erratum's approach is to handle variations of labels---\emph{e.g.}, renaming a class, adding an id, removing an attribute.
+The greatest strength of \erratum's approach is to handle variations of labels---\emph{e.g.}, renaming a class, adding an id, and removing an attribute.
 This is because of the fuzzy nature of the first similarity steps of SFTM: as
-long as two elements' label share enough rare tokens, they will match.
-For elements that have few information in their label (\emph{e.g.}, a bare $div$ tag with no attributes) the algorithm will still be able to rely on the parents and children of the node whose label may contain more discriminative information.
+long as two elements' labels share enough rare tokens, they will match.
+For elements that have little information in their label (\emph{e.g.}, a bare $div$ tag with no attributes) the algorithm will still be able to rely on the parents and children of the node whose label may contain more discriminative information.
 
-The worst case scenario happens when making structural changes around nodes with with labels containing few information.
+The worst-case scenario happens when making structural changes around nodes with labels containing little information.
 For example, if the content of a bare $div$ node is moved to another $div$ node,
 matching the first $div$ node accurately will become very challenging.
-More than that, since the node that was moved contains high amount of information, the matching of this node will propagate to its new parents, thus increasing the chances of mismatch in the surrounding of the moved node.
+More than that, since the node that was moved contains a high amount of information, the matching of this node will propagate to its new parents, thus increasing the chances of mismatch in the surrounding of the moved node.
 
 % In the rest of the article, we integrate SFTM as the reference flexible tree matching algorithm in \erratum{} to repair broken locators (cf. green box in Figure~\ref{fig:locator_repair}).
 
@@ -532,12 +532,12 @@ This section, therefore, describes the benchmark we propose to assess these ques
 \subsection{Evaluated Locator Repair Solutions}\label{erratum:sec:consideredSolutions}
 We compare two solutions: 
 \begin{inparaenum}
-    \item \erratum{}, our approach to repair broken locators by leveraging flexible tree matching, and
+    \item \erratum{}, our approach to repairing broken locators by leveraging flexible tree matching, and
     \item WATER, the reference implementation of a locator repair technique applied to web test scripts~\cite{choudhary2011water}.
 \end{inparaenum}
 
 % WATER was designed to repair web test cases.
-The original algorithm of WATER analyses a given test case, finds the origin of the test breakage, and suggests potential repairs to the developer.
+The original algorithm of WATER analyses a given test case and finds the origin of the test breakage and suggests potential repairs to the developer.
 In our context we are interested in the most challenging part of the algorithm: the part that repairs broken locators, if needed.
 Given the originally located element $e \in D$, WATER attempts to find $e' \in D'$ such that $e' \approx e$ by scanning over all elements in $D'$ such that $tag(e') = tag(e)$ and selecting the elements most similar to $e$. 
 The similarity between two elements $e_1, e_2$ used by WATER mostly consists in computing the Levenshtein distance between the absolute XPaths of both elements ($Levenshtein(XPath(e_1), XPath(e_2))$) combined with other element properties similarity (\emph{e.g.}, visibility, z-index, coordinates).
@@ -559,21 +559,21 @@ Given two versions of the same page $D, D'$, and a set of elements $E \subset D$
 To evaluate the performance of a locator repair tool, we thus need what we call a \textbf{DOM versions dataset}: a dataset of pairs $(D, D')$, such that $D \approx D'$.
 
 A DOM version dataset is also required to evaluate solutions to the robust locator problem.
-To build such a dataset, previous works on locator repair~\cite{leotta2016robula+,leotta2014reducing} and robust locator~\cite{stocco2018visual,choudhary2011water,hammoudi2016waterfall} manually analyzed different versions of a few open source applications (like Claroline, AddressBook or Joomla).
+To build such a dataset, previous works on locator repair~\cite{leotta2016robula+,leotta2014reducing} and robust locator~\cite{stocco2018visual,choudhary2011water,hammoudi2016waterfall} manually analyzed different versions of a few open source applications (like Claroline, AddressBook, or Joomla).
 These evaluations are significantly limited in size (never beyond a dozen of websites considered) and hard to reproduce since the exact versions of the open source applications used are often not provided or available.
 
-In our study, we therefore introduce the first large-scale, reproducible, real-life \textit{DOM versions dataset} that can be used to assess locator repair solutions, and is composed of two parts:
+In our study, we, therefore, introduce the first large-scale, reproducible, real-life \textit{DOM versions dataset} that can be used to assess locator repair solutions, and is composed of two parts:
 \begin{compactenum}
     \item A {\bf \textsc{Mutation} dataset}~\ref{chap:sftm} generated by applying random mutations to a given set of web pages (see Section~\ref{mutationDataset}),
     \item A {\bf \textsc{Wayback} dataset} collects past versions of popular websites from the Wayback API (see Section~\ref{waybackDataset}).
 \end{compactenum}
 
 Then, for each pair $(D, D')$ in the dataset, our experiments consist of selecting a set of elements to locate in $D$ and in comparing both \erratum{} and WATER trying to find the corresponding element on $D'$.
-% We ran the simulations on both datasets at the same scale in order to avoid potential evaluation bias. 
+% We ran the simulations on both datasets at the same scale to avoid potential evaluation bias. 
 
 Table~\ref{table:describing_datasets} describes both datasets in terms of:
 \begin{compactenum}
-    \item \textbf{\# Unique URLs}: the number of unique URLs among the total of version pairs in the dataset. The duplication is due to the fact that there can be several mutations or successive versions of the same web page. In the case of the {\sc Wayback} dataset, more popular websites are more represented (see Section~\ref{waybackDataset});
+    \item \textbf{\# Unique URLs}: the number of unique URLs among the total of version pairs in the dataset. The duplication is because there can be several mutations or successive versions of the same web page. In the case of the {\sc Wayback} dataset, more popular websites are more represented (see Section~\ref{waybackDataset});
     \item \textbf{\# Version pairs}: the number of considered pairs of web pages $(D, D')$,
     \item \textbf{\# Located elements}: the number of elements $e \in D$ that any solution should locate in $D'$.
 \end{compactenum}
@@ -611,7 +611,7 @@ The mutation dataset is built by applying a random amount of random mutations to
 Since the mutations applied to $D$ to construct each mutant $D'$ are known, the ground truth matching between $D$ and $D'$ is also known.
 Knowing the ground truth matching on the mutation dataset allows us to evaluate our locator repair solution on a very large dataset. 
 % 
-Table~\ref{table:mutations_used} describes the set of DOM mutations that can be observed along evolution of a web page.
+Table~\ref{table:mutations_used} describes the set of DOM mutations that can be observed along the evolution of a web page.
 
 \begin{table}
     \caption{Mutations applied in the \textsc{Mutation} dataset~\ref{chap:sftm}.}
@@ -660,7 +660,7 @@ The \textit{versionsExplorer} retrieves the list of available snapshots between 
 Using these endpoints, for each website URL considered, we:
 \begin{compactenum}
 \item retrieved the timestamps of all versions between 2010 and today using the \textit{VersionExplorer},
-\item generated a list of all pairs of timestamps with one of following differences in days ($\pm 10\%$): $\text{[7, 15, 30, 60, 120, 240, 360]}$,
+\item generated a list of all pairs of timestamps with one of the following differences in days ($\pm 10\%$): $\text{[7, 15, 30, 60, 120, 240, 360]}$,
 \item picked up to $1,000$ random elements from the list of timestamps pairs,
 \item resolved each selected timestamp pair using the \textit{versionResolver}.
 \end{compactenum}
@@ -682,7 +682,7 @@ The algorithm extracted from WATER is a more straightforward solution to the loc
 
 Consequently, in the case of the WATER algorithm, the following question arises: given a pair $(D, D')$ taken from the DOM version dataset, which elements of $D$ should be picked for repair? 
 Ideally, we would try to locate every element of $D$ in $D'$ to obtain a comprehensive comparison with \erratum.
-Unfortunately, the computation times of WATER make it impractical to locate every single element from $D$ in $D'$.
+Unfortunately, the computation times of WATER make it impractical to locate every single element from $D$ to $D'$.
 Selecting realistic targets for locators is a non-obvious task since many elements in the DOM would not be targeted in a test script (\emph{e.g.}, large container blocks, invisible elements, aesthetic elements).
 Therefore, for each version pair, we randomly select up to $15$ clickable elements from $D$.
 We focus on clickable elements as this is the most common use case for web UI testing (to trigger interactions), and WATER has specific heuristics to enhance its accuracy on links.
@@ -697,7 +697,7 @@ As the average number of nodes per web page in each dataset is around $1,500$, t
 Therefore, the confidence interval at 95\,\% of the measurements applied to the 34K sample of located elements is 0.5\,\%. 
 
 \subsection{Evaluating of the Matched Elements}\label{erratum:sec:manualLabeling}
-On the {\sc Mutation} dataset, the signatures attributes are preserved after mutations (but ignored when applying either locator repair solution), thus providing the ground truth matching between the DOMs of a version pair.
+On the {\sc Mutation} dataset, the signature attributes are preserved after mutations (but ignored when applying either locator repair solution), thus providing the ground truth matching between the DOMs of a version pair.
 
 For the {\sc Wayback} dataset though, this information is not available.
 For each version pair $(D, D')$, the evaluation of both solutions yields to a list of suggested matching $(e, e'_{ERRATUM})$ and $(e, e'_{WATER})$ where $e \in D$ and $e'_{ERRATUM}, e'_{WATER} \in D'$.
@@ -723,16 +723,16 @@ To lessen this subjective part and label the proposed matchings as objectively a
     \item Sometimes, matched elements are not visible (it happens when the visibility of some parts of the page is triggered dynamically).
     In this case, if elements in both versions are not visible, the locator is skipped, otherwise, the matching is considered as \textsf{mismatch};
     \item Sometimes, a link appears in different locations on the website (often sign-in links).
-    Matching two such links from different locations is considered as wrong even though the two links might be assumed to have a similar semantic value.
+    Matching two such links from different locations is considered wrong even though the two links might be assumed to have a similar semantic value.
     Therefore, we always consider the surrounding of the located element to judge whether the matching is \textsf{correct} or \textsf{mismatch}.
-%     \item List of records is particularly challenging for repair solutions. For example, \textit{YouTube} displays a list of videos. These videos are not the same from one day to another. Repair solutions often tend to match such videos according to their position in the grid. While this a valuable result, we decided to label such matches as \textsf{mismatch} since the matched elements do not strictly have the same semantic value.
+%     \item List of records is particularly challenging for repair solutions. For example, \textit{YouTube} displays a list of videos. These videos are not the same from one day to another. Repair solutions often tend to match such videos according to their position in the grid. While this is a valuable result, we decided to label such matches as \textsf{mismatch} since the matched elements do not strictly have the same semantic value.
 \end{compactenum}
 
 % The above list is an exhaustive list of non-trivial cases encountered during manual labeling.
-% The last element---list of records---highlights the limits of state-of-the-art approach for locator repair.
+% The last element--- a list of records---highlights the limits of the state-of-the-art approach for locator repair.
 % In the context of web testing, the systematic labeling policy that we applied consisted in favoring semantics (\emph{e.g.}, the content of a video) over structure (its position on the grid, cf. similarity definition~\ref{def:similarity}).
 % Assuming that test data (\emph{e.g.}, a list of videos) is stable over time, a semantic similarity matching should thus detect and follow the structural changes of a page over time by leveraging the semantic stability to repair the broken locator of a given element.
-% This situation points towards the insufficiency of the underlying model used in existing locator related solutions and will be the object of further studies (see Section~\ref{erratum:sec:perspectives}).
+% This situation points toward the insufficiency of the underlying model used in existing locator-related solutions and will be the object of further studies (see Section~\ref{erratum:sec:perspectives}).
 
 % We discuss future possible solutions in Section~\ref{erratum:sec:conclusion}.
 
@@ -754,7 +754,7 @@ For each version pair $(D, D')$, the reported accuracy ratio corresponds to the 
   \label{fig:mutation_boxplot}
 \end{figure}
 
-% One can observe that Figure~\ref{fig:mutation_boxplot} reports on a significant difference in favor of \erratum{}. 
+% One can observe that Figure~\ref{fig:mutation_boxplot} reports a significant difference in favor of \erratum{}. 
 There are two ways a repair solution can fail to locate an element $e \in D$ in $D'$: 
 \begin{inparaenum}
     \item a \textsf{mismatch}, when the original element $e \in D$ has been matched to the wrong element $e' \in D'$, or
@@ -800,7 +800,7 @@ Figure~\ref{fig:mutationTypeAnalysis} depicts the sensitivity of both locator re
 The vertical lines on top of each bar represent the confidence interval.
 The figure highlights that \erratum is almost exclusively sensitive to structural mutations.
 In particular, the average accuracy of \erratum is not sensitive to content mutations on the page, which is expected since the algorithm ignores the content of the nodes by default.
-The very low sensitivity of \erratum to attributes related mutations is more surprising as attributes account for a major part of the similarity metric of the algorithm.
+The very low sensitivity of \erratum to attributes-related mutations is more surprising as attributes account for a major part of the similarity metric of the algorithm.
 For this reason, we believe that the mutation of attributes might have more impact when combined with structural mutations, which does not happen in the constrained \textsc{Mutation} dataset.
 % While results obtained on this constrained dataset give 
 
@@ -819,21 +819,20 @@ WATER and the size of the DOM is $\rho = 0.41$ compared to $0.28$ for \erratum{}
 Interestingly, while \erratum{} correlates rather strongly ($\rho = 0.46$) with the
 percentage of mutation between the two DOM versions, WATER shows almost no
 correlation with the same variable ($\rho = 0.12$). It means WATER is surprisingly
-not impacted by the amount mutations between the versions. The dependency to the
+not impacted by the number of mutations between the versions. The dependency to the
 mutation ratio of \erratum{} is easily explainable: for each match, \erratum{}
 indirectly relies on structural and textual similarities in the whole DOM which
 means mutations anywhere in the DOM could theoretically impact the scores on
-which \erratum{} relies to compute a matching. Conversely, WATER approach is
+which \erratum{} relies to compute a matching. Conversely, the WATER approach is
 fundamentally more local to the element to match. We believe these are key
 insights in understanding the limitation of WATER when compared to \erratum{}.
 For each element $e \in D$ to locate, WATER searches through all same-tag elements
-in $D'$ (the \textit{candidates}) and picks the closest one to $D$, with respect
-to WATER's chosen similarity metric. We believe that the sensitivity of WATER to
+in $D'$ (the \textit{candidates}) and picks the closest one to $D$, concerning WATER's chosen similarity metric. We believe that the sensitivity of WATER to
 the number of nodes comes from the fact that the number of \textit{candidate}
-matchings for a given element $e$ tends to grow with the size of the DOM, which
+matchings for a given element $e$ tend to grow with the size of the DOM, which
 increases the complexity of the ordering-by-similarity task. Conversely,
 additional nodes provide more "anchor" points to \erratum, partially
-compensating the increase in possible combinations.
+compensating for the increase in possible combinations.
 
 \begin{figure}[]
   \centering
@@ -842,9 +841,9 @@ compensating the increase in possible combinations.
   \label{fig:nbNodesAccuracy}
 \end{figure}
 
-Finally, regarding the impact of the mutation ratio ($\frac{\#mutations}{\#nodes}$), Figure~\ref{fig:erroRatioMutation} reports on how \erratum and WATER's errors evolve when increasing the number of mutations ($\#mutation$) on the original page $D$.
-The figure contains more information than most common box plots, in particular: the stars indicate the average ratio, the horizontal orange lines, the medians whose values also appear above the boxes.
-As expected, both solutions lose accuracy when the mutation ratio increases, but one can still observe that \erratum demonstrates a significant advantage over WATER, no matter the mutation ratio, and exhibiting only 20\% of errors on average (against 67\% for WATER) when the ratio of mutation exceeds 20\% of the nodes.
+Finally, regarding the impact of the mutation ratio ($\frac{\#mutations}{\#nodes}$), Figure~\ref{fig:erroRatioMutation} reports how \erratum and WATER's errors evolve when increasing the number of mutations ($\#mutation$) on the original page $D$.
+The figure contains more information than most common box plots, in particular: the stars indicate the average ratio, the horizontal orange lines, and the medians whose values also appear above the boxes.
+As expected, both solutions lose accuracy when the mutation ratio increases, but one can still observe that \erratum demonstrates a significant advantage over WATER, no matter the mutation ratio, and exhibits only 20\% of errors on average (against 67\% for WATER) when the ratio of mutation exceeds 20\% of the nodes.
 
 \begin{figure*}[]
   \centering
@@ -862,7 +861,7 @@ In 49.0\% of cases, \erratum and WATER agreed on a matching element ($e'_{S} = e
 In 13.6\% of cases, no solution found a matching element ($e'_{S} = e'_{W}= \emptyset$).
 In 37.4\% of cases, \erratum and WATER disagreed on the matching element ($e'_{S} \ne e'_{W} \text{ and } (e'_{S}, e'_{W}) \ne (\emptyset, \emptyset)$).
 
-A sample of $366$ matchings out of the $14,784$ disagreements where labelled by web testing experts, which corresponds to a 5\% confidence interval at 95\%.
+A sample of $366$ matchings out of the $14,784$ disagreements was labeled by web testing experts, which corresponds to a 5\% confidence interval at 95\%.
 Table~\ref{tab:labels} reports on the results of the manual labeling (for disagreements), thus assuming that both WATER and \erratum are correct whenever they agree.
 
 \begin{table}[h]
@@ -888,12 +887,12 @@ Table~\ref{tab:labels} reports on the results of the manual labeling (for disagr
 \end{table}
 
 We further investigated the causes of \textsf{no-match} cases reported by \erratum{} to assess if these specific cases could be matched by experts.
-% Additionally, we wondered what part of the elements labeled as no-match by SFTM would actually be considered as no-match for humans. 
+% Additionally, we wondered what part of the elements labeled as no-match by SFTM would be considered as no-match for humans. 
 As part of the \textsc{Wayback} experiment, we thus included \erratum's \textsf{no-match} cases in our labelling application (cf. Figure~\ref{fig:disagreement}) and requested the participants to eventually propose a matching element if a \textsf{no-match} was reported by \erratum{}.
 The result of this evaluation, summarized in Figure~\ref{fig:nomatch-analysis}, highlights that a majority of \textsf{no-match} are accurately labeled as such by \erratum{}, since the participants could not propose a matching element in the target web page. 
-For the few cases where the participants proposed a matching element, we observed that the structure of the DOM tree where subject to many mutations, thus misleading \erratum{} as already observed in Figure~\ref{fig:mutationTypeAnalysis}.
+For the few cases where the participants proposed a matching element, we observed that the structure of the DOM tree was subject to many mutations, thus misleading \erratum{} as already observed in Figure~\ref{fig:mutationTypeAnalysis}.
 % When SFTM mistakenly labeled an element as a no-match we tried to understand what led SFTM to fail.
-% While it is sometimes hard to understand due to the size of the DOMs considered, in most situation, it seemed SFTM had trouble when both the structure and the labels in the tree have significantly changed.
+% While it is sometimes hard to understand due to the size of the DOMs considered, in most situations, it seemed SFTM had trouble when both the structure and the labels in the tree have significantly changed.
 
 \begin{figure}[]
   \centering
@@ -958,12 +957,12 @@ However, during this process, potential inconsistencies observed in rendered web
 Therefore, before analyzing the full \textsc{Wayback} dataset, one should discard such inconsistencies between unrelated web pages, including cases where:
 \begin{inparaenum}[\em (a)]
 \item one of the versions can be an error page or a redirection page,
-\item the website may shown "in construction" or may have closed between the two snapshots.
+\item the website may show "in construction" or may have closed between the two snapshots.
 \end{inparaenum}  
 % 
 For this reason, we apply two heuristics to prepare the dataset by removing all the pairs where:
 \begin{compactenum}
-  \item one the two versions has less than 30 nodes, reflecting one of the above inconsistencies.
+  \item one of the two versions has less than 30 nodes, reflecting one of the above inconsistencies.
   For example, even a minimalist web page, like Google, contains more than 250 nodes;
   \item the absolute ratio of sizes between the two versions exceeds 40\% which
   selects approximately 90\% of the dataset (see
@@ -995,7 +994,7 @@ Figure~\ref{fig:mutationAmountAnalysis} further analyzes the above dataset by re
 
 As expected, the mutation ratio increases with the gap between the versions.
 Most importantly, the average mutation ratio in the \textsc{Wayback} dataset is
-60\%, i.e. in average, 60\% of the nodes have mutated between two versions $D$
+60\%, i.e. on average, 60\% of the nodes have mutated between two versions $D$
 and $D'$ from the Wayback dataset. This mutation ratio is significantly higher
 than the average amount of mutations in the \textsc{Mutation} dataset: 20\%.
 This difference is probably an important factor justifying the differences of
@@ -1003,7 +1002,7 @@ accuracy measured on both datasets.
 % 
 Comparing versions with large gaps is practical because it ensures there will be
 differences between the versions.
-In addition, it provides interesting insights about the frequency of changes on popular web pages.
+In addition, it provides interesting insights into the frequency of changes on popular web pages.
 However, in the context of web testing, the mutation ratio between two consecutive versions is unlikely to reach 60\%, in particular when adopting test-driven developments.
 
 \vspace{6pt}\noindent{\bf Mutation Labels.}
@@ -1012,7 +1011,7 @@ Figure~\ref{fig:mutationTypeRatios} further describes the distribution of mutati
 The figure highlights that \textsf{relabel} is the most common mutation, while \textsf{move} is quite rare.
 This result can be explained by the following observations:
 \begin{inparaenum}
-  \item when a subtree is moved, only one move is accounted even if the visual change may appear as important, and
+  \item when a subtree is moved, only one move is accounted for even if the visual change may appear as important, and
   \item the SFTM algorithm is particularly robust to relabels, which could also be a factor explaining the observed ratio.
 \end{inparaenum}
 
@@ -1041,8 +1040,8 @@ However, when the number of locators to repair grows, the computation time of WA
   \label{fig:computation}
 \end{figure}
 
-More specifically, we compare the evolution of the performance coefficient ($\alpha$) when increasing the number of locators to repair in a web page.
-Figure~\ref{fig:comparisonLinearCoefficients} plots these coefficients for \erratum and WATER, so that we can establish that \erratum{} becomes more efficient than WATER as soon as there are more than 3 locators to repair in a web page.
+More specifically, we compare the evolution of the performance coefficient ($\alpha$) when increasing the number of locators to repair on a web page.
+Figure~\ref{fig:comparisonLinearCoefficients} plots these coefficients for \erratum and WATER so that we can establish that \erratum{} becomes more efficient than WATER as soon as there are more than 3 locators to repair on a web page.
 
 \begin{figure}[]
   \centering
@@ -1055,20 +1054,20 @@ Figure~\ref{fig:comparisonLinearCoefficients} plots these coefficients for \erra
 
 % \section{Discussion}
 % While we focus on finding a solution to the locator repair problem, such a solution will not allow repairing a broken test by itself
-% As illustrated in Figure~\ref{fig:locator_repair}, fixing a test involves several steps and repairing the locator is only one of them.
+% As illustrated in Figure~\ref{fig:locator_repair}, fixing a test involves several steps, and repairing the locator is only one of them.
 % However, in previous studies, it has been shown that the locator repair problem is the most challenging part of the repairing process and WATER~\cite{choudhary2011water} describes algorithms for all the other parts of the process.
 
 
 \subsection{Threats to Validity}\label{erratum:sec:threats}
-% Our dataset contains the homepages taken from  the Top\,1k Alexa websites.
-% The fact that our qualitative evaluation has only been conducted on \textit{homepages} might have biased the results since some page types (like product list or research results) are likely less present in this class of web pages.
+% Our dataset contains the homepages taken from the Top\,1k Alexa websites.
+% The fact that our qualitative evaluation has only been conducted on \textit{homepages} might have biased the results since some page types (like product lists or research results) are likely less present in this class of web pages.
 As described in Section~\ref{erratum:sec:manualLabeling}, the \textsc{Wayback} dataset does not include a ground truth (perfect matching).
 This is why we had to manually label a representative sample of the matchings obtained on this dataset, which might have introduced some bias.
 To mitigate this bias, we recommended systematic and consistent decisions to label the data (cf. Section~\ref{erratum:sec:manualLabeling}). 
 
 All our experiments with \erratum adopt the default FTM parameters, as recommended by~\cite{Kumar2011_FTM}.
 Nonetheless, a thorough parameter sensitivity study would probably result in further improving the accuracy of \erratum.
-Given the results we obtain on a wide diversity of web pages evolutions, we believe that this parameter tuning would only positively and marginally impact the accuracy of \erratum.
+Given the results we obtain on a wide diversity of web page evolutions, we believe that this parameter tuning would only positively and marginally impact the accuracy of \erratum.
 % \erratum uses SFTM's default parameters.
 % \cite{Kumar2011_FTM} and \ref{chap:sftm} already discuss the tuning of the different parameters used in FTM and SFTM, respectively.
 % In our evaluation, we found that these parameters allowed for an already significant improvement over the state of art over a very large array of web pages: 
@@ -1082,7 +1081,7 @@ Given the results we obtain on a wide diversity of web pages evolutions, we beli
 % \end{inparaenum}
 % As stated by \ref{chap:sftm}, $f$ and $N_{metropolis}$ allow to balance accuracy and computation times, $w_{nomatch}$ the no-match and mismatch rates and $\gamma$ the tendency to rather explore or exploit in the metropolis algorithm.
 % From all the steps involved, this article focuses on the particularly challenging \emph{locator repair} problem---\emph{i.e.}, relocating an element taken from the original page in its new version.
-% However, since our experiments were led on a very large variety of websites, our results showing a significant increase in accuracy should be applicable to an equally wide array of use case with the parameters we provided.
+% However, since our experiments were led on a very large variety of websites, our results showing a significant increase in accuracy should apply to an equally wide array of use cases with the parameters we provided.
 
 In terms of repair time, we discussed the absolute value of repair time for both solutions.
 However, these values highly depend on the way each tool was implemented and the machines on which the simulations were run.
@@ -1092,7 +1091,7 @@ To limit this bias, both solutions were executed on the same Node.js runtime ver
 We have studied how \erratum{} can help in solving the existing locator repair problem, which is a common problem in web automation scripts.
 In this section, we envision a more interactive development process made possible by \erratum{}.
 
-When developing a web automation script, a developer typically opens the page under test in the browser, visually locates the element to interact with and then encodes (or generates) a locator for this element.
+When developing a web automation script, a developer typically opens the page under test in the browser, visually locates the element to interact with, and then encodes (or generates) a locator for this element.
 The locator is then used in the web automation script to select the target element and interact with it.
 % 
 Based on the results achieved by \erratum{}, the perspectives for this work include a new layer of abstraction to the target selection.
@@ -1118,8 +1117,8 @@ In many cases, the locator breakage occurs silently (the locator is mismatched
 and the consequences happen only later in the test
 script)~\cite{stocco2018visual}. In these situations, it is harder to locate the
 origin of the breakage from the test script. The silent breakage problem happens
-because when using xPath locators to relocate $e$ in $D'$, the xPath query
-either succeed or fail. There is no indication on the confidence of the
+because when using XPath locators to relocate $e$ in $D'$, the XPath query
+either succeeds or fails. There is no indication of the confidence of the
 relocation that would help to detect a mismatch. On the opposite, Using
 \erratum{}, every individual match between two elements $e$ and $e'$ has an
 associated cost $s(e, e')$ that can be used as a confidence level to avoid
@@ -1130,22 +1129,22 @@ repair solution provides, the \erratum-based notification process described
 above would thus help to detect possible breakage before the scripts are even
 run, thus diminishing the chances for a "silent breakage" to occur.
 
-% For all state-of-the-art solutions, locating elements on pages containing list of records is really challenging (\emph{e.g.}, YouTube, Amazon). 
-% This limitation shows that a binary DOM matching---\emph{i.e.}, two elements either match or not---is insufficient to model the semantics of a web page.
+% For all state-of-the-art solutions, locating elements on pages containing the list of records is challenging (\emph{e.g.}, YouTube, Amazon). 
+% This limitation shows that in a binary DOM matching---\emph{i.e.}, two elements either match or not---is insufficient to model the semantics of a web page.
 % In future work, we intend to leverage record detection algorithms to build an abstraction of the DOM and run our tree matching solution on the abstract DOM to improve our overall ability to intelligently identify and keep track of elements on a web page. 
 
 \section{Conclusion}\label{erratum:sec:conclusion}
 In this chapter, we considered the situation in which the evolution of a web page causes one of its associated automation scripts to break.
 In the domain of automated web testing, this situation accounts for 74\% of test breakages, according to past studies~\cite{hammoudi2016record}.
 % 
-Our analysis of the state-of-the-art approaches on this topic contributed to formalize the key steps involved in preventing or fixing such a kind of test breakage.
+Our analysis of the state-of-the-art approaches on this topic contributed to formalizing the key steps involved in preventing or fixing such a kind of test breakage.
 
 While existing solutions to the locator repair problem treats broken locators individually, we rather propose to apply a holistic approach to the problem, by leveraging an efficient tree matching algorithm.
 This tree matching approach thus allows \erratum{}, our solution to repair all broken locators by mapping all the elements contained in an original page, to accurately relocate each of them in its new version at once.
 % 
 To assess \erratum{}, we created and shared the first reproducible, large-scale datasets of web page locators, combining synthetic and real instances,\footnote{Dataset available from \url{https://zenodo.org/record/3800130\#.XrQb02gzY20}} which has been incorporated in a comprehensive benchmark of \erratum{} and WATER, a state-of-the-art competitor.\footnote{Benchmark available from \url{https://zenodo.org/record/3817617\#.XrWdqGgzaoQ}}
 %
-Our in-depth evaluation highlights that \erratum{} outperforms WATER, both in accuracy---by fixing twice more broken than WATER---and performances---by providing faster computation time than WATER when repairing more than 3 locators in a web test script.
+Our in-depth evaluation highlights that \erratum{} outperforms WATER, both in accuracy---by fixing twice more broken than WATER---and performance ---by providing faster computation time than WATER when repairing more than 3 locators in a web test script.
 
 Finally, we worked with the development team of a widely used open source test framework called Cerberus~\footnote{https://cerberus-testing.com/} to integrate~\footnote{https://github.com/cerberustesting/cerberus-source/commit/0a70d4cc0d70a797901652fd2b97d501bb7fa511} the Erratum approach into the test creation part of the software.
 The next section describes the integration of Erratum to Cerberus and its impact on some of its users.

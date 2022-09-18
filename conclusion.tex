@@ -1,87 +1,77 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-The original purpose that inspired my work was to build a comprehensive set of tools allowing to analyse interactions between the user and any real-life web applications to detect every time the user is in distress. 
+The original purpose that inspired my work was to build a comprehensive set of tools allowing for analyzing interactions between the user and any real-life web applications to detect every time the user struggles to achieve her purpose. 
 I initially expected most challenges to arise from the analysis of these interactions. 
 However, very quickly, I encountered one major obstacle: how to even describe an \textit{interaction}?
 In the end, all my studies and contributions have been guided by this question, leaving the analysis part unfortunately untouched.
 
 Describing an interaction between a user and a web application requires a surprisingly deep and subtle understanding of the application. 
-An interaction between a user and an application is the expression of an intent of the user.
+An interaction between a user and an application is the expression of the intent of the user.
 She translates this intent into a series of actions. These actions can be seen as a language,
 a language entirely defined by the makers of the application.
 This language has to be easily discoverable by the user by just looking at the application, it is also as similar as possible to the one used by other applications (UX/UI conventions). 
-In this context, describing an action is akin to figuring out what are the limited set of \textit{tokens} the language is made of.
-Without such preliminary abstraction work, every each node of every page is seen as unique. 
-Analysing streams of such actions would be like trying to understand a language where almost no two words are the same.
+In this context, describing action is akin to figuring out what is the limited set of \textit{tokens} the language is made of.
+Without such preliminary abstraction work, each node of every page is seen as unique. 
+Analyzing streams of such actions would be like trying to understand a language where almost no two words are the same.
 
 The main challenge in describing an interaction is the description of a location on the web page.
 Such description is called a \textit{locator}. The first kind of variability we attempted to handle is the variability between pages: \textit{how to build a locator of an element that remains the same for each page on which the element appears?}
-To answer this question we attempted to compare every couple of pages from a given web-page and mark every matching element so they would have the same locator. 
-However, every off-the-shelf state-of-the-art tree-matching solutions we tried to use had either unpractical computation times (seconds to minutes) or unacceptable accuracy.
-That is why we developed SFTM (Similarity-base Flexible Tree Matching).
+To answer this question we attempted to compare every couple of pages from a given web page and mark every matching element so they would have the same locator. 
+However, every off-the-shelf state-of-the-art tree-matching solution we tried to use had either unpractical computation times (seconds to minutes) or unacceptable accuracy.
+That is why we developed SFTM which stands for Similarity-base Flexible Tree Matching (see chapter~\ref{chap:sftm}).
 
-SFTM is a practical solution to tree-matching specialized on web-pages.
+SFTM is a practical solution to tree-matching specialized web pages.
 Tree-matching algorithms have been studied for more than 50 years.
-To improve on such legacy, we took a radically different approach from traditional generic tree-matching solutions.
+To improve on such a legacy, we took a radically different approach from traditional generic tree-matching solutions.
 While state-of-the-art solutions are always topology first, we instead used statistical tools to match nodes using their labels first before taking into account topology.
-This approach relies on a specificity of web-pages: their labels contain a large amount of information (tags and attributes).
+This approach relies on the specificity of web pages: their labels contain a large amount of information (tags and attributes).
 
-The second major obstacle we had to face was the lack of available open-source benchmarks for web-page matching. This is mainly due to the fact that most existing generic tree-matching solutions are correct by construction and their efficiency is thus proved analytically rather than empirically.
-Since our approach included more statistical tools such approach could not be applied to SFTM.
+The second major obstacle we had to face was the lack of available open-source benchmarks for web page matching. This is mainly because most existing generic tree-matching solutions are correct by construction and their efficiency is thus proved analytically rather than empirically.
+Since our approach included more statistical tools such an approach could not be applied to SFTM.
 We thus developed a synthetic large-scale benchmark based on mutations. Results showed significant gains in terms of both computation times and accuracy thus allowing us to move towards our initial goal: applying tree matching to build meaningful and robust locators.
 
 Following our work on tree matching, we studied the state of the art on robust locators and found out no existing solution was based on tree matching. 
-We thus worked on an approach to improve the robustness of locators using SFTM that we named ERRATUM.
-While our approach could be used to generate robust locators (and we did so later on when we integrated ERRATUM) we described Erratum as locator repair solution.
-The idea of locator repair is to use the last webpage on which a given locator is working and try to relocate the located element on the newer version of the page where the locator breaks.
+We thus worked on an approach to improve the robustness of locators using SFTM that we named \erratum{} (see chapter~\ref{chap:erratum}).
+While our approach could be used to generate robust locators (and we did so later on when we integrated \erratum{}) we described \erratum{} as a locator repair solution.
+The idea of locator repair is to use the last web page on which a given locator is working and try to relocate the located element on the newer version of the page where the locator breaks.
 Existing locator repair solutions try to find individual elements of one version of the page in the other.
 Our approach uses all nodes from both pages to serve as anchors and thus tremendously help relocate the element.
 
-Once again, we couldn't find any off-the-shelf benchmarking solutions to compare ERRATUM to other locator repair solutions.
+Once again, we could not find any off-the-shelf benchmarking solutions to compare \erratum{} to other locator repair solutions.
 We thus built an open benchmark using both synthetic and manually labeled test data. 
-Results showed that ERRATUM was significantly more accurate for almost no overhead when compared to existing solutions.
+Results showed that \erratum{} was significantly more accurate for almost no overhead when compared to existing solutions.
 
-Following our work on ERRATUM, a large online french retailer company reached out to us.
+Following our work on \erratum{}, a large online French retail company reached out to us.
 They shared how painful the locator breakage problem is to their test department, entailing large waste of resources and sometimes even the cancellation of whole test campaigns.
-Since they relied on a famous open-source library for their tests, we thus integrated ERRATUM to the open source framwork.
-Our integration allows the user to use automatically generated ERRATUM-based locators as a replacement for traditional manually written xPath or CSS based locators.
-This allowed tester to both save time on manually writing xPaths and benefit from much more robust locators. 
+Since they relied on a famous open-source library for their tests, we thus integrated \erratum{} into the open source framework (see chapter~\ref{chap:cerberus}).
+Our integration allows the user to use automatically generated \erratum{}-based locators as a replacement for traditional manually written XPath or CSS-based locators.
+This allowed testers to both save time on manually writing XPaths and benefit from much more robust locators. 
 
-Finally, we set out to apply our previous work to achieve our original objective: build a tool that can infer an abstract model of any web application without requiring any human intervention.
-We called our tool APPSTRACT.
-Intuitively, APPSTRACT works in the following way: given a set of web pages from the same application, we group the pages belonging to the same templates together (e.g. blog page, product page, product list page). We then use an intra-page abstraction algorithm to extract patterns within one page.
+Finally, we set out to apply our previous work to achieve our original objective: to build a tool that can infer an abstract model of any web application without requiring any human intervention.
+We called our tool \appstract{} (see chapter~\ref{chap:appstract}).
+Intuitively, \appstract{} works in the following way: given a set of web pages from the same application, we group the pages belonging to the same templates together (e.g. blog page, product page, product list page). We then use an intra-page abstraction algorithm to extract patterns within one page.
 The output of the intra-page abstraction step is a set of abstract templates.
 We then select one mother template and use tree matching (i.e. inter-page abstraction) to match every template to the mother template.
 The matchings are then used to update all templates so that elements appearing on all pages (e.g. menu, logo) have the same locators.
-The results of the above steps is an abstract model of the application.
+The result of the above steps is an abstract model of the application.
 Each new page can then be matched against this model to retrieve semantically rich and robust locators for each element of the page.
 
-
-Unfortunately, much remains to be done so that APPSTRACT can be applied confidently on any web pages.
+\section*{Perspectives}
+\paragraph{Short Term}
+In the short term, some work remains to be done so that \appstract{} can be applied confidently on any web page.
 In particular, three challenges remain to be addressed:
 
-At the moment APPSTRACT is not entirely unsupervised since the clustering phase has to be done manually.
+At the moment \appstract{} is not entirely unsupervised since the clustering phase has to be done manually.
 To solve this issue, we need to experiment on unsupervised clustering of web pages into templates
-(e.g. blog page, product page, product list page)
+(e.g. blog page, product page, product list page).
 
-Secondly, APPSTRACT currently doesn not support what we called \textit{free text}.
-Free text is a part of a page where users have the ability to write formatted content.
-This is a problem because APPSTRACT relies on the the assumption that while the data of an application varies greatly, the structure does not. This assumption is wrong in the case of free text because it is user-generated content (large variability) that contains a structure (formatting)
+Secondly, \appstract{} currently does not support what we called \textit{free text}.
+Free text is a part of a page where users can write formatted content.
+This is a problem because \appstract{} relies on the assumption that while the data of an application varies greatly, the structure does not. This assumption is wrong in the case of free text because it is user-generated content (large variability) that contains a structure (formatting)
 
-Finally we have not had the time to apply APPSTRACT to the many possible research problems where a web page abstraction would be helpful (e.g. web analytics, web page test generation).
+Finally, we have not had the time to evaluate \appstract{} quantitatively which is necessary if we want to solve its limitations described above and allow the community to trust and build upon \appstract{}.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+\paragraph{Middle \& Long Term}
+In the middle to long term, the most exciting perspectives are the application of \appstract{} to web testing, web analytics, and web data extraction. We strongly believe our approach can bring a whole range of novel approaches to each of these fields. As an example, \appstract{} can be used to build a navigational model allowing us to generate web test scenarios, it can be used to direct crawling and extract data from an application, and finally, our original intent, \appstract{} can be used to mine user behavior where user actions are encoded using the inferred abstract identifiers.
 
