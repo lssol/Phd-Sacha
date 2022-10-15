@@ -5,17 +5,17 @@
 Web applications are at every corner of modern society.
 The largest web applications can serve millions of people.
 These applications are expected to be strongly reliable and stable yet capable to evolve to adapt to its users.
-At such scale, these expectations can only be met through huge resources and time. 
+At such a scale, these expectations can only be met through huge resources and time. 
 For this reason, it is critical to further our ability to understand the structure of web applications to ease their maintenance and evolution.
 
 In this thesis, we explore web application structure through a variety of lenses: web testing, data extraction and web analytics.
-Our study leads us to understand that many web-related research, regardless of the research domain, suffer greatly from the lack of a generic fully unsupervised web application abstraction inference solution. We attempt to develop such a solution iteratively leading to three main contributions:
+Our study shows that many web-related research, regardless of the research domain, suffer greatly from the lack of a generic fully unsupervised web application abstraction inference solution. We attempt to develop such a solution iteratively leading to three main contributions:
 
-    \textbf{SFTM} Similarity-based Tree Matching, an algorithm allowing to match two web pages. This algorithm uses a fundamentally different approach to traditional tree matching techniques, which allows to produce better matchings for computation times several orders of magnitude smaller
-    
-    \textbf{ERRATUM} an approach allowing to repair locators on web applications. ERRATUM strongly improves the quality of repairs for little to no overhead depending on situations. We integrated ERRATUM to a widely used open-source testing framework solution as an alternative locator type
-    
-    \textbf{APPSTRACT} an approach to automatically generate an abstraction of a web application. APPSTRACT combines intra-abstraction and inter-abstraction using SFTM to generate robust and semantically-rich application-wide locator identifiers for each element of a webpage.
+\textbf{SFTM} Similarity-based Tree Matching, an algorithm allowing to match two web pages. Compared to traditional, generic Tree Matching algorithms, SFTM produces better matchings for computation times several orders of magnitude smaller.
+
+\textbf{ERRATUM} an approach allowing to repair locators on web applications. ERRATUM strongly improves the quality of repairs for little to no overhead. We integrated ERRATUM to a widely used open-source testing framework.
+
+\textbf{APPSTRACT} an approach to automatically generate an abstraction of a web application. APPSTRACT combines intra-page abstraction and inter-page abstraction using SFTM to generate robust and semantically-rich application-wide locator identifiers for each element of a webpage.
 
 We believe our work opens up many new possibilities in a variety of research domains, in particular: the computation speed of SFTM enables approaches that were previously unpractical with generic tree matching and the approach we describe in APPSTRACT could pioneer new web analytics or web testing generation solutions based on web application abstraction.
 \end{doublespace}

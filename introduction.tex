@@ -48,9 +48,9 @@ The locator problem~\cite{hammoudi2016record} is a very profound one.
 It directly relates to our ability to create an abstract model of an application from a huge amount of elements and pages in much the same way as computer vision requires an underlying understanding of the world to make sense out of millions of pixels.
 This abstract model can be very subtle and involve visual or contextual clues, it can rely on our experience with a given application or different similar web applications (UI/UX conventions).
 
-Surprisingly, while the locator generation problem has been extensively studied in the context of web application testing, we have never seen it formulated as an instance of the more general web application abstraction problem.
+Surprisingly, while the locator generation problem has been extensively studied in the context of web application testing, we have never seen it formulated as an instance of the more general web application abstraction inference problem.
 Concretely, it means existing work focus on building \textit{robust} locators (i.e. locators that do not break when the page changes).
-While robustness is a fundamental property of a locator, we seek to build locators that are not only robust but also carry semantic information about the nature of the element about other elements in the application.
+While robustness is a fundamental property of a locator, we seek to build locators that are not only robust but also carry semantic information about the nature of the element with respects to other elements in the application.
 We say that such locators are \textit{semantically rich}. 
 
 \textbf{The overall objective of our work is thus to provide a generic approach to automatically build robust and semantically rich locators.}
@@ -63,7 +63,7 @@ My objective is thus to explore the idea of general web application abstraction.
 \begin{itemize}[label={}]
 \item \textbf{RQ.1 } Tree Matching: how to compare two web pages?
 \item \textbf{RQ.2 } Robust Locators: how to use tree matching to build robust locators on web pages?
-\item \textbf{RQ.3 } \appstract{}: how to leverage tree matching and intra-page abstract a whole web application?
+\item \textbf{RQ.3 } \appstract{}: how to leverage tree matching and intra-page abstraction to infer a whole web application abstraction?
 \end{itemize}
 
 \subsection{Tree Matching}
@@ -103,11 +103,13 @@ Our ability to generate such locators depends on our ability to separate the con
 
 We formulate the problem as a template extraction one.
 In particular, we separate this objective into two parts:
+
 \textbf{RQ.3.1:} How to infer a template that can be used to generate a given web page?
 
 Such an inferred template is optimal when it abstracts away a maximum of the web page variability while remaining as simple (i.e. few optional nodes) as possible. 
 
 Secondly, we wonder how to generalize our results on one page to the full application:
+
 \textbf{RQ.3.2:} How to infer the set of templates that generates a given sample of web pages from an application?
 
 Once we have a set of templates that generates a given sample of web pages, we can easily match any web page against this set of templates to generate locators.
