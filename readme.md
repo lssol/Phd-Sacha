@@ -1,3 +1,9 @@
+# Towards Understanding Web Applications: Automated Abstraction Inference and its Applications
+
+**Authors**: Sacha Brisset, Lionel Seinturier, Renaud Pawlak, Romain Rouvoy
+
+## Abstract
+
 Web applications are at every corner of modern society.
 The largest web applications can serve millions of people.
 These applications are expected to be strongly reliable and stable yet capable of evolving to adapt to their users.
